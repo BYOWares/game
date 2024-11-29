@@ -14,29 +14,33 @@
  * limitations under the License.
  */
 
+package task
+
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
+import java.io.File
 import java.time.Instant
 
-abstract class GenerateInfoFile : DefaultTask() {
+abstract class GenerateInfoFileTask : DefaultTask() {
 
-    @Internal
-    val timestamp = Instant.now().toEpochMilli()
-
-    @Internal
-    val pkg = "fr.byowares.game." + project.name.replace('-', '.') + ".info"
-
-    @Internal
-    val infoFilePath = "src-generated/main/java/" + pkg.replace('.', '/')
-
-    @Internal
+    @Input
     val className = project.name.split("-").stream() //
         .map { p: String -> p[0].uppercaseChar() + p.substring(1) } //
         .toList().joinToString("") + "Info"
+
+    @Input
+    val pkg = "fr.byowares.game." + project.name.replace('-', '.') + ".info"
+
+    @Input
+    val infoFilePath = "src-generated/main/java/" + pkg.replace('.', '/')
+
+    @Internal
+    val timestamp = Instant.now().toEpochMilli()
 
     @Input
     val revision = GitInfo.gitInfo(project.gradle.rootProject.rootDir).revision
@@ -47,14 +51,20 @@ abstract class GenerateInfoFile : DefaultTask() {
     @OutputFile
     val infoFile = project.projectDir.resolve("$infoFilePath/$className.java")
 
+    @get:InputFile
+    abstract var copyrightFile: File
+
     @TaskAction
     fun generateInfoFile() {
+        val copyright = Copyright.extractCopyright(copyrightFile).asJavaDoc("            ")
         val moduleName = project.name.replace('-', '.')
         infoFile.parentFile.mkdirs()
         infoFile.createNewFile()
         infoFile.writeText(
             """
-            // Do not edit this generated file (see GenerateInfoFile task)
+            $copyright
+
+            // Do not edit this generated file (see GenerateInfoFileTask)
             package $pkg;
 
             /**
@@ -69,7 +79,7 @@ abstract class GenerateInfoFile : DefaultTask() {
                 public static final String REVISION = "$revision";
                 /** A concatenation of all pieces of information */
                 public static final String TO_STRING = "$className [version=" + VERSION + ", build-timestamp=" + BUILD_TIMESTAMP + ", revision=" + REVISION + "]";
-                
+
                 private $className() {
                     // Utility class
                 }

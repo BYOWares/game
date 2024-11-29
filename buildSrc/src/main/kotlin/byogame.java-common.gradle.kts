@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import task.GenerateInfoFileTask
+
 plugins {
     // Apply the java Plugin to add support for Java.
     java
@@ -56,7 +58,7 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.register<GenerateInfoFile>("generateInfoFile") {
+tasks.register<GenerateInfoFileTask>("generateInfoFile") {
     group = "Build"
     description = "Generate a file with some information about the library."
 
@@ -66,6 +68,7 @@ tasks.register<GenerateInfoFile>("generateInfoFile") {
     val suffix = if (rawSuffix.isEmpty() || rawSuffix.startsWith("-")) rawSuffix else "-$rawSuffix"
     val projectVersion = "$versionToRelease$suffix"
     version = projectVersion
+    copyrightFile = projectDir.parentFile.resolve(".idea/copyright/BYOWares.xml")
 }
 
 tasks.named("compileJava") { dependsOn("generateInfoFile") }

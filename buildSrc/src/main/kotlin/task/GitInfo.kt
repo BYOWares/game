@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+package task
+
 import org.gradle.api.GradleException
 import org.gradle.api.logging.Logging
 
@@ -28,6 +30,11 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import java.util.stream.Collectors
 
+/**
+ * Get the current revision from the git files directly
+ *
+ * @since XXX
+ */
 class GitInfo private constructor(
     internal val revision: String
 ) {
