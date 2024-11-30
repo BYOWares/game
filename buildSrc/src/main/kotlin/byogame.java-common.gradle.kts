@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import task.GenerateInfoFileTask
+import task.GenerateJavaInfoFileTask
+import task.GeneratePackageInfoFileTask
+
 
 plugins {
     // Apply the java Plugin to add support for Java.
@@ -58,7 +60,7 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.register<GenerateInfoFileTask>("generateInfoFile") {
+tasks.register<GeneratePackageInfoFileTask>("generatePackageInfoFile") {
     group = "Build"
     description = "Generate a file with some information about the library."
 
@@ -71,4 +73,18 @@ tasks.register<GenerateInfoFileTask>("generateInfoFile") {
     copyrightFile = projectDir.parentFile.resolve(".idea/copyright/BYOWares.xml")
 }
 
-tasks.named("compileJava") { dependsOn("generateInfoFile") }
+tasks.register<GenerateJavaInfoFileTask>("generateJavaInfoFile") {
+    group = "Build"
+    description = "Generate a file with some information about the library."
+
+    val versionToRelease = "0.1.0"
+    val rawSuffix =
+        project.properties["BUILD_SUFFIX"]?.toString() ?: if (project.hasProperty("BUILD_RELEASE")) "" else "SNAPSHOT"
+    val suffix = if (rawSuffix.isEmpty() || rawSuffix.startsWith("-")) rawSuffix else "-$rawSuffix"
+    val projectVersion = "$versionToRelease$suffix"
+    version = projectVersion
+    copyrightFile = projectDir.parentFile.resolve(".idea/copyright/BYOWares.xml")
+}
+
+tasks.named("compileJava") { dependsOn("generateJavaInfoFile") }
+tasks.named("generateJavaInfoFile") { dependsOn("generatePackageInfoFile") }

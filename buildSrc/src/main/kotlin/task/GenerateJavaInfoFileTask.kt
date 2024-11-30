@@ -16,28 +16,17 @@
 
 package task
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.TaskAction
-
 import java.io.File
 import java.time.Instant
 
-abstract class GenerateInfoFileTask : DefaultTask() {
+abstract class GenerateJavaInfoFileTask : AbstractGenerateInfoFileTask() {
 
     @Input
     val className = project.name.split("-").stream() //
         .map { p: String -> p[0].uppercaseChar() + p.substring(1) } //
         .toList().joinToString("") + "Info"
-
-    @Input
-    val pkg = "fr.byowares.game." + project.name.replace('-', '.') + ".info"
-
-    @Input
-    val infoFilePath = "src-generated/main/java/" + pkg.replace('.', '/')
 
     @Internal
     val timestamp = Instant.now().toEpochMilli()
@@ -45,25 +34,11 @@ abstract class GenerateInfoFileTask : DefaultTask() {
     @Input
     val revision = GitInfo.gitInfo(project.gradle.rootProject.rootDir).revision
 
-    @get:Input
-    abstract var version: String
+    override val outputFile: File
+        get() = resolveOutputFile(className)
 
-    @OutputFile
-    val infoFile = project.projectDir.resolve("$infoFilePath/$className.java")
-
-    @get:InputFile
-    abstract var copyrightFile: File
-
-    @TaskAction
-    fun generateInfoFile() {
-        val copyright = Copyright.extractCopyright(copyrightFile).asJavaDoc("            ")
-        val moduleName = project.name.replace('-', '.')
-        infoFile.parentFile.mkdirs()
-        infoFile.createNewFile()
-        infoFile.writeText(
-            """
-            $copyright
-
+    override fun generateBody(moduleName: String): String {
+        return """
             // Do not edit this generated file (see GenerateInfoFileTask)
             package $pkg;
 
@@ -85,6 +60,5 @@ abstract class GenerateInfoFileTask : DefaultTask() {
                 }
             }
             """.trimIndent()
-        )
     }
 }
