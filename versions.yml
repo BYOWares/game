@@ -1,4 +1,4 @@
 versionToPublish: 0.1.0
 modulesFirstVersion:
-  - game-utils: XXX
-  - miq-core: XXX
+  game-utils: XXX
+  miq-core: XXX

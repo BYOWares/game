@@ -17,16 +17,18 @@ package model
 
 import org.gradle.api.GradleException
 import org.gradle.internal.extensions.stdlib.uncheckedCast
+import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileWriter
 import java.io.IOException
 import java.nio.file.Files
+import java.util.function.Function
 
 class Versions private constructor(
     private val file: File,
-    private val versionToPublish: Version,
+    private var versionToPublish: Version,
     private val modulesFirstVersion: MutableMap<String, Version>
 ) {
     fun getVersionToPublish(): Version {
@@ -38,17 +40,19 @@ class Versions private constructor(
     }
 
     fun bumpNextMajorVersionAndDumpFile() {
-        versionToPublish.bumpNextMajor()
-        dumpFile()
+        bumpVersion(Version::bumpNextMajor)
     }
 
     fun bumpNextMinorVersionAndDumpFile() {
-        versionToPublish.bumpNextMinor()
-        dumpFile()
+        bumpVersion(Version::bumpNextMinor)
     }
 
     fun bumpNextPatchVersionAndDumpFile() {
-        versionToPublish.bumpNextPatch()
+        bumpVersion(Version::bumpNextPatch)
+    }
+
+    private fun bumpVersion(updateFunction: Function<Version, Version>) {
+        versionToPublish = updateFunction.apply(versionToPublish)
         dumpFile()
     }
 
@@ -59,11 +63,17 @@ class Versions private constructor(
         dumpFile()
     }
 
-    fun dumpFile() {
+    private fun dumpFile() {
         val data = mutableMapOf<String, Any>()
         data[VERSION_TO_PUBLISH_KEY] = versionToPublish.toString()
         data[MODULES_FIRST_VERSION_KEY] = modulesFirstVersion.mapValues { (_, v) -> v.toString() }.toSortedMap()
-        Yaml().dump(data, FileWriter(file))
+
+        val options = DumperOptions()
+        options.indent = 2
+        options.isPrettyFlow = true
+        options.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+
+        FileWriter(file).use { fw -> Yaml(options).dump(data, fw) }
     }
 
     companion object {
@@ -77,17 +87,17 @@ class Versions private constructor(
                     return Versions(versionsFile, Version.UNKNOWN, HashMap())
                 }
 
-                val map = Yaml().load<Map<String, Any>>(FileInputStream(versionsFile))
+                var map: Map<String, Any>
+                FileInputStream(versionsFile).use { fis -> map = Yaml().load(fis) }
                 val versionToPublish = map.getOrDefault(VERSION_TO_PUBLISH_KEY, Version.UNKNOWN).toString() //
-
-                val modulesFirstVersion = mutableMapOf<String, Version>()
-                map.getOrDefault(MODULES_FIRST_VERSION_KEY, ArrayList<Map<String, String>>()) //
-                    .uncheckedCast<List<Map<String, String>>>() //
-                    .forEach { m -> m.forEach { (k, v) -> modulesFirstVersion[k] = Version.parse(v) } }
+                val modulesFirstVersion = map.getOrDefault(MODULES_FIRST_VERSION_KEY, mutableMapOf<String, String>()) //
+                    .uncheckedCast<Map<String, String>>() //
+                    .mapValues { (_, v) -> Version.parse(v) } //
+                    .toMutableMap()
 
                 return Versions(versionsFile, Version.parse(versionToPublish), modulesFirstVersion)
             } catch (e: IOException) {
-                throw GradleException("Cannot get Copyright content", e)
+                throw GradleException("Cannot get versions content", e)
             }
         }
     }

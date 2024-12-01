@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import extension.BYOWaresExtension
 import task.GenerateJavaInfoFileTask
 import task.GeneratePackageInfoFileTask
 
@@ -59,31 +60,24 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-val groupIdProvider = project.providers.provider { "fr.byowares" }
-val baseProjectNameProvider = project.providers.provider { "game" }
-val versionFileProvider = project.providers.provider { projectDir.parentFile.resolve("versions.yml") }
-val copyrightFileProvider = project.providers.provider { projectDir.parentFile.resolve(".idea/copyright/BYOWares.xml") }
-
 val genJavaInfoFile = "generateJavaInfoFile"
 val genPkgInfoFile = "generatePackageInfoFile"
-
-val rs = project.properties["BUILD_SUFFIX"]?.toString() ?: if (project.hasProperty("BUILD_RELEASE")) "" else "SNAPSHOT"
-val suffix = if (rs.isEmpty() || rs.startsWith("-")) rs else "-$rs"
+val byoExt = rootProject.extensions.getByType(BYOWaresExtension::class.java)
 
 tasks.register<GeneratePackageInfoFileTask>(genPkgInfoFile) {
-    groupId = groupIdProvider
-    baseProjectName = baseProjectNameProvider
-    versionsFile = versionFileProvider
-    copyrightFile = copyrightFileProvider
+    groupId = byoExt.groupId
+    baseProjectName = byoExt.baseProjectName
+    versionsFile = byoExt.versionsFile.asFile
+    copyrightFile = byoExt.copyrightFile.asFile
 }
 
 tasks.register<GenerateJavaInfoFileTask>(genJavaInfoFile) {
-    groupId = groupIdProvider
-    baseProjectName = baseProjectNameProvider
-    versionsFile = versionFileProvider
-    copyrightFile = copyrightFileProvider
-    versionSuffix = project.providers.provider { suffix }
+    groupId = byoExt.groupId
+    baseProjectName = byoExt.baseProjectName
+    versionsFile = byoExt.versionsFile.asFile
+    copyrightFile = byoExt.copyrightFile.asFile
+    versionSuffix = byoExt.versionSuffix
 }
 
 tasks.named("compileJava") { dependsOn(genJavaInfoFile) }
-tasks.named("generateJavaInfoFile") { dependsOn(genPkgInfoFile) }
+tasks.named(genJavaInfoFile) { dependsOn(genPkgInfoFile) }
