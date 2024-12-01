@@ -19,6 +19,7 @@ import task.AbstractBumpVersionTask.BumpMajorVersionTask
 import task.AbstractBumpVersionTask.BumpMinorVersionTask
 import task.AbstractBumpVersionTask.BumpPatchVersionTask
 import task.SanitizeVersionsFileTask
+import task.UpdateSinceTagTask
 
 plugins {
     id("byowares")
@@ -37,4 +38,9 @@ tasks.register<BumpPatchVersionTask>("bumpPatchVersion") {
 }
 tasks.register<SanitizeVersionsFileTask>(SanitizeVersionsFileTask.SANITIZE_VERSIONS_FILE_TASK_NAME) {
     versionsFile = byoExt.versionsFile.asFile
+}
+tasks.register<UpdateSinceTagTask>(UpdateSinceTagTask.UPDATE_SINCE_TAG_TASK_NAME) {
+    versionsFile = byoExt.versionsFile.asFile
+    inputDir.set(project.layout.projectDirectory.dir("buildSrc").dir("src"))
+    updateVersionsFile.set(true)
 }

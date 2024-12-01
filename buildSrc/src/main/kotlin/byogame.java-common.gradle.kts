@@ -18,6 +18,7 @@ import extension.BYOWaresExtension
 import task.GenerateJavaInfoFileTask
 import task.GeneratePackageInfoFileTask
 import task.SanitizeVersionsFileTask
+import task.UpdateSinceTagTask
 
 plugins {
     // Apply the java Plugin to add support for Java.
@@ -78,6 +79,11 @@ tasks.register<GenerateJavaInfoFileTask>(genJavaInfoFile) {
     versionsFile = byoExt.versionsFile.asFile
     copyrightFile = byoExt.copyrightFile.asFile
     versionSuffix = byoExt.versionSuffix
+}
+
+tasks.register<UpdateSinceTagTask>(UpdateSinceTagTask.UPDATE_SINCE_TAG_TASK_NAME) {
+    versionsFile = byoExt.versionsFile.asFile
+    updateVersionsFile.set(true)
 }
 
 tasks.named("compileJava") { dependsOn(genJavaInfoFile) }
