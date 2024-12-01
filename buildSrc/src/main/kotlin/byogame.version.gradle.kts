@@ -18,6 +18,7 @@ import extension.BYOWaresExtension
 import task.AbstractBumpVersionTask.BumpMajorVersionTask
 import task.AbstractBumpVersionTask.BumpMinorVersionTask
 import task.AbstractBumpVersionTask.BumpPatchVersionTask
+import task.SanitizeVersionsFileTask
 
 plugins {
     id("byowares")
@@ -32,5 +33,8 @@ tasks.register<BumpMinorVersionTask>("bumpMinorVersion") {
     versionsFile = byoExt.versionsFile.asFile
 }
 tasks.register<BumpPatchVersionTask>("bumpPatchVersion") {
+    versionsFile = byoExt.versionsFile.asFile
+}
+tasks.register<SanitizeVersionsFileTask>(SanitizeVersionsFileTask.SANITIZE_VERSIONS_FILE_TASK_NAME) {
     versionsFile = byoExt.versionsFile.asFile
 }

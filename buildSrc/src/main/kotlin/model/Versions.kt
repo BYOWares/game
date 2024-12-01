@@ -24,12 +24,13 @@ import java.io.FileInputStream
 import java.io.FileWriter
 import java.io.IOException
 import java.nio.file.Files
+import java.util.*
 import java.util.function.Function
 
 class Versions private constructor(
     private val file: File,
     private var versionToPublish: Version,
-    private val modulesFirstVersion: MutableMap<String, Version>
+    private val modulesFirstVersion: SortedMap<String, Version>
 ) {
     fun getVersionToPublish(): Version {
         return versionToPublish
@@ -53,6 +54,12 @@ class Versions private constructor(
 
     private fun bumpVersion(updateFunction: Function<Version, Version>) {
         versionToPublish = updateFunction.apply(versionToPublish)
+        dumpFile()
+    }
+
+    fun sanitizeModules(modules: Set<String>) {
+        modules.forEach { m -> modulesFirstVersion.putIfAbsent(m, Version.UNKNOWN) }
+        modulesFirstVersion.keys.removeIf { m -> !modules.contains(m) }
         dumpFile()
     }
 
@@ -84,7 +91,7 @@ class Versions private constructor(
             try {
                 val versionsPath = versionsFile.toPath()
                 if (!Files.exists(versionsPath) || !Files.isRegularFile(versionsPath)) {
-                    return Versions(versionsFile, Version.UNKNOWN, HashMap())
+                    return Versions(versionsFile, Version.UNKNOWN, TreeMap())
                 }
 
                 var map: Map<String, Any>
@@ -93,7 +100,7 @@ class Versions private constructor(
                 val modulesFirstVersion = map.getOrDefault(MODULES_FIRST_VERSION_KEY, mutableMapOf<String, String>()) //
                     .uncheckedCast<Map<String, String>>() //
                     .mapValues { (_, v) -> Version.parse(v) } //
-                    .toMutableMap()
+                    .toSortedMap()
 
                 return Versions(versionsFile, Version.parse(versionToPublish), modulesFirstVersion)
             } catch (e: IOException) {

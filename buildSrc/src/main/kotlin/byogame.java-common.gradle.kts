@@ -17,6 +17,7 @@
 import extension.BYOWaresExtension
 import task.GenerateJavaInfoFileTask
 import task.GeneratePackageInfoFileTask
+import task.SanitizeVersionsFileTask
 
 plugins {
     // Apply the java Plugin to add support for Java.
@@ -81,3 +82,4 @@ tasks.register<GenerateJavaInfoFileTask>(genJavaInfoFile) {
 
 tasks.named("compileJava") { dependsOn(genJavaInfoFile) }
 tasks.named(genJavaInfoFile) { dependsOn(genPkgInfoFile) }
+tasks.named(genJavaInfoFile) { dependsOn(rootProject.tasks.named(SanitizeVersionsFileTask.SANITIZE_VERSIONS_FILE_TASK_NAME)) }
