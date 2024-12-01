@@ -13,24 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package task
 
+import model.Versions
 import java.io.File
 
 abstract class GeneratePackageInfoFileTask : AbstractGenerateInfoFileTask() {
+    init {
+        description = "Generate a package-info file with some information about the package."
+    }
 
     override val outputFile: File
         get() = resolveOutputFile("package-info")
 
-    override fun generateBody(moduleName: String): String {
+    override fun generateBody(versions: Versions): String {
         return """
             // Do not edit this generated file (see GeneratePackageInfoFileTask)
 
             /**
-             * Package containing information about the <b>$moduleName</b> module
+             * Information package about the <b>${moduleName()}</b> module
+             *
+             * @since ${versions.getModuleFirstVersion(project.name)}
              */
-            package $pkg;
+            package ${packageName()};
             """.trimIndent()
     }
 }

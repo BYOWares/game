@@ -17,7 +17,6 @@
 import task.GenerateJavaInfoFileTask
 import task.GeneratePackageInfoFileTask
 
-
 plugins {
     // Apply the java Plugin to add support for Java.
     java
@@ -60,31 +59,31 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.register<GeneratePackageInfoFileTask>("generatePackageInfoFile") {
-    group = "Build"
-    description = "Generate a file with some information about the library."
+val groupIdProvider = project.providers.provider { "fr.byowares" }
+val baseProjectNameProvider = project.providers.provider { "game" }
+val versionFileProvider = project.providers.provider { projectDir.parentFile.resolve("versions.yml") }
+val copyrightFileProvider = project.providers.provider { projectDir.parentFile.resolve(".idea/copyright/BYOWares.xml") }
 
-    val versionToRelease = "0.1.0"
-    val rawSuffix =
-        project.properties["BUILD_SUFFIX"]?.toString() ?: if (project.hasProperty("BUILD_RELEASE")) "" else "SNAPSHOT"
-    val suffix = if (rawSuffix.isEmpty() || rawSuffix.startsWith("-")) rawSuffix else "-$rawSuffix"
-    val projectVersion = "$versionToRelease$suffix"
-    version = projectVersion
-    copyrightFile = projectDir.parentFile.resolve(".idea/copyright/BYOWares.xml")
+val genJavaInfoFile = "generateJavaInfoFile"
+val genPkgInfoFile = "generatePackageInfoFile"
+
+val rs = project.properties["BUILD_SUFFIX"]?.toString() ?: if (project.hasProperty("BUILD_RELEASE")) "" else "SNAPSHOT"
+val suffix = if (rs.isEmpty() || rs.startsWith("-")) rs else "-$rs"
+
+tasks.register<GeneratePackageInfoFileTask>(genPkgInfoFile) {
+    groupId = groupIdProvider
+    baseProjectName = baseProjectNameProvider
+    versionsFile = versionFileProvider
+    copyrightFile = copyrightFileProvider
 }
 
-tasks.register<GenerateJavaInfoFileTask>("generateJavaInfoFile") {
-    group = "Build"
-    description = "Generate a file with some information about the library."
-
-    val versionToRelease = "0.1.0"
-    val rawSuffix =
-        project.properties["BUILD_SUFFIX"]?.toString() ?: if (project.hasProperty("BUILD_RELEASE")) "" else "SNAPSHOT"
-    val suffix = if (rawSuffix.isEmpty() || rawSuffix.startsWith("-")) rawSuffix else "-$rawSuffix"
-    val projectVersion = "$versionToRelease$suffix"
-    version = projectVersion
-    copyrightFile = projectDir.parentFile.resolve(".idea/copyright/BYOWares.xml")
+tasks.register<GenerateJavaInfoFileTask>(genJavaInfoFile) {
+    groupId = groupIdProvider
+    baseProjectName = baseProjectNameProvider
+    versionsFile = versionFileProvider
+    copyrightFile = copyrightFileProvider
+    versionSuffix = project.providers.provider { suffix }
 }
 
-tasks.named("compileJava") { dependsOn("generateJavaInfoFile") }
-tasks.named("generateJavaInfoFile") { dependsOn("generatePackageInfoFile") }
+tasks.named("compileJava") { dependsOn(genJavaInfoFile) }
+tasks.named("generateJavaInfoFile") { dependsOn(genPkgInfoFile) }

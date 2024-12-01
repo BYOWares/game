@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package task
 
+import model.Copyright
+import model.Versions
 import org.gradle.api.DefaultTask
+import org.gradle.api.plugins.BasePlugin
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
@@ -24,36 +27,47 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 abstract class AbstractGenerateInfoFileTask : DefaultTask() {
-
-    @Input
-    val pkg = "fr.byowares.game." + project.name.replace('-', '.') + ".info"
-
-    @Input
-    val infoFilePath = "src-generated/main/java/" + pkg.replace('.', '/')
+    init {
+        group = BasePlugin.BUILD_GROUP
+    }
 
     @get:Input
-    abstract var version: String
+    abstract var groupId: Provider<String>
+
+    @get:Input
+    abstract var baseProjectName: Provider<String>
 
     @get:InputFile
-    abstract var copyrightFile: File
+    abstract var copyrightFile: Provider<File>
+
+    @get:Input
+    abstract var versionsFile: Provider<File>
 
     @get:OutputFile
     abstract val outputFile: File
 
-    abstract fun generateBody(moduleName: String): String
+    abstract fun generateBody(versions: Versions): String
 
     fun resolveOutputFile(fileName: String): File {
-        return project.projectDir.resolve("$infoFilePath/$fileName.java")
+        return project.projectDir.resolve("src-generated/main/java/${packageName().replace('.', '/')}/$fileName.java")
+    }
+
+    fun moduleName(): String {
+        return "${groupId.get()}.${baseProjectName.get()}.${project.name.replace('-', '.')}"
+    }
+
+    fun packageName(): String {
+        return "${moduleName()}.info"
     }
 
     @TaskAction
     fun generateInfoFile() {
-        val moduleName = project.name.replace('-', '.')
         val indent = "            "
-        val copyright = Copyright.extractCopyright(copyrightFile).asJavaDoc(indent)
+        val copyright = Copyright.extractCopyright(copyrightFile.get()).asJavaDoc(indent)
+        val versions = Versions.parse(versionsFile.get())
         val s = System.lineSeparator()
         // Starting by an empty new line to have a clean indentation.
-        val body = (s + generateBody(moduleName)).lines().joinToString(s) { l -> if (l.isEmpty()) l else "$indent$l" }
+        val body = (s + generateBody(versions)).lines().joinToString(s) { l -> if (l.isEmpty()) l else "$indent$l" }
         outputFile.parentFile.mkdirs()
         outputFile.createNewFile()
         outputFile.writeText(

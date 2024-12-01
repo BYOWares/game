@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package task
 
+import model.GitInfo
+import model.Versions
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import java.io.File
 import java.time.Instant
 
 abstract class GenerateJavaInfoFileTask : AbstractGenerateInfoFileTask() {
+    init {
+        description = "Generate a file with some information about the library."
+    }
 
     @Input
     val className = project.name.split("-").stream() //
@@ -34,20 +39,25 @@ abstract class GenerateJavaInfoFileTask : AbstractGenerateInfoFileTask() {
     @Input
     val revision = GitInfo.gitInfo(project.gradle.rootProject.rootDir).revision
 
+    @get:Input
+    abstract var versionSuffix: Provider<String>
+
     override val outputFile: File
         get() = resolveOutputFile(className)
 
-    override fun generateBody(moduleName: String): String {
+    override fun generateBody(versions: Versions): String {
         return """
-            // Do not edit this generated file (see GenerateInfoFileTask)
-            package $pkg;
+            // Do not edit this generated file (see GenerateJavaInfoFileTask)
+            package ${packageName()};
 
             /**
-             * Information related to the <b>$moduleName</b> module
+             * Information related to the <b>${moduleName()}</b> module
+             *
+             * @since ${versions.getModuleFirstVersion(project.name)}
              */
             public final class $className {
                 /** Version of the module */
-                public static final String VERSION = "$version";
+                public static final String VERSION = "${versions.getVersionToPublish()}${versionSuffix.get()}";
                 /** Module build timestamp in milliseconds */
                 public static final String BUILD_TIMESTAMP = "$timestamp";
                 /** Current revision while building the module */

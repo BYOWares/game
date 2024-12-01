@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package task
+package model
 
 import org.gradle.api.GradleException
 import org.gradle.api.logging.Logging
@@ -103,9 +102,8 @@ class GitInfo private constructor(
                         val refsDir = gitDir.resolve("refs").toFile()
                         if (refsDir.exists()) {
                             val ls = System.lineSeparator()
-                            val foundRefs = Arrays.stream(refsDir.listFiles()).map { f: File -> f.name }.collect(
-                                Collectors.joining(ls)
-                            )
+                            val foundRefs = Arrays.stream(refsDir.listFiles()).map { f: File -> f.name } //
+                                .collect(Collectors.joining(ls))
                             Logging.getLogger(GitInfo::class.java).error("Found git refs$ls$foundRefs")
                         } else {
                             Logging.getLogger(GitInfo::class.java).error("No git refs dir found")
