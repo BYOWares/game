@@ -15,6 +15,9 @@
  */
 package model
 
+/**
+ * @since XXX
+ */
 class Version private constructor(
     private val major: Int,
     private val minor: Int,

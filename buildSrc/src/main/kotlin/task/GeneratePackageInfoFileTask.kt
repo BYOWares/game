@@ -18,6 +18,9 @@ package task
 import model.Versions
 import java.io.File
 
+/**
+ * @since XXX
+ */
 abstract class GeneratePackageInfoFileTask : AbstractGenerateInfoFileTask() {
     init {
         description = "Generate a package-info file with some information about the package."

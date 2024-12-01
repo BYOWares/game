@@ -24,6 +24,9 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
+/**
+ * @since XXX
+ */
 abstract class SanitizeVersionsFileTask : DefaultTask() {
 
     init {

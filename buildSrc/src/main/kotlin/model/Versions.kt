@@ -27,6 +27,9 @@ import java.nio.file.Files
 import java.util.*
 import java.util.function.Function
 
+/**
+ * @since XXX
+ */
 class Versions private constructor(
     private val file: File,
     private var versionToPublish: Version,

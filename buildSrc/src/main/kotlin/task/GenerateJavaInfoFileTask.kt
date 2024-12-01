@@ -23,6 +23,9 @@ import org.gradle.api.tasks.Internal
 import java.io.File
 import java.time.Instant
 
+/**
+ * @since XXX
+ */
 abstract class GenerateJavaInfoFileTask : AbstractGenerateInfoFileTask() {
     init {
         description = "Generate a file with some information about the library."

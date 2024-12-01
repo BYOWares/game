@@ -26,6 +26,9 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
+/**
+ * @since XXX
+ */
 abstract class AbstractGenerateInfoFileTask : DefaultTask() {
     init {
         group = BasePlugin.BUILD_GROUP
