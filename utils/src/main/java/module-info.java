@@ -19,4 +19,5 @@
  */
 module fr.byowares.game.utils {
     exports fr.byowares.game.utils.hashcodes;
+    exports fr.byowares.game.utils.info;
 }

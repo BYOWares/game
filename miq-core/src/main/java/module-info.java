@@ -19,6 +19,7 @@
  */
 module fr.byowares.game.miq.core {
     exports fr.byowares.game.miq.core;
+    exports fr.byowares.game.miq.core.info;
 
     requires fr.byowares.game.utils;
 }
