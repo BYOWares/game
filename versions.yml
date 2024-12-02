@@ -1,0 +1,4 @@
+versionToPublish: 0.1.0
+modulesFirstVersion:
+  miq-core: XXX
+  utils: XXX
