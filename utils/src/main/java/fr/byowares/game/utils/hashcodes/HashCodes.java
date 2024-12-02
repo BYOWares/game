@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.byowares.game.utils;
+package fr.byowares.game.utils.hashcodes;
 
 /**
  * Utility class to enhance performances of {@link java.util.Objects#hash(Object...)} methods.

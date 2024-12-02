@@ -20,7 +20,5 @@ plugins {
 }
 
 rootProject.name = "game"
-include("app")
-include("list")
-include("game-utils")
 include("miq-core")
+include("utils")

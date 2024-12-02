@@ -17,4 +17,6 @@
 /**
  * @since XXX
  */
-package fr.byowares.list;
+module fr.byowares.game.utils {
+    exports fr.byowares.game.utils.hashcodes;
+}

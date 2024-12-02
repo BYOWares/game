@@ -17,8 +17,8 @@
 /**
  * @since XXX
  */
-module miq.core {
+module fr.byowares.game.miq.core {
     exports fr.byowares.game.miq.core;
 
-    requires game.utils;
+    requires fr.byowares.game.utils;
 }

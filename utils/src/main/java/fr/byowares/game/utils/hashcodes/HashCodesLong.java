@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.byowares.game.utils;
+package fr.byowares.game.utils.hashcodes;
 
 /**
  * Utility class to enhance performances of {@link java.util.Objects#hash(Object...)} methods.
@@ -23,7 +23,7 @@ package fr.byowares.game.utils;
 public final class HashCodesLong {
 
     private HashCodesLong() {
-        throw new AssertionError("No fr.byowares.game.utils.HashCodesLong instances for you!");
+        throw new AssertionError("No fr.byowares.game.utils.hashcodes.HashCodesLong instances for you!");
     }
 
     private static int hashAux(

@@ -13,4 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.byowares.app;
+
+/**
+ * Collection of method used for hashcode computation
+ *
+ * @since XXX
+ */
+package fr.byowares.game.utils.hashcodes;

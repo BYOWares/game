@@ -19,5 +19,5 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":game-utils"))
+    implementation(project(":utils"))
 }

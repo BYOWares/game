@@ -15,7 +15,7 @@
  */
 package fr.byowares.game.miq.core;
 
-import fr.byowares.game.utils.HashCodesLong;
+import fr.byowares.game.utils.hashcodes.HashCodesLong;
 
 /**
  * Representation of a time range.
@@ -32,8 +32,8 @@ public class Range
             final long start,
             final long end
     ) {
-        if (start > end) throw new IllegalArgumentException(
-                "start (" + start + ") must be inferior or equals to end ( " + end + ")");
+        if (start > end)
+            throw new IllegalArgumentException("start (" + start + ") must be inferior or equals to end (" + end + ")");
         this.start = start;
         this.end = end;
     }
@@ -84,5 +84,10 @@ public class Range
     @Override
     public boolean equals(final Object o) {
         return o instanceof Range && this.compareTo((Range) o) == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + this.start + ", " + this.end + "]";
     }
 }
