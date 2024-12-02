@@ -18,15 +18,27 @@ package extension
 import org.gradle.api.Project
 import javax.inject.Inject
 
+/**
+ * Configuration shared throughout all plugins and tasks
+ *
+ * @since XXX
+ */
 abstract class BYOWaresExtension @Inject constructor(project: Project) {
-
     private val objects = project.objects
 
+    /** The group identifier used to start the package (by default “fr.byowares”) */
     val groupId = objects.property(String::class.java).convention("fr.byowares")
+
+    /** The name of the root project (defaults to “rootProject.name”)  */
     val baseProjectName = objects.property(String::class.java).convention(project.rootProject.name)
+
+    /** The suffix used for the current version (-SNAPSHOT, -rc1, etc.) */
     val versionSuffix = objects.property(String::class.java)
 
+    /** The file containing all versions */
     val versionsFile = objects.fileProperty()
+
+    /** The intellij configuration file containing the copyright */
     val copyrightFile = objects.fileProperty()
 
     companion object {

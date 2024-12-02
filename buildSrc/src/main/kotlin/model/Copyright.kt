@@ -25,7 +25,7 @@ import java.io.IOException
 import java.nio.file.Files
 
 /**
- * Get the copyright from Intellij project configuration
+ * The copyright text to write as a header in every files
  *
  * @since XXX
  */
@@ -43,6 +43,11 @@ class Copyright private constructor(
     companion object {
         private val UNKNOWN = Copyright("UNKNOWN")
 
+        /**
+         * Read the file, and extract the copyright information
+         *
+         * @param copyrightFile the file containing the copyright text
+         */
         fun extractCopyright(copyrightFile: File): Copyright {
             try {
                 val copyrightPath = copyrightFile.toPath()

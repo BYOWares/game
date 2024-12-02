@@ -21,28 +21,23 @@ import task.SanitizeVersionsFileTask
 import task.UpdateSinceTagTask
 
 plugins {
-    // Apply the java Plugin to add support for Java.
     java
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
 dependencies {
     constraints {
-        // Define dependency versions as constraints
         implementation("org.apache.commons:commons-text:1.12.0")
     }
 
-    // Use JUnit Jupiter for testing.
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
-
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-// Apply a specific Java toolchain to ease working on different environments.
+// Java toolchain to ease working on different environments.
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
@@ -86,6 +81,6 @@ tasks.register<UpdateSinceTagTask>(UpdateSinceTagTask.UPDATE_SINCE_TAG_TASK_NAME
     updateVersionsFile.set(true)
 }
 
-tasks.named("compileJava") { dependsOn(genJavaInfoFile) }
+tasks.named(JavaPlugin.COMPILE_JAVA_TASK_NAME) { dependsOn(genJavaInfoFile) }
 tasks.named(genJavaInfoFile) { dependsOn(genPkgInfoFile) }
 tasks.named(genJavaInfoFile) { dependsOn(rootProject.tasks.named(SanitizeVersionsFileTask.SANITIZE_VERSIONS_FILE_TASK_NAME)) }

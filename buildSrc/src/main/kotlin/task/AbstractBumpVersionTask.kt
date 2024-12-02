@@ -42,7 +42,7 @@ abstract class AbstractBumpVersionTask : DefaultTask() {
 
     abstract class BumpMajorVersionTask : AbstractBumpVersionTask() {
         init {
-            description = "Increase the major version to publish by 1 (resets minor and patch to 0)."
+            description = "Increase the major version to publish by 1 (reset minor and patch to 0)."
         }
 
         override fun bump(versions: Versions) {
@@ -52,7 +52,7 @@ abstract class AbstractBumpVersionTask : DefaultTask() {
 
     abstract class BumpMinorVersionTask : AbstractBumpVersionTask() {
         init {
-            description = "Increase the minor version to publish by 1 (leaves major untouched, and resets patch to 0)."
+            description = "Increase the minor version to publish by 1 (leave major untouched, and reset patch to 0)."
         }
 
         override fun bump(versions: Versions) {
@@ -62,7 +62,7 @@ abstract class AbstractBumpVersionTask : DefaultTask() {
 
     abstract class BumpPatchVersionTask : AbstractBumpVersionTask() {
         init {
-            description = "Increase the patch version to publish by 1 (leaves major and minor untouched)."
+            description = "Increase the patch version to publish by 1 (leave major and minor untouched)."
         }
 
         override fun bump(versions: Versions) {

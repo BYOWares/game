@@ -16,6 +16,8 @@
 package model
 
 /**
+ * Representation of a version
+ *
  * @since XXX
  */
 class Version private constructor(
@@ -37,14 +39,29 @@ class Version private constructor(
         return 0
     }
 
+    /**
+     * Increase the major version by 1 and reset the minor and patch versions to 0.
+     *
+     * @return the new version
+     */
     fun bumpNextMajor(): Version {
         return Version(major + 1, 0, 0)
     }
 
+    /**
+     * Increase the minor version by 1, leave the major version untouched and reset the patch version to 0.
+     *
+     * @return the new version
+     */
     fun bumpNextMinor(): Version {
         return Version(major, minor + 1, 0)
     }
 
+    /**
+     * Increase the patch version by 1, leave the major and minor versions untouched.
+     *
+     * @return the new version
+     */
     fun bumpNextPatch(): Version {
         return Version(major, minor, patch + 1)
     }
@@ -54,9 +71,17 @@ class Version private constructor(
     }
 
     companion object {
+        /** The version represented by XXX, which means the next version to publish */
         val UNKNOWN = Version(-1, -1, -1)
         const val UNKNOWN_STR = "XXX"
 
+        /**
+         * Convert a String to a version It accepts two formats:
+         *  * XXX : which designs the not yet known version;
+         *  * [0-9]+.[0-9]+.[0-9]+ : for valid versions.
+         *
+         * @param value the String to convert
+         */
         fun parse(value: String): Version {
             if (value == UNKNOWN_STR) return UNKNOWN
             val first: Int = value.indexOf('.')

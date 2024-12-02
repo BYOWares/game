@@ -28,6 +28,10 @@ import java.util.*
 import java.util.function.Function
 
 /**
+ * Model of a versions file, which contains:
+ * * the next version to publish;
+ * * the first version for each module.
+ *
  * @since XXX
  */
 class Versions private constructor(
@@ -39,18 +43,33 @@ class Versions private constructor(
         return versionToPublish
     }
 
+    /**
+     * @return the first version associated to the module (the project.name)
+     */
     fun getModuleFirstVersion(module: String): Version? {
         return modulesFirstVersion[module]
     }
 
+    /**
+     * Increase major version of the next version to publish, and update the versions file.
+     * @see Version.bumpNextMajor
+     */
     fun bumpNextMajorVersionAndDumpFile() {
         bumpVersion(Version::bumpNextMajor)
     }
 
+    /**
+     * Increase minor version of the next version to publish, and update the versions file.
+     * @see Version.bumpNextMinor
+     */
     fun bumpNextMinorVersionAndDumpFile() {
         bumpVersion(Version::bumpNextMinor)
     }
 
+    /**
+     * Increase patch version of the next version to publish, and update the versions file/
+     * @see Version.bumpNextPatch
+     */
     fun bumpNextPatchVersionAndDumpFile() {
         bumpVersion(Version::bumpNextPatch)
     }
@@ -60,6 +79,10 @@ class Versions private constructor(
         dumpFile()
     }
 
+    /**
+     * Add missing
+     * @param modules the complete list of modules (projects' name)
+     */
     fun sanitizeModules(modules: Set<String>) {
         modules.forEach { m -> modulesFirstVersion.putIfAbsent(m, Version.UNKNOWN) }
         modulesFirstVersion.keys.removeIf { m -> !modules.contains(m) }
@@ -90,6 +113,11 @@ class Versions private constructor(
         private const val VERSION_TO_PUBLISH_KEY = "versionToPublish"
         private const val MODULES_FIRST_VERSION_KEY = "modulesFirstVersion"
 
+        /**
+         * Parse the file and return and object representing it
+         *
+         * @param versionsFile the versions file to parse
+         */
         fun parse(versionsFile: File): Versions {
             try {
                 val versionsPath = versionsFile.toPath()

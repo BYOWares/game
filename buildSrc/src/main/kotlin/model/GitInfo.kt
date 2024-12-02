@@ -30,7 +30,7 @@ import java.util.regex.Pattern
 import java.util.stream.Collectors
 
 /**
- * Get the current revision from the git files directly
+ * The current Git revision
  *
  * @since XXX
  */
@@ -46,7 +46,13 @@ class GitInfo private constructor(
         private const val REF: String = "ref:"
         private const val PACKED_REFS: String = "packed-refs"
 
-        /* See https://git-scm.com/docs/gitrepository-layout and https://git-scm.com/docs/git-worktree. */
+        /**
+         * Extract the git current revision
+         *
+         * See https://git-scm.com/docs/gitrepository-layout and https://git-scm.com/docs/git-worktree.
+         *
+         * @param rootDir the root directory of the git project
+         */
         fun gitInfo(rootDir: File): GitInfo {
             try {
                 val dotGit = rootDir.toPath().resolve(".git")
