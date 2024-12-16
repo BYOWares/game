@@ -15,14 +15,8 @@
  */
 
 /**
+ * Offers the ability to control the volume.
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-
-    requires fr.byowares.game.utils;
-    requires java.desktop;
-}
+package fr.byowares.game.miq.core.model.volume;

@@ -13,16 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model.volume;
 
-/**
- * @since XXX
- */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
+import javax.sound.sampled.BooleanControl;
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
+public abstract class MuteController
+        implements SoundController {
+
+    private final BooleanControl muteControl;
+
+    MuteController(final BooleanControl muteControl) {
+        this.muteControl = muteControl;
+    }
+
+    @Override
+    public void mute() {
+        this.muteControl.setValue(true);
+    }
+
+    @Override
+    public void unmute() {
+        this.muteControl.setValue(false);
+    }
 }

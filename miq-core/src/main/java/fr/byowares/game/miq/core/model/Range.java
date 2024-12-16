@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.byowares.game.miq.core;
+package fr.byowares.game.miq.core.model;
 
 import fr.byowares.game.utils.hashcodes.HashCodesLong;
 
 /**
- * Representation of a time range.
+ * Representation of a range (both inclusive boundaries).
  *
  * @since XXX
  */
@@ -39,13 +39,12 @@ public class Range
     }
 
     /**
-     * @param start the starting time of the range
-     * @param end   the ending time of the range
+     * @param start The start of the range.
+     * @param end   The end of the range.
      *
-     * @return the {@link fr.byowares.game.miq.core.Range} defined by the two given time
+     * @return The {@link Range} defined by the two given values.
      *
-     * @throws java.lang.IllegalArgumentException if and only if the ending time is strictly lower than the starting
-     *                                            time
+     * @throws java.lang.IllegalArgumentException If and only if the end is strictly lower than the start.
      */
     public static Range fromAbsoluteTimes(
             final long start,
@@ -55,25 +54,18 @@ public class Range
     }
 
     /**
-     * @param start    the starting time of the range
-     * @param duration the duration of the range
+     * @param start start of the range
+     * @param width width of the range
      *
-     * @return the {@link fr.byowares.game.miq.core.Range} starting at {@code start} and lasting {@code duration}
+     * @return The {@link Range} starting at {@code start} and ending at {@code start + width}.
      *
-     * @throws java.lang.IllegalArgumentException if and only if the duration is negative
+     * @throws java.lang.IllegalArgumentException If and only if the width is negative.
      */
     public static Range fromRelativeTimes(
             final long start,
-            final long duration
+            final long width
     ) {
-        return new Range(start, start + duration);
-    }
-
-    @Override
-    public int compareTo(final Range o) {
-        final int res = Long.compare(this.start, o.start);
-        if (res != 0) return res;
-        return Long.compare(this.end, o.end);
+        return new Range(start, start + width);
     }
 
     @Override
@@ -84,6 +76,13 @@ public class Range
     @Override
     public boolean equals(final Object o) {
         return o instanceof Range && this.compareTo((Range) o) == 0;
+    }
+
+    @Override
+    public int compareTo(final Range o) {
+        final int res = Long.compare(this.start, o.start);
+        if (res != 0) return res;
+        return Long.compare(this.end, o.end);
     }
 
     @Override

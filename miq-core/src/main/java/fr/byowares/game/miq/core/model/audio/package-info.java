@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.byowares.game.miq.core;
 
 /**
- * @param range The period during which the line is sung
- * @param line  The line (words) sung during that range
+ * Offers the ability to control audio (play, stop, change volume).
  *
  * @since XXX
  */
-public record TimeCodedLine(Range range, CharSequence line)
-        implements Comparable<TimeCodedLine> {
-
-    @Override
-    public int compareTo(final TimeCodedLine o) {
-        return this.range.compareTo(o.range);
-    }
-}
+package fr.byowares.game.miq.core.model.audio;

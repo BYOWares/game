@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model;
 
 /**
+ * @param range The period during which the line is sung
+ * @param line  The line (words) sung during that range
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
+public record TimeCodedLine(Range range, CharSequence line)
+        implements Comparable<TimeCodedLine> {
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
+    @Override
+    public int compareTo(final TimeCodedLine o) {
+        return this.range.compareTo(o.range);
+    }
 }

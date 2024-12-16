@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model.audio;
 
 /**
+ * A source that can be converted into an {@link fr.byowares.game.miq.core.model.audio.AudioPlayer}.
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
+@FunctionalInterface
+public interface AudioSource {
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
+    /**
+     * @return A player to play the source defined.
+     */
+    AudioPlayer load();
 }

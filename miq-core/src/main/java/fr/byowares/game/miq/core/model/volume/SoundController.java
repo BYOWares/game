@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model.volume;
 
 /**
+ * Basic sound controls over an audio.
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
+public interface SoundController {
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
+    /**
+     * @param target The volume we want to set.
+     */
+    void setVolume(Volume target);
+
+    /**
+     * To mute the audio. It leaves untouched the volume previously set.
+     */
+    void mute();
+
+    /**
+     * To unmute the audio. It leaves untouched the volume previously set.
+     */
+    void unmute();
 }
