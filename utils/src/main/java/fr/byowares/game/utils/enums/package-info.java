@@ -15,10 +15,8 @@
  */
 
 /**
+ * Collections of enums.
+ *
  * @since XXX
  */
-module fr.byowares.game.utils {
-    exports fr.byowares.game.utils.hashcodes;
-    exports fr.byowares.game.utils.info;
-    exports fr.byowares.game.utils.enums;
-}
+package fr.byowares.game.utils.enums;
