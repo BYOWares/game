@@ -20,6 +20,9 @@
         </value>
       </option>
       <option name="WRAP_SEMICOLON_AFTER_CALL_CHAIN" value="true" />
+      <option name="RECORD_COMPONENTS_WRAP" value="2" />
+      <option name="NEW_LINE_AFTER_LPAREN_IN_RECORD_HEADER" value="true" />
+      <option name="RPAREN_ON_NEW_LINE_IN_RECORD_HEADER" value="true" />
       <option name="MULTI_CATCH_TYPES_WRAP" value="2" />
       <option name="JD_ADD_BLANK_AFTER_PARM_COMMENTS" value="true" />
       <option name="JD_ADD_BLANK_AFTER_RETURN" value="true" />
