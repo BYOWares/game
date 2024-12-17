@@ -13,17 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model.lyrics;
 
 /**
+ * A line that is associated with one or several singers
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-    exports fr.byowares.game.miq.core.model.lyrics;
+public class ComposedLine {
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
+    private final SingerLine[] underlyingLines;
+
+    private ComposedLine(
+            final SingerLine[] lines
+    ) {
+        if (lines == null || lines.length == 0) throw new IllegalArgumentException(); // TODO
+        this.underlyingLines = lines;
+    }
+
+    private SingerLine[] getUnderlyingLines() {
+        return this.underlyingLines;
+    }
 }

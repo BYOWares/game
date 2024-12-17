@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model.lyrics;
+
+import java.util.List;
 
 /**
+ * A source that can provide lyrics in the simplest format.
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-    exports fr.byowares.game.miq.core.model.lyrics;
+@FunctionalInterface
+public interface LyricsSource {
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
+    /**
+     * @return All lines trimmed with no consecutive blank lines.
+     */
+    List<CharSequence> getLines();
 }

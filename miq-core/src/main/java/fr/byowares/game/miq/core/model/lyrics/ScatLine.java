@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.byowares.game.miq.core.model;
+package fr.byowares.game.miq.core.model.lyrics;
 
 /**
- * @param range The period during which the line is sung
- * @param line  The line (words) sung during that range
+ * A line made of non-lexical vocals (e.g.: La la la lala, la la la lala).
  *
  * @since XXX
  */
-public record TimeCodedLine(Range range, CharSequence line)
-        implements Comparable<TimeCodedLine> {
+public class ScatLine
+        extends SimpleLine {
+
+    /**
+     * @param elements The elements making the
+     */
+    ScatLine(final LineElement[] elements) {
+        super(elements);
+    }
 
     @Override
-    public int compareTo(final TimeCodedLine o) {
-        return this.range.compareTo(o.range);
+    public boolean isScat() {
+        return true;
     }
 }

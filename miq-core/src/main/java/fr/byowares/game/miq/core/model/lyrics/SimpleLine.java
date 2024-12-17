@@ -13,17 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model.lyrics;
+
+import java.util.Set;
 
 /**
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-    exports fr.byowares.game.miq.core.model.lyrics;
+public class SimpleLine
+        implements Line {
+    private final LineElement[] elements;
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
+    SimpleLine(final LineElement[] elements) {
+        this.elements = elements;
+    }
+
+    @Override
+    public boolean hasSingers() {
+        return false;
+    }
+
+    @Override
+    public Set<Singer> getSingers() {
+        return Set.of();
+    }
+
+    @Override
+    public boolean isChorus() {
+        return false;
+    }
+
+    @Override
+    public boolean isScat() {
+        return false;
+    }
 }

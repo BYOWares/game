@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model.lyrics;
+
+import fr.byowares.game.miq.core.model.Range;
 
 /**
+ * @param line  The line (words) sung during that range
+ * @param range The period during which the line is sung
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-    exports fr.byowares.game.miq.core.model.lyrics;
+public record TimeCodedVerse(SingerLine line, Range range)
+        implements Comparable<TimeCodedVerse> {
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
+    @Override
+    public int compareTo(final TimeCodedVerse o) {
+        return this.range.compareTo(o.range);
+    }
 }

@@ -13,17 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model.lyrics;
+
+import fr.byowares.game.miq.core.option.LyricsDisplayOptions;
 
 /**
+ * @param word
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-    exports fr.byowares.game.miq.core.model.lyrics;
+public record Word(CharSequence word)
+        implements LineElement {
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
+    @Override
+    public int length(final LyricsDisplayOptions options) {
+        return this.word.length();
+    }
+
+    @Override
+    public boolean isWord() {
+        return true;
+    }
 }

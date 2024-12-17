@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model.lyrics;
+
+import fr.byowares.game.miq.core.option.LyricsDisplayOptions;
 
 /**
+ * An element of a line (can be a word, or a punctuation).
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-    exports fr.byowares.game.miq.core.model.lyrics;
+public interface LineElement {
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
+    /**
+     * @param options The set of options used to display the lyrics.
+     *
+     * @return The count of char needed to display this element
+     */
+    int length(LyricsDisplayOptions options);
+
+    /**
+     * @return {@code true} if the element is a word (and therefore can be guessed), {@code false} otherwise.
+     */
+    boolean isWord();
 }

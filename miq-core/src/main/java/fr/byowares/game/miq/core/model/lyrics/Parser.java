@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model.lyrics;
 
-/**
- * @since XXX
- */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-    exports fr.byowares.game.miq.core.model.lyrics;
+import fr.byowares.game.miq.core.option.LyricsParsingOption;
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
+public class Parser {
+
+    void parse(LyricsParsingOption option) {
+
+    }
 }
