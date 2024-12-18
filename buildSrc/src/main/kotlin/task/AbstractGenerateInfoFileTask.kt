@@ -43,7 +43,7 @@ abstract class AbstractGenerateInfoFileTask : DefaultTask() {
     @get:InputFile
     abstract var copyrightFile: Provider<File>
 
-    @get:Input
+    @get:InputFile
     abstract var versionsFile: Provider<File>
 
     @get:OutputFile

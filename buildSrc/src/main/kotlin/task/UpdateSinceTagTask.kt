@@ -42,8 +42,9 @@ abstract class UpdateSinceTagTask : DefaultTask() {
     }
 
     @get:InputDirectory
-    val inputDir: DirectoryProperty =
-        project.objects.directoryProperty().convention(project.layout.projectDirectory.dir("src"))
+    val inputDir: DirectoryProperty = project.objects.directoryProperty().convention(
+        project.layout.projectDirectory.dir("src")
+    )
 
     @get:Input
     val updateVersionsFile: Property<Boolean> = project.objects.property(Boolean::class.java)
@@ -57,7 +58,10 @@ abstract class UpdateSinceTagTask : DefaultTask() {
         val versionToPublish = versions.getVersionToPublish()
         inputDir.get().asFile.walk().forEach { f ->
             if (f.isDirectory) return@forEach
-            val updatedContent = f.readText().replace("@since ${Version.UNKNOWN}", "@since $versionToPublish")
+            val text = f.readText()
+            val toReplace = "@since ${Version.UNKNOWN}"
+            if (!text.contains(toReplace)) return@forEach
+            val updatedContent = f.readText().replace(toReplace, "@since $versionToPublish")
             f.writeText(updatedContent)
         }
         if (updateVersionsFile.get()) versions.updateUnknownVersionToNextVersionAndDumpFile()

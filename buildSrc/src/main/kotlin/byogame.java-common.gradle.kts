@@ -73,7 +73,7 @@ tasks.register<GenerateJavaInfoFileTask>(genJavaInfoFile) {
 
 tasks.register<UpdateSinceTagTask>(UpdateSinceTagTask.UPDATE_SINCE_TAG_TASK_NAME) {
     versionsFile = byoExt.versionsFile.asFile
-    updateVersionsFile.set(true)
+    updateVersionsFile.set(false)
 }
 
 tasks.register<CopyLog4JFileTask>(copyLog4J2Conf) {
