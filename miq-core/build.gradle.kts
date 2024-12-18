@@ -20,4 +20,10 @@ plugins {
 
 dependencies {
     implementation(project(":utils"))
+
+    implementation(libs.bundles.log4jImpl)
+    runtimeOnly(libs.bundles.log4jRun)
+
+    testImplementation(libs.bundles.junitImpl)
+    testRuntimeOnly(libs.bundles.junitRun)
 }

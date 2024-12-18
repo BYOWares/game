@@ -18,6 +18,7 @@
  * @since XXX
  */
 module fr.byowares.game.utils {
+    requires org.slf4j;
     exports fr.byowares.game.utils.hashcodes;
     exports fr.byowares.game.utils.info;
     exports fr.byowares.game.utils.enums;

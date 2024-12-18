@@ -26,4 +26,5 @@ module fr.byowares.game.miq.core {
 
     requires fr.byowares.game.utils;
     requires java.desktop;
+    requires org.slf4j;
 }
