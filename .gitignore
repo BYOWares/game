@@ -37,4 +37,5 @@ build
 
 # idea specifics
 .idea/workspace.xml
+.idea/modules*
 
