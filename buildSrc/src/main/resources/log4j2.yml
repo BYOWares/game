@@ -1,0 +1,79 @@
+Configuration:
+  Properties:
+    Property:
+      - name: "JSONLayout"
+        value: "classpath:EcsLayout.json"
+        # EcsLayout.json  : The default event template modelling the Elastic Common Schema (ECS) specification
+        # GelfLayout.json : Models the Graylog Extended Log Format (GELF) payload specification with additional
+        #                   _thread and _logger fields.
+        # GcpLayout.json  : Models the structure described by Google Cloud Platform structured logging with additional
+        #                   _thread, _logger and _exception fields. The exception trace, if any, is written to the
+        #                   _exception field as well as the message field – the former is useful for explicitly
+        #                   searching/analyzing structured exception information, while the latter is Google’s expected
+        #                   place for the exception, and integrates with Google Error Reporting.
+      - name: "pattern"
+        value: "%d{yyyy-MM-dd'T'HH:mm:ss.nnnnnn}%d{XXX} [%-5p][%t][%c{0}] %m%n"
+      - name: "logPath"
+        value: "log/PROJECT_NAME"
+      - name: "rollingSuffix"
+        value: "%d{yyyyMMdd-HH}.%i.gz"
+      - name: "maxFileSize"
+        value: "10MB"
+      - name: "maxRandomDelay"
+        value: "30"
+
+  Appenders:
+    Console:
+      - name: "STD_OUT"
+        target: "SYSTEM_OUT"
+        LevelRangeFilter:
+          minLevel: "INFO"
+        PatternLayout:
+          pattern: "${pattern}"
+      - name: "STD_ERR"
+        target: "SYSTEM_ERR"
+        ThresholdFilter:
+          level: "WARN"
+        PatternLayout:
+          pattern: "${pattern}"
+
+    RollingFile:
+      - name: "MAIN_FILE"
+        append: true
+        createOnDemand: true
+        filename: "${logPath}-all.log"
+        filePattern: "${logPath}-all-${rollingSuffix}"
+        JsonTemplateLayout:
+          eventTemplateUri: "${JSONLayout}"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: "${maxFileSize}"
+          TimeBasedTriggeringPolicy:
+            maxRandomDelay: "${maxRandomDelay}"
+        DefaultRolloverStrategy:
+          fileIndex: "nomax"
+
+      - name: "WARN_ERROR_FILE"
+        append: true
+        createOnDemand: true
+        filename: "${logPath}-warn-error.log"
+        filePattern: "${logPath}-warn-error-${rollingSuffix}"
+        JsonTemplateLayout:
+          eventTemplateUri: "${JSONLayout}"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: "${maxFileSize}"
+          TimeBasedTriggeringPolicy:
+            maxRandomDelay: "${maxRandomDelay}"
+        DefaultRolloverStrategy:
+          fileIndex: "nomax"
+
+  Loggers:
+    Root:
+      level: "INFO"
+      AppenderRef:
+        - ref: "STD_OUT"
+        - ref: "STD_ERR"
+        - ref: "MAIN_FILE"
+        - ref: "WARN_ERROR_FILE"
+          level: "WARN"

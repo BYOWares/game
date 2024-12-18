@@ -27,4 +27,5 @@ byowares {
     versionSuffix.set(project.providers.provider { suffix })
     versionsFile.set(rootProject.layout.projectDirectory.file("versions.yml"))
     copyrightFile.set(rootProject.layout.projectDirectory.file(".idea/copyright/BYOWares.xml"))
+    log4J2ConfigFile.set(rootProject.layout.projectDirectory.file("buildSrc/src/main/resources/log4j2.yml"))
 }

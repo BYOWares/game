@@ -15,6 +15,7 @@
  */
 
 import extension.BYOWaresExtension
+import task.CopyLog4JFileTask
 import task.GenerateJavaInfoFileTask
 import task.GeneratePackageInfoFileTask
 import task.SanitizeVersionsFileTask
@@ -59,6 +60,7 @@ tasks.named<Test>("test") {
 
 val genJavaInfoFile = "generateJavaInfoFile"
 val genPkgInfoFile = "generatePackageInfoFile"
+val copyLog4J2Conf = "copyLog4J2Conf"
 val byoExt = rootProject.extensions.getByType(BYOWaresExtension::class.java)
 
 tasks.register<GeneratePackageInfoFileTask>(genPkgInfoFile) {
@@ -81,6 +83,11 @@ tasks.register<UpdateSinceTagTask>(UpdateSinceTagTask.UPDATE_SINCE_TAG_TASK_NAME
     updateVersionsFile.set(true)
 }
 
+tasks.register<CopyLog4JFileTask>(copyLog4J2Conf) {
+    log4J2ConfigFile = byoExt.log4J2ConfigFile.asFile
+}
+
 tasks.named(JavaPlugin.COMPILE_JAVA_TASK_NAME) { dependsOn(genJavaInfoFile) }
 tasks.named(genJavaInfoFile) { dependsOn(genPkgInfoFile) }
 tasks.named(genJavaInfoFile) { dependsOn(rootProject.tasks.named(SanitizeVersionsFileTask.SANITIZE_VERSIONS_FILE_TASK_NAME)) }
+tasks.named(JavaPlugin.CLASSES_TASK_NAME) { dependsOn(copyLog4J2Conf) }

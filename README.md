@@ -14,3 +14,4 @@ A collection of small games
 * ``./gradlew bumpMinorVersion``: increase minor version
 * ``./gradlew bumpPatchVersion``: increase patch version
 * ``./gradlew updateSinceTag``: update unset `@since` tag in code
+* ``./gradlew copyLog4J2Conf``: copy the Log4J2 configuration file from the buildSrc

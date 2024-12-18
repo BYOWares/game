@@ -41,6 +41,9 @@ abstract class BYOWaresExtension @Inject constructor(project: Project) {
     /** The intellij configuration file containing the copyright */
     val copyrightFile = objects.fileProperty()
 
+    /** The Log4j2 configuration file */
+    val log4J2ConfigFile = objects.fileProperty()
+
     companion object {
         const val EXTENSION_NAME = "byowares"
     }

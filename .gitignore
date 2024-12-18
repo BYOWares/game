@@ -32,6 +32,9 @@ build
 # Ignore generated files
 */src-generated/
 
+# Log4j2 configuration files
+*/src/main/resources/log4j2.yml
+
 # idea specifics
 .idea/workspace.xml
 
