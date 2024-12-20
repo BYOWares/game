@@ -83,4 +83,4 @@ tasks.register<CopyLog4JFileTask>(copyLog4J2Conf) {
 tasks.named(JavaPlugin.COMPILE_JAVA_TASK_NAME) { dependsOn(genJavaInfoFile) }
 tasks.named(genJavaInfoFile) { dependsOn(genPkgInfoFile) }
 tasks.named(genJavaInfoFile) { dependsOn(rootProject.tasks.named(SanitizeVersionsFileTask.SANITIZE_VERSIONS_FILE_TASK_NAME)) }
-tasks.named(JavaPlugin.CLASSES_TASK_NAME) { dependsOn(copyLog4J2Conf) }
+tasks.named(JavaPlugin.PROCESS_RESOURCES_TASK_NAME) { dependsOn(copyLog4J2Conf) }
