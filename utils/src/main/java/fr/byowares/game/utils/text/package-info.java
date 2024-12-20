@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.byowares.game.miq.core.model.lyrics;
 
 /**
+ * Collections of text helpers.
+ *
  * @since XXX
  */
-public class ChorusLine
-        extends SimpleLine {
-
-    ChorusLine(final LineElement[] elements) {
-        super(elements);
-    }
-
-    @Override
-    public boolean isChorus() {
-        return true;
-    }
-}
+package fr.byowares.game.utils.text;

@@ -27,7 +27,7 @@ public interface LineElement {
     /**
      * @param options The set of options used to display the lyrics.
      *
-     * @return The count of char needed to display this element
+     * @return The count of char needed to display this element when hidden.
      */
     int length(LyricsDisplayOptions options);
 
@@ -35,4 +35,14 @@ public interface LineElement {
      * @return {@code true} if the element is a word (and therefore can be guessed), {@code false} otherwise.
      */
     boolean isWord();
+
+    /**
+     * @return {@code true} if the element is made only of white spaces, {@code false} otherwise.
+     */
+    boolean isWhiteSpaceOnly();
+
+    /**
+     * @return The text contained in this element.
+     */
+    CharSequence getText();
 }

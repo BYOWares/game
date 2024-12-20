@@ -19,16 +19,16 @@ import java.util.Objects;
 
 /**
  * @param copyrightPattern The exact line content to match the start and end of the Copyright.
- * @param chorusBracket    Brackets used to identify automatically chorus in a line.
- * @param singerBracket    Brackets used to identify automatically singer in a line.
- * @param scatBracket      Brackets used to identify automatically non-lexical vocables in a line.
+ * @param singerBracket    Brackets used to identify a singer in a line.
+ * @param choirBracket     Brackets used to identify a backup vocals part in a line.
+ * @param scatBracket      Brackets used to identify non-lexical vocables in a line.
  *
  * @since XXX
  */
-public record LyricsParsingOption(
+public record LyricsParsingOptions(
         String copyrightPattern,
-        Bracket chorusBracket,
         Bracket singerBracket,
+        Bracket choirBracket,
         Bracket scatBracket
 ) {
     /** Default copyright pattern while parsing a lyrics file */
@@ -38,20 +38,20 @@ public record LyricsParsingOption(
      * Initialize with all default options:
      * <ul>
      *     <li>{@code copyrightPattern} = {@link #DEFAULT_COPYRIGHT_PATTERN}.</li>
-     *     <li>{@code chorusBracket} = {@link Bracket#ROUND PARENTHESIS}</li>
-     *     <li>{@code singerBracket} = {@link Bracket#CURLY CURLY}</li>
-     *     <li>{@code scatBracket} = {@link Bracket#SQUARE SQUARE}</li>
+     *     <li>{@code choirBracket} = {@link Bracket#ROUND PARENTHESIS}</li>
+     *     <li>{@code singerBracket} = {@link Bracket#SQUARE SQUARE}</li>
+     *     <li>{@code scatBracket} = {@link Bracket#CURLY CURLY}</li>
      * </ul>
      */
-    public LyricsParsingOption() {
-        this(DEFAULT_COPYRIGHT_PATTERN, Bracket.ROUND, Bracket.CURLY, Bracket.SQUARE);
+    public LyricsParsingOptions() {
+        this(DEFAULT_COPYRIGHT_PATTERN, Bracket.SQUARE, Bracket.ROUND, Bracket.CURLY);
     }
 
     /**
      * @return A new option whose fields are copied from {@code this}, except {@code copyrightPattern} which is set
      * to {@code null}. If the value is already equal to {@code null}, {@code this} is returned.
      */
-    public LyricsParsingOption removeCopyrightPattern() {
+    public LyricsParsingOptions removeCopyrightPattern() {
         return this.copyrightPattern(null);
     }
 
@@ -61,35 +61,35 @@ public record LyricsParsingOption(
      * @return A new option whose fields are copied from {@code this}, except {@code copyrightPattern} which is set
      * to {@code pattern}. If the value to set is equal to the already set value, {@code this} is returned.
      */
-    public LyricsParsingOption copyrightPattern(final String pattern) {
+    public LyricsParsingOptions copyrightPattern(final String pattern) {
         if (Objects.equals(this.copyrightPattern, pattern)) return this;
-        return new LyricsParsingOption(pattern, this.chorusBracket, this.singerBracket, this.scatBracket);
+        return new LyricsParsingOptions(pattern, this.singerBracket, this.choirBracket, this.scatBracket);
     }
 
     /**
-     * @return A new option whose fields are copied from {@code this}, except {@code chorusBracket} which is set
+     * @return A new option whose fields are copied from {@code this}, except {@code choirBracket} which is set
      * to {@code null}. If the value is already equal to {@code null}, {@code this} is returned.
      */
-    public LyricsParsingOption removeChorusBracket() {
-        return this.chorusBracket(null);
+    public LyricsParsingOptions removeChoirBracket() {
+        return this.choirBracket(null);
     }
 
     /**
-     * @param bracket The new bracket parsing definition for the {@code chorusBracket} field.
+     * @param bracket The new bracket parsing definition for the {@code choirBracket} field.
      *
-     * @return A new option whose fields are copied from {@code this}, except {@code chorusBracket} which is set
+     * @return A new option whose fields are copied from {@code this}, except {@code choirBracket} which is set
      * to {@code bracket}. If the value to set is equal to the already set value, {@code this} is returned.
      */
-    public LyricsParsingOption chorusBracket(final Bracket bracket) {
-        if (this.chorusBracket == bracket) return this;
-        return new LyricsParsingOption(this.copyrightPattern, bracket, this.singerBracket, this.scatBracket);
+    public LyricsParsingOptions choirBracket(final Bracket bracket) {
+        if (this.choirBracket == bracket) return this;
+        return new LyricsParsingOptions(this.copyrightPattern, this.singerBracket, bracket, this.scatBracket);
     }
 
     /**
      * @return A new option whose fields are copied from {@code this}, except {@code singerBracket} which is set
      * to {@code null}. If the value is already equal to {@code null}, {@code this} is returned.
      */
-    public LyricsParsingOption removeSingerBracket() {
+    public LyricsParsingOptions removeSingerBracket() {
         return this.singerBracket(null);
     }
 
@@ -99,16 +99,16 @@ public record LyricsParsingOption(
      * @return A new option whose fields are copied from {@code this}, except {@code singerBracket} which is set
      * to {@code bracket}. If the value to set is equal to the already set value, {@code this} is returned.
      */
-    public LyricsParsingOption singerBracket(final Bracket bracket) {
+    public LyricsParsingOptions singerBracket(final Bracket bracket) {
         if (this.singerBracket == bracket) return this;
-        return new LyricsParsingOption(this.copyrightPattern, this.chorusBracket, bracket, this.scatBracket);
+        return new LyricsParsingOptions(this.copyrightPattern, bracket, this.choirBracket, this.scatBracket);
     }
 
     /**
      * @return A new option whose fields are copied from {@code this}, except {@code scatBracket} which is set
      * to {@code null}. If the value is already equal to {@code null}, {@code this} is returned.
      */
-    public LyricsParsingOption removeScatBracket() {
+    public LyricsParsingOptions removeScatBracket() {
         return this.scatBracket(null);
     }
 
@@ -118,33 +118,19 @@ public record LyricsParsingOption(
      * @return A new option whose fields are copied from {@code this}, except {@code scatBracket} which is set
      * to {@code bracket}. If the value to set is equal to the already set value, {@code this} is returned.
      */
-    public LyricsParsingOption scatBracket(final Bracket bracket) {
+    public LyricsParsingOptions scatBracket(final Bracket bracket) {
         if (this.scatBracket == bracket) return this;
-        return new LyricsParsingOption(this.copyrightPattern, this.chorusBracket, this.singerBracket, bracket);
+        return new LyricsParsingOptions(this.copyrightPattern, this.singerBracket, this.choirBracket, bracket);
     }
 
     /**
-     * Represents bracket pair.
+     * @return {@code false} if the same non-null bracket is defined to identify two part (among singer, choir and
+     * scat), {@code true} otherwise.
      */
-    public enum Bracket {
-        /** Round brackets also named parenthesis. */
-        ROUND('(', ')'),
-        /** Square brackets. */
-        SQUARE('[', ']'),
-        /** Curly brackets also named braces. */
-        CURLY('{', '}'),
-        /** Angle brackets also named chevron. */
-        ANGLE('<', '>');
-
-        private final char open;
-        private final char close;
-
-        Bracket(
-                final char open,
-                final char close
-        ) {
-            this.open = open;
-            this.close = close;
-        }
+    public boolean isValid() {
+        final boolean areSingerAndChoirDifferent = this.singerBracket == null || this.singerBracket != this.choirBracket;
+        final boolean areSingerAndScatDifferent = this.singerBracket == null || this.singerBracket != this.scatBracket;
+        final boolean areChoirAndScatDifferent = this.choirBracket == null || this.choirBracket != this.scatBracket;
+        return areSingerAndChoirDifferent && areSingerAndScatDifferent && areChoirAndScatDifferent;
     }
 }

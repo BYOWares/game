@@ -18,7 +18,7 @@ package fr.byowares.game.miq.core.model.lyrics;
 import java.util.Set;
 
 /**
- * A representation of words' sequence
+ * A representation of words' sequence.
  *
  * @since XXX
  */
@@ -27,7 +27,9 @@ public interface Line {
     /**
      * @return {@code true} if this line has specific singers, {@code false} otherwise.
      */
-    boolean hasSingers();
+    default boolean hasSingers() {
+        return !this.getSingers().isEmpty();
+    }
 
     /**
      * @return The set of singers associated with this line.
@@ -35,12 +37,12 @@ public interface Line {
     Set<Singer> getSingers();
 
     /**
-     * @return {@code true} if this line is sung by a chorus, {@code false} otherwise.
+     * @return {@code true} if this line is sung as back vocals, {@code false} otherwise.
      */
-    boolean isChorus();
+    boolean isBackVocals();
 
     /**
      * @return {@code true} if this line is only non-lexical vocables, {@code false} otherwise.
      */
-    boolean isScat();
+    boolean isNonLexicalVocables();
 }

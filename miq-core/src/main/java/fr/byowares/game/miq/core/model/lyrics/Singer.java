@@ -20,4 +20,11 @@ package fr.byowares.game.miq.core.model.lyrics;
  *
  * @since XXX
  */
-public record Singer(String name) {}
+public record Singer(CharSequence name)
+        implements Comparable<Singer> {
+
+    @Override
+    public int compareTo(final Singer o) {
+        return CharSequence.compare(this.name, o.name);
+    }
+}

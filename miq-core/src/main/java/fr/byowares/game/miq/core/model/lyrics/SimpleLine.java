@@ -15,36 +15,40 @@
  */
 package fr.byowares.game.miq.core.model.lyrics;
 
+import java.util.List;
 import java.util.Set;
 
 /**
+ * A basic line that can have singers, and is not a back vocals or a non-lexical vocables one.
+ *
+ * @param elements     The LineElements composing the Line.
+ * @param singers      The set of singers in charge of singing this Line.
+ * @param isBackVocals Whether they are sung by back vocalists.
+ * @param isNonLexical Whether it's made of non-lexical vocables (e.g.: La la la lala, la la la lala).
+ *
  * @since XXX
  */
-public class SimpleLine
+public record SimpleLine(
+        List<LineElement> elements,
+        Set<Singer> singers,
+        boolean isBackVocals,
+        boolean isNonLexical
+)
         implements Line {
-    private final LineElement[] elements;
 
-    SimpleLine(final LineElement[] elements) {
-        this.elements = elements;
-    }
-
-    @Override
-    public boolean hasSingers() {
-        return false;
-    }
 
     @Override
     public Set<Singer> getSingers() {
-        return Set.of();
+        return this.singers;
     }
 
     @Override
-    public boolean isChorus() {
+    public boolean isBackVocals() {
         return false;
     }
 
     @Override
-    public boolean isScat() {
+    public boolean isNonLexicalVocables() {
         return false;
     }
 }

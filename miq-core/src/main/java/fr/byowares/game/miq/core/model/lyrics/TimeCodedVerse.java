@@ -17,13 +17,18 @@ package fr.byowares.game.miq.core.model.lyrics;
 
 import fr.byowares.game.miq.core.model.Range;
 
+import java.util.List;
+
 /**
- * @param line  The line (words) sung during that range
- * @param range The period during which the line is sung
+ * @param lines The lines sung during that period.
+ * @param range The period during which the line is sung.
  *
  * @since XXX
  */
-public record TimeCodedVerse(SingerLine line, Range range)
+public record TimeCodedVerse(
+        List<Line> lines,
+        Range range
+)
         implements Comparable<TimeCodedVerse> {
 
     @Override

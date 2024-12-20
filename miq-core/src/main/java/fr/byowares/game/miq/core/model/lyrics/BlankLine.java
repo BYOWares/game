@@ -15,6 +15,7 @@
  */
 package fr.byowares.game.miq.core.model.lyrics;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -27,14 +28,10 @@ public class BlankLine
 
     /** Singleton */
     public static final BlankLine INSTANCE = new BlankLine();
+    public static final List<Line> ONE_BLANK_LINE = List.of(INSTANCE);
 
     private BlankLine() {
         // Singleton pattern
-    }
-
-    @Override
-    public boolean hasSingers() {
-        return false;
     }
 
     @Override
@@ -43,12 +40,12 @@ public class BlankLine
     }
 
     @Override
-    public boolean isChorus() {
+    public boolean isBackVocals() {
         return false;
     }
 
     @Override
-    public boolean isScat() {
+    public boolean isNonLexicalVocables() {
         return false;
     }
 }

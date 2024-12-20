@@ -18,7 +18,7 @@ package fr.byowares.game.miq.core.model.lyrics;
 import fr.byowares.game.miq.core.option.LyricsDisplayOptions;
 
 /**
- * @param word
+ * @param word The word it represents (expect only alphanumerical characters).
  *
  * @since XXX
  */
@@ -27,11 +27,21 @@ public record Word(CharSequence word)
 
     @Override
     public int length(final LyricsDisplayOptions options) {
-        return this.word.length();
+        return options.whileGuessingShowTrueLength() ? this.word.length() : options.whileGuessingWordLength();
     }
 
     @Override
     public boolean isWord() {
         return true;
+    }
+
+    @Override
+    public boolean isWhiteSpaceOnly() {
+        return this.word.chars().allMatch(Character::isWhitespace);
+    }
+
+    @Override
+    public CharSequence getText() {
+        return this.word;
     }
 }

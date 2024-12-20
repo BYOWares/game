@@ -18,24 +18,31 @@ package fr.byowares.game.miq.core.model.lyrics;
 import fr.byowares.game.miq.core.option.LyricsDisplayOptions;
 
 /**
- * @param punctuationChar The actual punctuation character.
- * @param spaceBefore     Whether a space must precede the character.
- * @param spaceAfter      Whether a space must follow the character.
+ * @param punctuations The punctuation characters (expect everything but alphanumerical characters).
  *
  * @since XXX
  */
-public record Punctuation(char punctuationChar, boolean spaceBefore, boolean spaceAfter)
+public record Punctuation(CharSequence punctuations)
         implements LineElement {
 
-    public static final Punctuation COMMA = new Punctuation(',', false, true);
 
     @Override
     public int length(final LyricsDisplayOptions options) {
-        return 1 + (this.spaceBefore ? 1 : 0) + (this.spaceAfter ? 1 : 0);
+        return options.whileGuessingShowPunctuation() ? this.punctuations.length() : 1;
     }
 
     @Override
     public boolean isWord() {
         return false;
+    }
+
+    @Override
+    public boolean isWhiteSpaceOnly() {
+        return this.punctuations.chars().allMatch(Character::isWhitespace);
+    }
+
+    @Override
+    public CharSequence getText() {
+        return this.punctuations;
     }
 }

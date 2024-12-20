@@ -16,11 +16,16 @@
 package fr.byowares.game.miq.core.option;
 
 /**
- * All options regarding lyrics displaying option
+ * All options regarding lyrics displaying option.
+ *
+ * @param whileGuessingShowPunctuation Whether punctuation shall be revealed even when guessing lyrics.
+ * @param whileGuessingShowTrueLength  Whether length of words shall be revealed while guessing.
+ * @param whileGuessingWordLength      The count of char to use to hide word to guess.
  *
  * @since XXX
  */
-public class LyricsDisplayOptions {
-
-
-}
+public record LyricsDisplayOptions(
+        boolean whileGuessingShowPunctuation,
+        boolean whileGuessingShowTrueLength,
+        int whileGuessingWordLength
+) {}

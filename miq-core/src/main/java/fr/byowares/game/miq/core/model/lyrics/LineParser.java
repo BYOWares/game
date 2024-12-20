@@ -15,23 +15,20 @@
  */
 package fr.byowares.game.miq.core.model.lyrics;
 
+import java.util.List;
+
 /**
- * A line made of non-lexical vocals (e.g.: La la la lala, la la la lala).
+ * Offer the ability to convert a text into a Line.
  *
  * @since XXX
  */
-public class ScatLine
-        extends SimpleLine {
+@FunctionalInterface
+public interface LineParser {
 
     /**
-     * @param elements The elements making the
+     * @param input The text to parse and convert into a Line.
+     *
+     * @return The list of lines parsed using the options.
      */
-    ScatLine(final LineElement[] elements) {
-        super(elements);
-    }
-
-    @Override
-    public boolean isScat() {
-        return true;
-    }
+    List<Line> parse(CharSequence input);
 }
