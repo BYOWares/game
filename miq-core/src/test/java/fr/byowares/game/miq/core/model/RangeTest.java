@@ -25,46 +25,46 @@ class RangeTest {
 
     @Test
     void testValidAbsoluteRangeDifferent() {
-        final Range range = Range.fromAbsoluteTimes(TEN, ELEVEN);
+        final Range range = Range.fromAbsoluteValues(TEN, ELEVEN);
         assertNotNull(range);
     }
 
     @Test
     void testValidAbsoluteRangeSame() {
-        final Range range = Range.fromAbsoluteTimes(TEN, TEN);
+        final Range range = Range.fromAbsoluteValues(TEN, TEN);
         assertNotNull(range);
     }
 
     @Test
     void testInvalidAbsoluteRange() {
         final IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-                                                        () -> Range.fromAbsoluteTimes(ELEVEN, TEN));
+                                                        () -> Range.fromAbsoluteValues(ELEVEN, TEN));
         assertEquals("start (11) must be inferior or equals to end (10)", e.getMessage());
     }
 
     @Test
     void testValidRelativeRangeDifferent() {
-        final Range range = Range.fromRelativeTimes(ELEVEN, 1L);
+        final Range range = Range.fromRelativeValues(ELEVEN, 1L);
         assertNotNull(range);
     }
 
     @Test
     void testValidRelativeRangeSame() {
-        final Range range = Range.fromRelativeTimes(ELEVEN, 0L);
+        final Range range = Range.fromRelativeValues(ELEVEN, 0L);
         assertNotNull(range);
     }
 
     @Test
     void testInvalidRelativeRange() {
         final IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-                                                        () -> Range.fromRelativeTimes(ELEVEN, -1L));
+                                                        () -> Range.fromRelativeValues(ELEVEN, -1L));
         assertEquals("start (11) must be inferior or equals to end (10)", e.getMessage());
     }
 
     @Test
     void testEquality() {
-        final Range rel = Range.fromRelativeTimes(TEN, 1L);
-        final Range abs = Range.fromAbsoluteTimes(TEN, ELEVEN);
+        final Range rel = Range.fromRelativeValues(TEN, 1L);
+        final Range abs = Range.fromAbsoluteValues(TEN, ELEVEN);
 
         assertNotSame(rel, abs);
         assertEquals(rel, abs);
@@ -75,9 +75,9 @@ class RangeTest {
 
     @Test
     void testInequality() {
-        final Range tenEleven = Range.fromRelativeTimes(TEN, 1L);
-        final Range tenTwelve = Range.fromRelativeTimes(TEN, 2L);
-        final Range elevenTwelve = Range.fromRelativeTimes(ELEVEN, 1L);
+        final Range tenEleven = Range.fromRelativeValues(TEN, 1L);
+        final Range tenTwelve = Range.fromRelativeValues(TEN, 2L);
+        final Range elevenTwelve = Range.fromRelativeValues(ELEVEN, 1L);
 
         assertNotEquals(tenEleven, tenTwelve);
         assertNotEquals(tenEleven, elevenTwelve);

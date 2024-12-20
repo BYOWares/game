@@ -20,22 +20,21 @@ import fr.byowares.game.utils.hashcodes.HashCodesLong;
 /**
  * Representation of a range (both inclusive boundaries).
  *
+ * @param start The start of the range
+ * @param end   The end of the range
+ *
  * @since XXX
  */
-public class Range
+public record Range(long start, long end)
         implements Comparable<Range> {
 
-    private final long start;
-    private final long end;
-
-    private Range(
-            final long start,
-            final long end
-    ) {
+    /**
+     * @param start The start of the range
+     * @param end   The end of the range
+     */
+    public Range {
         if (start > end)
             throw new IllegalArgumentException("start (" + start + ") must be inferior or equals to end (" + end + ")");
-        this.start = start;
-        this.end = end;
     }
 
     /**
@@ -46,7 +45,7 @@ public class Range
      *
      * @throws java.lang.IllegalArgumentException If and only if the end is strictly lower than the start.
      */
-    public static Range fromAbsoluteTimes(
+    public static Range fromAbsoluteValues(
             final long start,
             final long end
     ) {
@@ -61,7 +60,7 @@ public class Range
      *
      * @throws java.lang.IllegalArgumentException If and only if the width is negative.
      */
-    public static Range fromRelativeTimes(
+    public static Range fromRelativeValues(
             final long start,
             final long width
     ) {
@@ -74,8 +73,8 @@ public class Range
     }
 
     @Override
-    public boolean equals(final Object o) {
-        return o instanceof Range && this.compareTo((Range) o) == 0;
+    public String toString() {
+        return "[" + this.start + ", " + this.end + "]";
     }
 
     @Override
@@ -83,10 +82,5 @@ public class Range
         final int res = Long.compare(this.start, o.start);
         if (res != 0) return res;
         return Long.compare(this.end, o.end);
-    }
-
-    @Override
-    public String toString() {
-        return "[" + this.start + ", " + this.end + "]";
     }
 }
