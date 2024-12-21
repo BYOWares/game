@@ -15,8 +15,11 @@
  */
 package fr.byowares.game.miq.core.model.lyrics;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * A basic line that can have singers, and is not a back vocals or a non-lexical vocables one.
@@ -36,6 +39,90 @@ public record SimpleLine(
 )
         implements Line {
 
+    private static final String SPACE = " ";
+
+    public static List<Line> merge(final List<SimpleLine> lines) {
+        if (lines.isEmpty()) return List.of();
+        final List<Line> res = new ArrayList<>(lines.size());
+        SimpleLine lastAdded = lines.removeFirst();
+        res.add(lastAdded);
+        while (!lines.isEmpty()) {
+            final SimpleLine next = lines.removeFirst();
+            if (canBeMerged(lastAdded, next)) {
+                res.removeLast();
+                lastAdded = merge(lastAdded, next);
+            } else lastAdded = next;
+            res.add(lastAdded);
+        }
+        return res;
+    }
+
+    /**
+     * @param sl1 A {@code SimpleLine}.
+     * @param sl2 Another {@code SimpleLine}.
+     *
+     * @return {@code true} if the two {@code SimpleLine} are equals except for the text, {@code false} otherwise.
+     */
+    static boolean canBeMerged(
+            final SimpleLine sl1,
+            final SimpleLine sl2
+    ) {
+        return Objects.equals(sl1.singers, sl2.singers) && //
+                sl1.isBackVocals == sl2.isBackVocals && //
+                sl1.isNonLexical == sl2.isNonLexical;
+    }
+
+    /**
+     * Merge two {@code SimpleLine} together. Make sure that {@link fr.byowares.game.miq.core.model.lyrics.Word} and
+     * {@link fr.byowares.game.miq.core.model.lyrics.Punctuation} are alternated. When the last
+     * {@link fr.byowares.game.miq.core.model.lyrics.LineElement} of the first one, and the first element of the
+     * second one are:
+     * <ul>
+     *     <li>Both {@code Word}: a {@code Punctuation} containing a simple space is added between the two lines;</li>
+     *     <li>A {@code Word} and a {@code Punctuation}: a space is added to the existing punctuation, next to the
+     *     word (at the end of the existing punctuation if it comes from the first line, or at the start of the
+     *     existing punctuation if it comes from the second line);</li>
+     *     <li>Both {@code Punctuation}: a new {@code Punctuation} is made concatenating them with a space between.</li>
+     * </ul>
+     *
+     * @param sl1 The first {@code SimpleLine} to merge (its text will be first).
+     * @param sl2 The second {@code SimpleLine} to merge (its text will be last).
+     *
+     * @return The merged {@code SimpleLine}.
+     */
+    static SimpleLine merge(
+            final SimpleLine sl1,
+            final SimpleLine sl2
+    ) {
+        if (sl1.elements.isEmpty()) return sl2;
+        if (sl2.elements.isEmpty()) return sl1;
+        final boolean sl1LastIsWord = sl1.elements.getLast().isWord();
+        final boolean sl2FirstIsWord = sl2.elements.getFirst().isWord();
+        final List<LineElement> newElements = new ArrayList<>(sl1.elements.size() + sl2.elements.size() + 1);
+        newElements.addAll(sl1.elements);
+        // Use a Stream because removeFirst would not work on immutable lists.
+        Stream<LineElement> sl2Stream = sl2.elements.stream();
+        if (sl1LastIsWord) {
+            if (sl2FirstIsWord) {
+                newElements.add(new Punctuation(SPACE));
+            } else {
+                final LineElement pf2 = sl2.elements.getFirst();
+                sl2Stream = sl2Stream.skip(1L);
+                newElements.add(new Punctuation(SPACE + pf2.getText()));
+            }
+        } else {
+            final LineElement pl1 = newElements.removeLast();
+            if (sl2FirstIsWord) {
+                newElements.add(new Punctuation(pl1.getText() + SPACE));
+            } else {
+                final LineElement pf2 = sl2.elements.getFirst();
+                sl2Stream = sl2Stream.skip(1L);
+                newElements.add(new Punctuation(pl1.getText() + SPACE + pf2.getText()));
+            }
+        }
+        sl2Stream.forEach(newElements::add);
+        return new SimpleLine(newElements, sl1.singers, sl1.isBackVocals, sl1.isNonLexical);
+    }
 
     @Override
     public Set<Singer> getSingers() {

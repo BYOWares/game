@@ -18,16 +18,16 @@ package fr.byowares.game.miq.core.model.lyrics;
 import fr.byowares.game.miq.core.option.LyricsDisplayOptions;
 
 /**
- * @param word The word it represents (expect only alphanumerical characters).
+ * @param chars The word it represents (expect only alphanumerical characters).
  *
  * @since XXX
  */
-public record Word(CharSequence word)
+public record Word(CharSequence chars)
         implements LineElement {
 
     @Override
     public int length(final LyricsDisplayOptions options) {
-        return options.whileGuessingShowTrueLength() ? this.word.length() : options.whileGuessingWordLength();
+        return options.whileGuessingShowTrueLength() ? this.chars.length() : options.whileGuessingWordLength();
     }
 
     @Override
@@ -37,11 +37,21 @@ public record Word(CharSequence word)
 
     @Override
     public boolean isWhiteSpaceOnly() {
-        return this.word.chars().allMatch(Character::isWhitespace);
+        return false;
     }
 
     @Override
     public CharSequence getText() {
-        return this.word;
+        return this.chars;
+    }
+
+    @Override
+    public LineElement trimHead() {
+        return this;
+    }
+
+    @Override
+    public LineElement trimTail() {
+        return this;
     }
 }

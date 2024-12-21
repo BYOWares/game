@@ -45,4 +45,8 @@ public interface LineElement {
      * @return The text contained in this element.
      */
     CharSequence getText();
+
+    LineElement trimHead();
+
+    LineElement trimTail();
 }

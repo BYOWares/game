@@ -28,6 +28,7 @@ public class BlankLine
 
     /** Singleton */
     public static final BlankLine INSTANCE = new BlankLine();
+    /** Immutable list of the singleton */
     public static final List<Line> ONE_BLANK_LINE = List.of(INSTANCE);
 
     private BlankLine() {
@@ -47,5 +48,10 @@ public class BlankLine
     @Override
     public boolean isNonLexicalVocables() {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "BlankLine";
     }
 }
