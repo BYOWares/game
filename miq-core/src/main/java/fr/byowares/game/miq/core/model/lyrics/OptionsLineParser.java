@@ -34,11 +34,16 @@ import java.util.TreeSet;
  *     <li>Scat or non-lexical vocables.</li>
  * </ul>
  * When a context has no bracket associated to ({@code null} value), it means the parsing capability is disabled for
- * thi context. Unused brackets are considered as punctuation.
+ * this context. Undefined brackets are considered as punctuation.
+ * <p/>
+ * This parser behaves the same as {@link fr.byowares.game.miq.core.model.lyrics.SpaceCleanerLineParser} regarding
+ * white spaces.
+ *
+ * @param options The {@link fr.byowares.game.miq.core.option.LyricsParsingOptions} used to configure this parser.
  *
  * @since XXX
  */
-public class OptionsLineParser
+public record OptionsLineParser(LyricsParsingOptions options)
         implements LineParser {
 
     private static final ThreadLocal<CharSequenceIterator> CHAR_ITERATOR_TL = //
@@ -46,27 +51,19 @@ public class OptionsLineParser
 
     private static final String CLOSING_NESTED = "Closing bracket (%s) found: %s, but last opening bracket (%s) does " + "not match: %s";
     private static final String CLOSING_NOT_OPENED = "Closing bracket (%s) does not match any opening one: %s";
-    private static final String OPENING_NESTED = "Opening bracket (%s) found: %s, but previous one was not closed: %s ";
+    private static final String OPENING_NESTED = "Opening bracket (%s) found: %s, but previous one was not closed: %s";
     private static final String OPENING_NOT_CLOSED = "Opening bracket (%s) does not match any closing one: %s";
     private static final String SINGER = "singer";
     private static final String CHOIR = "choir";
     private static final String SCAT = "scat";
-
-
-    private final Bracket singerBracket;
-    private final Bracket choirBracket;
-    private final Bracket scatBracket;
 
     /**
      * Initialise a new {@link fr.byowares.game.miq.core.model.lyrics.LineParser} using {@link fr.byowares.game.miq.core.option.LyricsParsingOptions}
      *
      * @param options The set of options used to parse the text.
      */
-    public OptionsLineParser(final LyricsParsingOptions options) {
+    public OptionsLineParser {
         if (!options.isValid()) isf("LyricsParsingOptions are not valid: %s", options);
-        this.singerBracket = options.singerBracket();
-        this.choirBracket = options.choirBracket();
-        this.scatBracket = options.scatBracket();
     }
 
     /**
@@ -104,30 +101,30 @@ public class OptionsLineParser
         boolean isChoir = false;
         boolean isScat = false;
         Set<Singer> singers = Set.of();
-        final List<Line> res = new ArrayList<>();
+        final List<SimpleLine> res = new ArrayList<>();
 
         for (final CharPosition cp : charPositions) {
-            if (this.choirBracket != null && this.choirBracket == lastCp.bracket) {
+            if (this.options.choirBracket() != null && this.options.choirBracket() == lastCp.bracket) {
                 isChoir = lastCp.open;
                 singers = Set.of();
             }
-            if (this.scatBracket != null && this.scatBracket == lastCp.bracket) {
+            if (this.options.scatBracket() != null && this.options.scatBracket() == lastCp.bracket) {
                 isScat = lastCp.open;
                 singers = Set.of();
             }
-            final boolean isParsingSinger = this.singerBracket != null && this.singerBracket == lastCp.bracket && lastCp.open;
+            final boolean isParsingSinger = this.options.singerBracket() != null && this.options.singerBracket() == lastCp.bracket && lastCp.open;
             // lastCp.position + 1 for ignoring the last character which is a bracket (we don't need to parse it).
             // Hence the first position set to -1 when initialising lastCp.
             charSeqIt.setText(input, lastCp.position + 1, cp.position);
             lastCp = cp;
             if (charSeqIt.getBeginIndex() == charSeqIt.getEndIndex()) continue; // Nothing to parse
-            final List<LineElement> lineElements = SimpleLineParser.parseLineElements(charSeqIt);
-            if (lineElements.isEmpty()) continue;
+            final List<LineElement> lineElements = SpaceCleanerLineParser.parseLineElements(charSeqIt);
+            if (lineElements.stream().noneMatch(LineElement::isWord)) continue;
 
             if (isParsingSinger) singers = toSinger(lineElements);
             else res.add(new SimpleLine(lineElements, singers, isChoir, isScat));
         }
-        return res;
+        return res.isEmpty() ? BlankLine.ONE_BLANK_LINE : SimpleLine.merge(res);
     }
 
     /**
@@ -139,9 +136,9 @@ public class OptionsLineParser
      */
     private List<CharPosition> analyseInput(final CharSequence input) {
         final List<CharPosition> res = new ArrayList<>();
-        extractCharPosition(res, input, this.singerBracket);
-        extractCharPosition(res, input, this.choirBracket);
-        extractCharPosition(res, input, this.scatBracket);
+        extractCharPosition(res, input, this.options.singerBracket());
+        extractCharPosition(res, input, this.options.choirBracket());
+        extractCharPosition(res, input, this.options.scatBracket());
         Collections.sort(res);
 
         // Validating format
@@ -153,18 +150,18 @@ public class OptionsLineParser
 
         while (it.hasNext()) {
             final CharPosition current = it.next();
-            if (current.bracket == this.choirBracket) {
+            if (current.bracket == this.options.choirBracket()) {
                 lastChoirOpened = current.validateBracket(lastChoirOpened, lastScatOpened, CHOIR, SCAT);
 
-            } else if (current.bracket == this.scatBracket) {
+            } else if (current.bracket == this.options.scatBracket()) {
                 lastScatOpened = current.validateBracket(lastScatOpened, lastChoirOpened, SCAT, CHOIR);
 
-            } else if (current.bracket == this.singerBracket) {
+            } else if (current.bracket == this.options.singerBracket()) {
                 if (!current.open) isf(CLOSING_NOT_OPENED, SINGER, current);
                 if (!it.hasNext()) isf(OPENING_NOT_CLOSED, SINGER, current);
                 // Checking directly next bracket, as it does not allow nested brackets.
                 final CharPosition next = it.next();
-                if (next.bracket != this.singerBracket)
+                if (next.bracket != this.options.singerBracket())
                     ise("Next bracket does not match this (singer) one (current: " + current + ", next: " + next + ")");
                 if (next.open)
                     ise("Next bracket shall close this (singer) one (current: " + current + ", next: " + next + ")");
@@ -182,7 +179,6 @@ public class OptionsLineParser
 
         return res;
     }
-
 
     /**
      * @param elements The line elements used to be converted in Singer.

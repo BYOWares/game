@@ -18,17 +18,16 @@ package fr.byowares.game.miq.core.model.lyrics;
 import fr.byowares.game.miq.core.option.LyricsDisplayOptions;
 
 /**
- * @param punctuations The punctuation characters (expect everything but alphanumerical characters).
+ * @param chars The punctuation characters (expect everything but alphanumerical characters).
  *
  * @since XXX
  */
-public record Punctuation(CharSequence punctuations)
+public record Punctuation(CharSequence chars)
         implements LineElement {
-
 
     @Override
     public int length(final LyricsDisplayOptions options) {
-        return options.whileGuessingShowPunctuation() ? this.punctuations.length() : 1;
+        return options.whileGuessingShowPunctuation() ? this.chars.length() : 1;
     }
 
     @Override
@@ -38,11 +37,31 @@ public record Punctuation(CharSequence punctuations)
 
     @Override
     public boolean isWhiteSpaceOnly() {
-        return this.punctuations.chars().allMatch(Character::isWhitespace);
+        return this.chars.chars().allMatch(Character::isWhitespace);
     }
 
     @Override
     public CharSequence getText() {
-        return this.punctuations;
+        return this.chars;
+    }
+
+    @Override
+    public LineElement trimHead() {
+        int i = 0;
+        for (; i < this.chars.length(); i++) {
+            if (!Character.isWhitespace(this.chars.charAt(i))) break;
+        }
+        if (i == 0) return this;
+        return new Punctuation(this.chars.subSequence(i, this.chars.length()));
+    }
+
+    @Override
+    public LineElement trimTail() {
+        int i = this.chars.length() - 1;
+        for (; i >= 0; i--) {
+            if (!Character.isWhitespace(this.chars.charAt(i))) break;
+        }
+        if (i == this.chars.length() - 1) return this;
+        return new Punctuation(this.chars.subSequence(0, i + 1));
     }
 }

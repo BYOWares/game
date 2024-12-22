@@ -45,4 +45,18 @@ public interface LineElement {
      * @return The text contained in this element.
      */
     CharSequence getText();
+
+    /**
+     * @return A copy of this object without any heading white spaces, or {@code this} if none.
+     *
+     * @see java.lang.Character#isWhitespace(char)
+     */
+    LineElement trimHead();
+
+    /**
+     * @return A copy of this object without any trailing white spaces, or {@code this} if none.
+     *
+     * @see java.lang.Character#isWhitespace(char)
+     */
+    LineElement trimTail();
 }
