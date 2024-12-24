@@ -16,67 +16,81 @@
 package fr.byowares.game.utils.text;
 
 import java.text.CharacterIterator;
+import java.util.BitSet;
 
 /**
- * A {@link java.lang.CharSequence} {@link java.text.CharacterIterator} (a plain copy of
- * {@link java.text.StringCharacterIterator} to be able to work directly on CharSequence instead of String).
+ * Similar to {@link fr.byowares.game.utils.text.CharSequenceIterator} with the ability to skip some characters at
+ * given positions, also known as holes.
  *
  * @since XXX
  */
-public class CharSequenceIterator
+public class HoledCharSequenceIterator
         implements CharacterIterator {
 
+    private static final BitSet EMPTY_BITSET = new BitSet();
+
     private CharSequence text;
+    private BitSet holes;
     private int begin;
     private int end;
     // invariant: begin <= pos <= end
     private int pos;
 
     /**
-     * Constructs an iterator with an initial index of 0, and wrapping the whole {@code text}.
+     * Constructs an iterator with an initial index of 0, wrapping the whole {@code text}, and with no characters to skip.
      *
      * @param text The {@code CharSequence} to be iterated over.
      */
-    public CharSequenceIterator(final CharSequence text) {
-        this(text, 0);
+    public HoledCharSequenceIterator(final CharSequence text) {
+        this(text, EMPTY_BITSET);
     }
 
     /**
-     * Constructs an iterator with the specified initial index, and wrapping the whole {@code text}.
+     * Constructs an iterator with an initial index of 0, wrapping the whole {@code text}, with characters to skip.
      *
-     * @param text The {@code CharSequence} to be iterated over.
-     * @param pos  Initial iterator position.
+     * @param text  The {@code CharSequence} to be iterated over.
+     * @param holes The characters' position to skip.
      */
-    public CharSequenceIterator(
+    public HoledCharSequenceIterator(
             final CharSequence text,
-            final int pos
+            final BitSet holes
     ) {
-        this(text, 0, text.length(), pos);
+        this(text, 0, text.length(), holes);
     }
+
 
     /**
      * Constructs an iterator over the given range of the given {@code CharSequence}, with the
-     * index set at the specified position.
+     * index set at the specified position, and some characters to skip.
      *
      * @param text  The {@code CharSequence} to be iterated over
      * @param begin Index of the first character.
      * @param end   Index of the character following the last character.
-     * @param pos   Initial iterator position.
+     * @param holes The characters' position to skip.
      */
-    public CharSequenceIterator(
+    public HoledCharSequenceIterator(
             final CharSequence text,
             final int begin,
             final int end,
-            final int pos
+            final BitSet holes
     ) {
-        this.setText(text, begin, end, pos);
+        this.setText(text, begin, end, holes);
     }
 
-    private void setText(
+    /**
+     * Reset this iterator to point to a new CharSequence. This method avoid allocating new HoledCharSequenceIterator
+     * objects every time their setText method is called.
+     *
+     * @param text  The {@code CharSequence} to be iterated over.
+     * @param begin Index of the first character.
+     * @param end   Index of the character following the last character.
+     * @param holes Characters' position to skip.
+     */
+    public void setText(
             final CharSequence text,
             final int begin,
             final int end,
-            final int pos
+            final BitSet holes
     ) {
         if (text == null) throw new NullPointerException();
         this.text = text;
@@ -84,33 +98,21 @@ public class CharSequenceIterator
         if (begin < 0 || begin > end || end > text.length()) throw new IllegalArgumentException(
                 "Invalid range (0<=begin[" + begin + "]<=end[" + end + "]<=length[" + text.length() + "])");
 
-        if (pos < begin || pos > end) throw new IllegalArgumentException(
-                "Invalid position (begin[" + begin + "]<=pos[" + pos + "]<=end[" + end + "])");
-
         this.begin = begin;
         this.end = end;
-        this.pos = pos;
+        this.pos = begin;
+        this.holes = holes;
+        this.nextPositionNoHoles();
     }
 
-    /**
-     * Reset this iterator to point to a new CharSequence. This method avoid allocating new CharSequenceIterator objects
-     * every time their setText method is called.
-     *
-     * @param text  The {@code CharSequence} to be iterated over.
-     * @param begin Index of the first character.
-     * @param end   Index of the character following the last character.
-     */
-    public void setText(
-            final CharSequence text,
-            final int begin,
-            final int end
-    ) {
-        this.setText(text, begin, end, begin);
+    private void nextPositionNoHoles() {
+        this.pos = this.holes.nextClearBit(this.pos);
     }
 
     @Override
     public char first() {
         this.pos = this.begin;
+        this.nextPositionNoHoles();
         return this.current();
     }
 
@@ -120,8 +122,15 @@ public class CharSequenceIterator
             this.pos = this.end - 1;
         } else {
             this.pos = this.end;
+            return DONE;
         }
+        this.previousNoHoles();
         return this.current();
+    }
+
+    private void previousNoHoles() {
+        if (this.pos < this.begin) return;
+        this.pos = this.holes.previousClearBit(this.pos);
     }
 
     @Override
@@ -135,30 +144,31 @@ public class CharSequenceIterator
 
     @Override
     public char next() {
-        if (this.pos < this.end - 1) {
-            this.pos++;
+        this.pos++;
+        this.nextPositionNoHoles();
+        if (this.pos < this.end) {
             return this.text.charAt(this.pos);
         } else {
+            this.pos = this.end;
             return DONE;
         }
     }
 
     @Override
     public char previous() {
-        if (this.pos > this.begin) {
-            this.pos--;
+        this.pos--;
+        this.previousNoHoles();
+        if (this.pos >= this.begin) {
             return this.text.charAt(this.pos);
         } else {
+            this.pos = this.begin - 1;
             return DONE;
         }
     }
 
     @Override
     public char setIndex(final int p) {
-        if (p < this.begin || p > this.end) throw new IllegalArgumentException(
-                "Invalid position (begin[" + this.begin + "]<=pos[" + p + "]<=end[" + this.end + "])");
-        this.pos = p;
-        return this.current();
+        throw new UnsupportedOperationException();
     }
 
     @Override
