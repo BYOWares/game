@@ -15,18 +15,8 @@
  */
 
 /**
+ * Offers the capabilities to serialize and deserialize MIQ specific data.
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-    exports fr.byowares.game.miq.core.model.lyrics;
-    exports fr.byowares.game.miq.core.option;
-
-    requires fr.byowares.game.utils;
-    requires java.desktop;
-    requires org.slf4j;
-    requires org.yaml.snakeyaml;
-}
+package fr.byowares.game.miq.core.serial;

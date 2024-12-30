@@ -15,6 +15,8 @@
  */
 package fr.byowares.game.miq.core.model.lyrics;
 
+import fr.byowares.game.miq.core.option.LyricsDisplayOptions;
+
 import java.util.Set;
 
 /**
@@ -45,4 +47,16 @@ public interface Line {
      * @return {@code true} if this line is only non-lexical vocables, {@code false} otherwise.
      */
     boolean isNonLexicalVocables();
+
+    /**
+     * @param options The set of display options.
+     *
+     * @return The text value representing this line when hidden.
+     */
+    CharSequence getHiddenText(LyricsDisplayOptions options);
+
+    /**
+     * @return This line when nothing is hidden.
+     */
+    CharSequence getClearText();
 }

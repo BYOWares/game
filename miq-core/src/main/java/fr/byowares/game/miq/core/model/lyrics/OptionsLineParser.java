@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * A parser that is able to parse text containing bracket delimited part (known as context):
@@ -46,7 +45,8 @@ import java.util.TreeSet;
 public record OptionsLineParser(LyricsParsingOptions options)
         implements LineParser {
 
-    private static final ThreadLocal<CharSequenceIterator> CHAR_ITERATOR_TL = //
+    /** Reusable {@link fr.byowares.game.utils.text.CharSequenceIterator}. */
+    static final ThreadLocal<CharSequenceIterator> CHAR_ITERATOR_TL = //
             ThreadLocal.withInitial(() -> new CharSequenceIterator(""));
 
     private static final String CLOSING_NESTED = "Closing bracket (%s) found: %s, but last opening bracket (%s) does " + "not match: %s";
@@ -121,7 +121,7 @@ public record OptionsLineParser(LyricsParsingOptions options)
             final List<LineElement> lineElements = SpaceCleanerLineParser.parseLineElements(charSeqIt);
             if (lineElements.stream().noneMatch(LineElement::isWord)) continue;
 
-            if (isParsingSinger) singers = toSinger(lineElements);
+            if (isParsingSinger) singers = SpaceCleanerLineParser.parseAsSingers(lineElements);
             else res.add(new SimpleLine(lineElements, singers, isChoir, isScat));
         }
         return res.isEmpty() ? BlankLine.ONE_BLANK_LINE : SimpleLine.merge(res);
@@ -177,19 +177,6 @@ public record OptionsLineParser(LyricsParsingOptions options)
             else isf(OPENING_NOT_CLOSED, CHOIR, lastChoirOpened);
         } else if (hasScatOpened) isf(OPENING_NOT_CLOSED, SCAT, lastScatOpened);
 
-        return res;
-    }
-
-    /**
-     * @param elements The line elements used to be converted in Singer.
-     *
-     * @return A Set of singers using only the elements who match {@link LineElement#isWord()}.
-     */
-    private static Set<Singer> toSinger(final List<LineElement> elements) {
-        final Set<Singer> res = new TreeSet<>();
-        for (final LineElement elt : elements) {
-            if (elt.isWord()) res.add(new Singer(elt.getText()));
-        }
         return res;
     }
 

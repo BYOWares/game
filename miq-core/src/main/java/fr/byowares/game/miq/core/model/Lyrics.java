@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.model;
+
+import fr.byowares.game.miq.core.model.lyrics.TimeCodedVerse;
+
+import java.util.List;
 
 /**
+ * @param comment Some comment about those lyrics (optional).
+ * @param lyrics  The lyrics of the song (with annotation and timestamps).
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-    exports fr.byowares.game.miq.core.model.lyrics;
-    exports fr.byowares.game.miq.core.option;
+public record Lyrics(
+        String comment,
+        List<TimeCodedVerse> lyrics
+) {
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
-    requires org.slf4j;
-    requires org.yaml.snakeyaml;
 }

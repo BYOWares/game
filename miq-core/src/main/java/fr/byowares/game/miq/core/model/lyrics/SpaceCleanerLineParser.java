@@ -15,12 +15,11 @@
  */
 package fr.byowares.game.miq.core.model.lyrics;
 
-import fr.byowares.game.utils.text.CharSequenceIterator;
-
 import java.text.CharacterIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A simple {@link fr.byowares.game.miq.core.model.lyrics.LineParser} that treat each line as plain text (no special
@@ -51,13 +50,14 @@ public class SpaceCleanerLineParser
         // Singleton pattern
     }
 
-    @Override
-    public List<Line> parse(final CharSequence input) {
-        if (input.chars().allMatch(Character::isWhitespace)) return BlankLine.ONE_BLANK_LINE;
-        final List<LineElement> list = parseLineElements(new CharSequenceIterator(input));
-
-        if (list.stream().noneMatch(LineElement::isWord)) return BlankLine.ONE_BLANK_LINE;
-        return List.of(new SimpleLine(list, Set.of(), false, false));
+    /**
+     * @param it The {@code CharacterIterator} that iterates over the characters to parse.
+     *
+     * @return A Set of singers using only the elements who match {@link LineElement#isWord()}.
+     */
+    public static Set<Singer> parseAsSingers(final CharacterIterator it) {
+        final var elements = SpaceCleanerLineParser.parseLineElements(it);
+        return parseAsSingers(elements);
     }
 
     /**
@@ -67,7 +67,7 @@ public class SpaceCleanerLineParser
      *
      * @return A list of {@code LineElement}
      */
-    static List<LineElement> parseLineElements(final CharacterIterator it) {
+    public static List<LineElement> parseLineElements(final CharacterIterator it) {
         char current = it.current();
         final List<LineElement> res = new ArrayList<>();
         final StringBuilder sb = STRING_BUILDER_TL.get();
@@ -127,5 +127,31 @@ public class SpaceCleanerLineParser
         if (!res.isEmpty() && res.getFirst().isWhiteSpaceOnly()) res.removeFirst();
         if (!res.isEmpty() && res.getLast().isWhiteSpaceOnly()) res.removeLast();
         return res;
+    }
+
+    /**
+     * @param elements The line elements used to be converted in Singer.
+     *
+     * @return A Set of singers using only the elements who match {@link LineElement#isWord()}.
+     */
+    static Set<Singer> parseAsSingers(final List<LineElement> elements) {
+        if (elements.isEmpty()) return Set.of();
+        final Set<Singer> res = new TreeSet<>();
+        for (final LineElement elt : elements) {
+            if (elt.isWord()) res.add(new Singer(elt.getText()));
+        }
+        return res;
+    }
+
+    @Override
+    public List<Line> parse(final CharSequence input) {
+        if (input.chars().allMatch(Character::isWhitespace)) return BlankLine.ONE_BLANK_LINE;
+
+        final var it = OptionsLineParser.CHAR_ITERATOR_TL.get();
+        it.setText(input, 0, input.length());
+        final List<LineElement> list = parseLineElements(it);
+
+        if (list.stream().noneMatch(LineElement::isWord)) return BlankLine.ONE_BLANK_LINE;
+        return List.of(new SimpleLine(list, Set.of(), false, false));
     }
 }

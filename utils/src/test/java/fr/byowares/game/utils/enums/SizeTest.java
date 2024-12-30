@@ -21,6 +21,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -91,7 +92,9 @@ class SizeTest {
             final NamedFunction namedFunction,
             final long... expected
     ) {
-        if (INPUTS.length != expected.length) throw new IllegalArgumentException(); // TODO
+        if (INPUTS.length != expected.length)
+            throw new IllegalArgumentException("Input data and expected data shall have the same size (input=" //
+                                                       + data + ", expected=" + Arrays.toString(expected) + ")");
         data.add(Arguments.of(ZERO, size, namedFunction, ZERO));
         for (int i = 0; i < INPUTS.length; i++) {
             final long pExp = expected[i];
@@ -143,7 +146,7 @@ class SizeTest {
     }
 
     @FunctionalInterface
-    private static interface Function {
+    private interface Function {
         long apply(
                 final Size size,
                 final long value

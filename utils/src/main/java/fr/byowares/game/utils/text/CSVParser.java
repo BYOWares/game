@@ -20,14 +20,34 @@ import java.util.BitSet;
 import java.util.NoSuchElementException;
 
 /**
- * A simple recyclable CSV (Character separated value) parser. Character separating fields can be chosen, but cannot be
- * {@link #BACK_SLASH}.
+ * A simple recyclable CSV (Character Separated Value) parser:
+ * <ul>
+ *     <li>Character separating fields can be chosen, but cannot be {@link #BACK_SLASH};</li>
+ *     <li>{@link #BACK_SLASH} is used to escape the separator character and itself;</li>
+ *     <li>String field cannot contain new line character;</li>
+ *     <li>Double and simple quote hold no special meaning here.</li>
+ * </ul>
+ * When instantiated or reset, the first field position is still unknown. This prevents throwing any exception when
+ * creating a new instance.
+ * <blockquote>
+ * <pre>
+ *     CSVParser parser = new CSVParser('#', "valid\\"); // Always valid
+ *     parser.asLong(); // Throws an IllegalStateException
+ *     parser.asInt(); // Throws a IllegalStateException
+ *     parser.asCharacterIterator(); // Throws a IllegalStateException
+ *     parser.nextField(); // Throws an IllegalArgumentException because the line ends with a '\'
+ *
+ *     parser.setText("Still valid\\"); // Always valid
+ *     // Behaves exactly the same as above.
+ * </pre>
+ * </blockquote>
  *
  * @since XXX
  */
-public class CSVCharSequence {
+public class CSVParser {
 
-    private static final char BACK_SLASH = '\\';
+    /** Escape character. */
+    static final char BACK_SLASH = '\\';
     private static final ThreadLocal<BitSet> TL_BITSET = ThreadLocal.withInitial(BitSet::new);
     private static final ThreadLocal<CharSequenceIterator> TL_CSI = //
             ThreadLocal.withInitial(() -> new CharSequenceIterator(""));
@@ -43,22 +63,51 @@ public class CSVCharSequence {
      * @param separator The separator used to distinguish fields.
      * @param text      The text to parse as a CSV text.
      */
-    public CSVCharSequence(
+    public CSVParser(
             final char separator,
             final CharSequence text
     ) {
-        if (areCharEquals(separator, BACK_SLASH)) throw new IllegalArgumentException("Separator cannot be \\");
+        if (areCharEquals(separator, BACK_SLASH))
+            throw new IllegalArgumentException("Separator cannot be " + BACK_SLASH);
         this.separator = separator;
         this.text = text;
-        this.begin = 0;
-        this.end = nextSeparatorPosition(text, separator, 0);
+        this.resetBeginEnd();
     }
 
-    private static boolean areCharEquals(
+    /**
+     * @param a The first character to compare.
+     * @param b The second character to compare.
+     *
+     * @return {@code true} if the two characters are equal, {@code false} otherwise.
+     */
+    static boolean areCharEquals(
             final char a,
             final char b
     ) {
         return (int) a == (int) b;
+    }
+
+    private void resetBeginEnd() {
+        this.begin = -1;
+        this.end = -1;
+    }
+
+    /**
+     * Reset this parser to point to a new text. Separator cannot be changed. This method avoid allocating a new
+     * {@link CSVParser} each time this method is called.
+     *
+     * @param text The {@code CharSequence} to parse.
+     */
+    public void setText(final CharSequence text) {
+        this.text = text;
+        this.resetBeginEnd();
+    }
+
+    /**
+     * @return {@code true} if another there is another field after the current one, {@code false} otherwise.
+     */
+    public boolean hasNext() {
+        return nextSeparatorPosition(this.text, this.separator, this.end + 1) > this.end;
     }
 
     private static int nextSeparatorPosition(
@@ -87,28 +136,22 @@ public class CSVCharSequence {
     }
 
     /**
-     * Reset this parser to point to a new text. Separator cannot be changed. This method avoid allocating a new
-     * {@link fr.byowares.game.utils.text.CSVCharSequence} each time this method is called.
+     * Move to the next field if any, and return it as a long value.
      *
-     * @param text The {@code CharSequence} to parse.
+     * @return The next field as a long value if possible.
+     *
+     * @see #nextField()
+     * @see #asLong()
      */
-    public void setText(final CharSequence text) {
-        this.text = text;
-        this.begin = 0;
-        this.end = nextSeparatorPosition(text, this.separator, 0);
+    public long nextFieldAsLong() {
+        this.nextField();
+        return this.asLong();
     }
 
     /**
-     * @return {@code true} if another there is another field after the current one, {@code false} otherwise.
-     */
-    public boolean hasNext() {
-        return nextSeparatorPosition(this.text, this.separator, this.end + 1) > this.end;
-    }
-
-    /**
-     * Move to the next element if any.
+     * Move to the next field if any.
      *
-     * @throws java.util.NoSuchElementException if the current element was already the last one.
+     * @throws java.util.NoSuchElementException if the current field was already the last one.
      */
     public void nextField() {
         final int nextEnd = nextSeparatorPosition(this.text, this.separator, this.end + 1);
@@ -123,7 +166,49 @@ public class CSVCharSequence {
      * @throws java.lang.NumberFormatException if the current field cannot be parsed as a long.
      */
     public long asLong() {
+        this.assertBeginEnd();
         return Long.parseLong(this.text, this.begin, this.end, 10);
+    }
+
+    private void assertBeginEnd() {
+        if (this.begin == -1) throw new IllegalStateException(
+                "Uninitialized CSVCharSequence, call nextField() or similar (nextAsLong(), etc.) to init it.");
+    }
+
+    /**
+     * Move to the next field if any, and return it as an int value.
+     *
+     * @return The next field as an int value if possible.
+     *
+     * @see #nextField()
+     * @see #asInt()
+     */
+    public int nextFieldAsInt() {
+        this.nextField();
+        return this.asInt();
+    }
+
+    /**
+     * @return The current field as an int value if possible.
+     *
+     * @throws java.lang.NumberFormatException if the current field cannot be parsed as an int.
+     */
+    public int asInt() {
+        this.assertBeginEnd();
+        return Integer.parseInt(this.text, this.begin, this.end, 10);
+    }
+
+    /**
+     * Move to the next field if any, and return it as a {@link java.text.CharacterIterator}.
+     *
+     * @return The next field as a CharacterIterator if possible.
+     *
+     * @see #nextField()
+     * @see #asCharacterIterator()
+     */
+    public CharacterIterator nextFieldAsCharacterIterator() {
+        this.nextField();
+        return this.asCharacterIterator();
     }
 
     /**
@@ -131,6 +216,7 @@ public class CSVCharSequence {
      * except {@link #BACK_SLASH} used to escape the separator or itself.
      */
     public CharacterIterator asCharacterIterator() {
+        this.assertBeginEnd();
         final BitSet bitSet = TL_BITSET.get();
         bitSet.clear();
         boolean isLastCharBackSlash = false;
@@ -160,6 +246,12 @@ public class CSVCharSequence {
 
     @Override
     public String toString() {
-        return this.text.subSequence(this.begin, this.end).toString();
+        return "CSVCharSequence{" + //
+                "separator=" + this.separator + //
+                ", text=" + this.text + //
+                ", begin=" + this.begin + //
+                ", end=" + this.end + //
+                (this.begin == -1 ? "" : ", currentValue=" + this.text.subSequence(this.begin, this.end)) + //
+                '}';
     }
 }

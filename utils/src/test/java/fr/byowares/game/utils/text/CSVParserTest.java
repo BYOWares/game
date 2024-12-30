@@ -22,45 +22,70 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CSVCharSequenceTest {
+class CSVParserTest {
 
-    public static final long _123 = 123L;
+    public static final int _123 = 123;
+    public static final long _123L = 123L;
 
     @Test
     public void testInvalidConstructor() {
-        assertThrows(IllegalArgumentException.class, () -> new CSVCharSequence('\\', ""));
+        assertThrows(IllegalArgumentException.class, () -> new CSVParser('\\', ""));
     }
 
     @Test
-    public void testInvalidEscapingConstructor() {
-        final var e = assertThrows(IllegalArgumentException.class, () -> new CSVCharSequence('#', "1\\2"));
+    public void testUninitialized() {
+        final var csv = new CSVParser('#', "123");
+        testUninitializedAux(csv);
+        csv.setText("123");
+        testUninitializedAux(csv);
+    }
+
+    private static void testUninitializedAux(final CSVParser csv) {
+        assertDoesNotThrow(csv::toString);
+        assertThrows(IllegalStateException.class, csv::asInt);
+        assertThrows(IllegalStateException.class, csv::asLong);
+        assertThrows(IllegalStateException.class, csv::asCharacterIterator);
+        csv.nextField();
+        assertEquals(_123, csv.asInt());
+        assertEquals(_123L, csv.asLong());
+        assertDoesNotThrow(csv::toString);
+    }
+
+
+    @Test
+    public void testInvalidEscapingString() {
+        final var csv = assertDoesNotThrow(() -> new CSVParser('#', "1\\2"));
+        final var e = assertThrows(IllegalArgumentException.class, csv::nextField);
         assertEquals("Backslash shall precede only backslash or separator (#), not: '2'", e.getMessage());
     }
 
     @Test
     public void testInvalidEscapingNextField() {
-        final var csv = assertDoesNotThrow(() -> new CSVCharSequence('#', "#1\\2"));
+        final var csv = assertDoesNotThrow(() -> new CSVParser('#', "#1\\2"));
+        assertDoesNotThrow(csv::nextField);
         final var e = assertThrows(IllegalArgumentException.class, csv::hasNext);
         assertEquals("Backslash shall precede only backslash or separator (#), not: '2'", e.getMessage());
     }
 
     @Test
     public void testInvalidEscapingAtTheEnd() {
-        final var csv = assertDoesNotThrow(() -> new CSVCharSequence('#', "#1\\"));
+        final var csv = assertDoesNotThrow(() -> new CSVParser('#', "1\\"));
         final var e = assertThrows(IllegalArgumentException.class, csv::hasNext);
         assertEquals("Last character on line was a single \\, which is forbidden", e.getMessage());
     }
 
     @Test
     public void testEmptyString() {
-        final CSVCharSequence csv = new CSVCharSequence('#', "");
+        final CSVParser csv = new CSVParser('#', "");
+        assertDoesNotThrow(csv::nextField);
         assertEmptyField(csv);
         assertFalse(csv.hasNext());
         assertThrows(NoSuchElementException.class, csv::nextField);
     }
 
-    private static void assertEmptyField(final CSVCharSequence csv) {
+    private static void assertEmptyField(final CSVParser csv) {
         assertThrows(NumberFormatException.class, csv::asLong);
+        assertThrows(NumberFormatException.class, csv::asInt);
         final CharacterIterator it = csv.asCharacterIterator();
         assertEquals(CharacterIterator.DONE, it.current());
         assertEquals(CharacterIterator.DONE, it.next());
@@ -69,14 +94,15 @@ class CSVCharSequenceTest {
 
     @Test
     public void testPositiveLongOnly() {
-        final CSVCharSequence csv = new CSVCharSequence('#', "123");
-        assertLong(csv, _123);
+        final CSVParser csv = new CSVParser('#', "123");
+        assertDoesNotThrow(csv::nextField);
+        assertLong(csv, _123L);
         assertFalse(csv.hasNext());
         assertThrows(NoSuchElementException.class, csv::nextField);
     }
 
     private static void assertLong(
-            final CSVCharSequence csv,
+            final CSVParser csv,
             final long value
     ) {
         assertEquals(value, csv.asLong());
@@ -89,8 +115,39 @@ class CSVCharSequenceTest {
 
     @Test
     public void testNegativeLongOnly() {
-        final CSVCharSequence csv = new CSVCharSequence('#', "-123");
-        assertLong(csv, -_123);
+        final CSVParser csv = new CSVParser('#', "-123");
+        assertDoesNotThrow(csv::nextField);
+        assertLong(csv, -_123L);
+        assertFalse(csv.hasNext());
+        assertThrows(NoSuchElementException.class, csv::nextField);
+    }
+
+    @Test
+    public void testPositiveIntOnly() {
+        final CSVParser csv = new CSVParser('#', "123");
+        assertDoesNotThrow(csv::nextField);
+        assertInt(csv, _123);
+        assertFalse(csv.hasNext());
+        assertThrows(NoSuchElementException.class, csv::nextField);
+    }
+
+    private static void assertInt(
+            final CSVParser csv,
+            final int value
+    ) {
+        assertEquals(value, csv.asInt());
+        final CharacterIterator it = csv.asCharacterIterator();
+        final String valueStr = Integer.toString(value);
+        assertEquals(valueStr.charAt(0), it.current());
+        for (int i = 1; i < valueStr.length(); i++)
+            assertEquals(valueStr.charAt(i), it.next());
+    }
+
+    @Test
+    public void testNegativeIntOnly() {
+        final CSVParser csv = new CSVParser('#', "-123");
+        assertDoesNotThrow(csv::nextField);
+        assertInt(csv, -_123);
         assertFalse(csv.hasNext());
         assertThrows(NoSuchElementException.class, csv::nextField);
     }
@@ -98,14 +155,15 @@ class CSVCharSequenceTest {
     @Test
     public void testTextNoBackSlash() {
         final String text = "Don't ignore me";
-        final CSVCharSequence csv = new CSVCharSequence('#', text);
+        final CSVParser csv = new CSVParser('#', text);
+        assertDoesNotThrow(csv::nextField);
         assertText(csv, text);
         assertFalse(csv.hasNext());
         assertThrows(NoSuchElementException.class, csv::nextField);
     }
 
     private static void assertText(
-            final CSVCharSequence csv,
+            final CSVParser csv,
             final String expectedValue
     ) {
         assertThrows(NumberFormatException.class, csv::asLong);
@@ -117,7 +175,8 @@ class CSVCharSequenceTest {
 
     @Test
     public void testTextWithBackSlash() {
-        final CSVCharSequence csv = new CSVCharSequence('#', "\\\\Don't\\\\ ignore me");
+        final CSVParser csv = new CSVParser('#', "\\\\Don't\\\\ ignore me");
+        assertDoesNotThrow(csv::nextField);
         assertText(csv, "\\Don't\\ ignore me");
         assertFalse(csv.hasNext());
         assertThrows(NoSuchElementException.class, csv::nextField);
@@ -125,17 +184,19 @@ class CSVCharSequenceTest {
 
     @Test
     public void testComplexLine() {
-        final CSVCharSequence csv = new CSVCharSequence('#', "#-123#123##char '\\#' is used as\\\\ a separator#");
+        final CSVParser csv = new CSVParser('#', "#-123#123##char '\\#' is used as\\\\ a separator#");
+        assertTrue(csv.hasNext());
+        assertDoesNotThrow(csv::nextField);
         assertTrue(csv.hasNext());
         assertEmptyField(csv);
 
         assertDoesNotThrow(csv::nextField);
         assertTrue(csv.hasNext());
-        assertLong(csv, -_123);
+        assertLong(csv, -_123L);
 
         assertDoesNotThrow(csv::nextField);
         assertTrue(csv.hasNext());
-        assertLong(csv, _123);
+        assertLong(csv, _123L);
 
         assertDoesNotThrow(csv::nextField);
         assertTrue(csv.hasNext());
@@ -149,5 +210,24 @@ class CSVCharSequenceTest {
         assertDoesNotThrow(csv::nextField);
         assertFalse(csv.hasNext());
         assertEmptyField(csv);
+    }
+
+    @Test
+    public void testNextAs() {
+        final String text = "Text Message";
+        final var csv = new CSVParser('#', "1#2#" + text);
+        assertTrue(csv.hasNext());
+        assertEquals(1, csv.nextFieldAsInt());
+        assertLong(csv, 1L);
+
+        assertTrue(csv.hasNext());
+        assertEquals(2L, csv.nextFieldAsLong());
+        assertInt(csv, 2);
+
+        assertTrue(csv.hasNext());
+        final var it = csv.nextFieldAsCharacterIterator();
+        assertEquals(text.charAt(0), it.current());
+        for (int i = 1; i < text.length(); i++)
+            assertEquals(text.charAt(i), it.next());
     }
 }

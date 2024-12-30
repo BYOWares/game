@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.serial;
 
 /**
+ * Utility class holding constants.
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-    exports fr.byowares.game.miq.core.model.lyrics;
-    exports fr.byowares.game.miq.core.option;
+public final class Constants {
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
-    requires org.slf4j;
-    requires org.yaml.snakeyaml;
+    /** A version to identify format */
+    public static final String VERSION = "version";
+    /** A text. */
+    public static final String COMMENT = "comment";
+    /** A character. */
+    public static final String SEPARATOR = "separator";
+    /** List of lyrics in the MIQ model. */
+    public static final String LYRICS = "lyrics";
+
+    /** Version 1. */
+    public static final Version V1 = new Version(1);
+
+    private Constants() {
+        // Utility class
+    }
 }

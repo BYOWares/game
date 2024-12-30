@@ -15,6 +15,8 @@
  */
 package fr.byowares.game.miq.core.model.lyrics;
 
+import fr.byowares.game.miq.core.option.LyricsDisplayOptions;
+
 import java.util.List;
 import java.util.Set;
 
@@ -48,6 +50,16 @@ public class BlankLine
     @Override
     public boolean isNonLexicalVocables() {
         return false;
+    }
+
+    @Override
+    public CharSequence getHiddenText(final LyricsDisplayOptions options) {
+        return this.getClearText();
+    }
+
+    @Override
+    public CharSequence getClearText() {
+        return "";
     }
 
     @Override

@@ -66,6 +66,9 @@ snakeYaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snake" }
 
 
 [bundles]
+junitImpl = ["junit", "junit-api", "junit-params", "guardian"]
+junitRun = ["junit-engine", "opentest4J", "junitP-launcher", "junitP-commons", "junitP-engine"]
+
 log4jImpl = ["slf4J-api"]
 log4jRun = [
     "slf4J-jcl", "slf4J-log", "slf4J-jul",
@@ -73,5 +76,4 @@ log4jRun = [
     "jackson-anno", "jackson-bind", "jackson-core", "jackson-yaml", "snakeYaml"
 ]
 
-junitImpl = ["junit", "junit-api", "junit-params", "guardian"]
-junitRun = ["junit-engine", "opentest4J", "junitP-launcher", "junitP-commons", "junitP-engine"]
+yamlImpl = ["snakeYaml"]

@@ -15,6 +15,8 @@
  */
 package fr.byowares.game.miq.core.model.lyrics;
 
+import fr.byowares.game.miq.core.option.LyricsDisplayOptions;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +43,7 @@ public record SimpleLine(
         implements Line {
 
     private static final String SPACE = " ";
+    private static final String HIDDEN_CHAR = "_";
 
     /**
      * Take a list of {@code SimpleLine}, merge all consecutive lines that can be merged into a single one, and then
@@ -150,5 +153,29 @@ public record SimpleLine(
     @Override
     public boolean isNonLexicalVocables() {
         return false;
+    }
+
+    @Override
+    public CharSequence getHiddenText(final LyricsDisplayOptions options) {
+        final var hidden = options.whileGuessingShowTrueLength() ? null : hideWord(options.whileGuessingWordLength());
+        final StringBuilder sb = new StringBuilder();
+        for (final LineElement elt : this.elements) {
+            if (elt.isWord()) sb.append(hidden == null ? hideWord(elt.getText().length()) : hidden);
+            else sb.append(options.whileGuessingShowPunctuation() ? elt.getText() : SPACE);
+        }
+        return sb.toString();
+    }
+
+    private static CharSequence hideWord(final int length) {
+        return HIDDEN_CHAR.repeat(length);
+    }
+
+    @Override
+    public CharSequence getClearText() {
+        final StringBuilder sb = new StringBuilder();
+        for (final LineElement elt : this.elements) {
+            sb.append(elt.getText());
+        }
+        return sb.toString();
     }
 }

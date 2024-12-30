@@ -13,20 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.core.serial;
+
+import java.io.Writer;
 
 /**
+ * Offer the capacity to serialize object of type {@code T} in Yaml format.
+ *
+ * @param <T> The type of object it can serialize.
+ *
  * @since XXX
  */
-module fr.byowares.game.miq.core {
-    exports fr.byowares.game.miq.core.info;
-    exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
-    exports fr.byowares.game.miq.core.model.audio;
-    exports fr.byowares.game.miq.core.model.lyrics;
-    exports fr.byowares.game.miq.core.option;
+@FunctionalInterface
+public interface Serializer<T> {
 
-    requires fr.byowares.game.utils;
-    requires java.desktop;
-    requires org.slf4j;
-    requires org.yaml.snakeyaml;
+    /**
+     * @param t      The object to serialize.
+     * @param writer The object to write the serialization of the object.
+     */
+    void serialize(
+            T t,
+            Writer writer
+    );
 }
