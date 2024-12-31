@@ -38,7 +38,7 @@ class SpaceCleanerLineParserTest {
 
     final static String WHITESPACES_STRING = "" + '\t' + '\n' + '\u000B' + '\f' + " " + '\r' + '\u001C' + '\u001D' + '\u001E' + '\u001F';
     private static final OptionsLineParser OLP_NO_BRACKET = new OptionsLineParser(
-            new LyricsParsingOptions().removeSingerBracket().removeChoirBracket().removeScatBracket());
+            new LyricsParsingOptions().removeSinger().removeBackVocals().removeNonLexical());
 
     private static Stream<Arguments> bracketProvider() {
         final Bracket[] values = Bracket.values();

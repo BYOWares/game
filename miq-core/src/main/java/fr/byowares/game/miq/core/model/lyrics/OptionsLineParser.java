@@ -29,8 +29,8 @@ import java.util.Set;
  * A parser that is able to parse text containing bracket delimited part (known as context):
  * <ul>
  *     <li>Singer;</li>
- *     <li>Choir or backup vocals;</li>
- *     <li>Scat or non-lexical vocables.</li>
+ *     <li>Backup vocals;</li>
+ *     <li>Non-lexical vocables.</li>
  * </ul>
  * When a context has no bracket associated to ({@code null} value), it means the parsing capability is disabled for
  * this context. Undefined brackets are considered as punctuation.
@@ -54,8 +54,8 @@ public record OptionsLineParser(LyricsParsingOptions options)
     private static final String OPENING_NESTED = "Opening bracket (%s) found: %s, but previous one was not closed: %s";
     private static final String OPENING_NOT_CLOSED = "Opening bracket (%s) does not match any closing one: %s";
     private static final String SINGER = "singer";
-    private static final String CHOIR = "choir";
-    private static final String SCAT = "scat";
+    private static final String BACK_VOCALS = "backup vocals";
+    private static final String NON_LEXICAL = "non-lexical vocables";
 
     /**
      * Initialise a new {@link fr.byowares.game.miq.core.model.lyrics.LineParser} using {@link fr.byowares.game.miq.core.option.LyricsParsingOptions}
@@ -98,18 +98,18 @@ public record OptionsLineParser(LyricsParsingOptions options)
         // Contextual information used to instantiates LineElements & Singers.
         // Position set to -1, because of the +1 used to ignore the bracket.
         CharPosition lastCp = new CharPosition(null, true, -1);
-        boolean isChoir = false;
-        boolean isScat = false;
+        boolean isBackVocals = false;
+        boolean isNonLexical = false;
         Set<Singer> singers = Set.of();
         final List<SimpleLine> res = new ArrayList<>();
 
         for (final CharPosition cp : charPositions) {
-            if (this.options.choirBracket() != null && this.options.choirBracket() == lastCp.bracket) {
-                isChoir = lastCp.open;
+            if (this.options.backVocalsBracket() != null && this.options.backVocalsBracket() == lastCp.bracket) {
+                isBackVocals = lastCp.open;
                 singers = Set.of();
             }
-            if (this.options.scatBracket() != null && this.options.scatBracket() == lastCp.bracket) {
-                isScat = lastCp.open;
+            if (this.options.nonLexicalBracket() != null && this.options.nonLexicalBracket() == lastCp.bracket) {
+                isNonLexical = lastCp.open;
                 singers = Set.of();
             }
             final boolean isParsingSinger = this.options.singerBracket() != null && this.options.singerBracket() == lastCp.bracket && lastCp.open;
@@ -122,7 +122,7 @@ public record OptionsLineParser(LyricsParsingOptions options)
             if (lineElements.stream().noneMatch(LineElement::isWord)) continue;
 
             if (isParsingSinger) singers = SpaceCleanerLineParser.parseAsSingers(lineElements);
-            else res.add(new SimpleLine(lineElements, singers, isChoir, isScat));
+            else res.add(new SimpleLine(lineElements, singers, isBackVocals, isNonLexical));
         }
         return res.isEmpty() ? BlankLine.ONE_BLANK_LINE : SimpleLine.merge(res);
     }
@@ -137,24 +137,24 @@ public record OptionsLineParser(LyricsParsingOptions options)
     private List<CharPosition> analyseInput(final CharSequence input) {
         final List<CharPosition> res = new ArrayList<>();
         extractCharPosition(res, input, this.options.singerBracket());
-        extractCharPosition(res, input, this.options.choirBracket());
-        extractCharPosition(res, input, this.options.scatBracket());
+        extractCharPosition(res, input, this.options.backVocalsBracket());
+        extractCharPosition(res, input, this.options.nonLexicalBracket());
         Collections.sort(res);
 
         // Validating format
         // Singer brackets do not allow nested brackets.
-        // BackVocals and Scat brackets accept nested brackets, but cannot contain themselves.
-        CharPosition lastChoirOpened = null;
-        CharPosition lastScatOpened = null;
+        // BackVocals and NonLexical brackets accept nested brackets, but cannot contain themselves.
+        CharPosition lastBackVocals = null;
+        CharPosition lastNonLexical = null;
         final Iterator<CharPosition> it = res.iterator();
 
         while (it.hasNext()) {
             final CharPosition current = it.next();
-            if (current.bracket == this.options.choirBracket()) {
-                lastChoirOpened = current.validateBracket(lastChoirOpened, lastScatOpened, CHOIR, SCAT);
+            if (current.bracket == this.options.backVocalsBracket()) {
+                lastBackVocals = current.validateBracket(lastBackVocals, lastNonLexical, BACK_VOCALS, NON_LEXICAL);
 
-            } else if (current.bracket == this.options.scatBracket()) {
-                lastScatOpened = current.validateBracket(lastScatOpened, lastChoirOpened, SCAT, CHOIR);
+            } else if (current.bracket == this.options.nonLexicalBracket()) {
+                lastNonLexical = current.validateBracket(lastNonLexical, lastBackVocals, NON_LEXICAL, BACK_VOCALS);
 
             } else if (current.bracket == this.options.singerBracket()) {
                 if (!current.open) isf(CLOSING_NOT_OPENED, SINGER, current);
@@ -170,12 +170,13 @@ public record OptionsLineParser(LyricsParsingOptions options)
                 ise("Unknown bracket: " + current.detailedToString());
             }
         }
-        final boolean hasChoirOpened = lastChoirOpened != null;
-        final boolean hasScatOpened = lastScatOpened != null;
-        if (hasChoirOpened) {
-            if (hasScatOpened) isf(OPENING_NOT_CLOSED, CHOIR + " & " + SCAT, lastChoirOpened + " & " + lastScatOpened);
-            else isf(OPENING_NOT_CLOSED, CHOIR, lastChoirOpened);
-        } else if (hasScatOpened) isf(OPENING_NOT_CLOSED, SCAT, lastScatOpened);
+        final boolean hasBackVocalsOpened = lastBackVocals != null;
+        final boolean hasNonLexicalOpened = lastNonLexical != null;
+        if (hasBackVocalsOpened) {
+            if (hasNonLexicalOpened)
+                isf(OPENING_NOT_CLOSED, BACK_VOCALS + " & " + NON_LEXICAL, lastBackVocals + " & " + lastNonLexical);
+            else isf(OPENING_NOT_CLOSED, BACK_VOCALS, lastBackVocals);
+        } else if (hasNonLexicalOpened) isf(OPENING_NOT_CLOSED, NON_LEXICAL, lastNonLexical);
 
         return res;
     }

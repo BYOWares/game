@@ -64,8 +64,8 @@ public class LyricsSerializer
             else {
                 builder.newField(verse.lines().size());
                 for (final Line line : verse.lines()) {
-                    final int mask = (line.isBackVocals() ? LyricsDeserializerV1.CHOIR_BIT : 0) | //
-                            (line.isNonLexicalVocables() ? LyricsDeserializerV1.SCAT_BIT : 0);
+                    final int mask = (line.isBackVocals() ? LyricsDeserializerV1.BACK_VOCALS_BIT : 0) | //
+                            (line.isNonLexicalVocables() ? LyricsDeserializerV1.NON_LEXICAL_BIT : 0);
                     builder.newField(mask);
                     builder.newField(line.getSingers(), Singer::name);
                     builder.newField(line.getClearText());

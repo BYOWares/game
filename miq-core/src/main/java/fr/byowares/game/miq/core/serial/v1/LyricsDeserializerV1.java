@@ -41,9 +41,9 @@ public class LyricsDeserializerV1
         extends VersionedDeserializer<Lyrics> {
 
     /** Bit mask for the backup vocal information. */
-    public static final int CHOIR_BIT = 1;
+    public static final int BACK_VOCALS_BIT = 1;
     /** Bit mask for the non-lexical vocables information. */
-    public static final int SCAT_BIT = 2;
+    public static final int NON_LEXICAL_BIT = 2;
 
     @Override
     protected Lyrics buildFromMap(final Map<String, Object> map) {
@@ -72,11 +72,11 @@ public class LyricsDeserializerV1
         final List<Line> lines = new ArrayList<>(nbLines);
         for (int line = 0; line < nbLines; line++) {
             final int annotations = csv.nextFieldAsInt();
-            final boolean isChoir = (annotations & CHOIR_BIT) != 0;
-            final boolean isScat = (annotations & SCAT_BIT) != 0;
+            final boolean isBackupVocals = (annotations & BACK_VOCALS_BIT) != 0;
+            final boolean isNonLexicalVocables = (annotations & NON_LEXICAL_BIT) != 0;
             final var singers = SpaceCleanerLineParser.parseAsSingers(csv.nextFieldAsCharacterIterator());
             final var elements = SpaceCleanerLineParser.parseLineElements(csv.nextFieldAsCharacterIterator());
-            lines.add(new SimpleLine(elements, singers, isChoir, isScat));
+            lines.add(new SimpleLine(elements, singers, isBackupVocals, isNonLexicalVocables));
         }
         return new TimeCodedVerse(lines, range);
     }

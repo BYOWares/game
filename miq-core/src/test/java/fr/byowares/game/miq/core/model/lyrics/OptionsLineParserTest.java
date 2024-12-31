@@ -37,15 +37,14 @@ class OptionsLineParserTest {
     static {
         final List<Bracket> allBrackets = new ArrayList<>(Arrays.asList(Bracket.values()));
         allBrackets.add(null);
-        final var options = new LyricsParsingOptions().removeCopyrightPattern();
+        final var options = new LyricsParsingOptions();
         for (final Bracket singer : allBrackets) {
-            for (final Bracket choir : allBrackets) {
-                if (!(singer == null || singer != choir)) continue;
-                for (final Bracket scat : allBrackets) {
-                    if (!(choir == null || choir != scat)) continue;
-                    if (!(singer == null || singer != scat)) continue;
-                    ALL_VALID_OLP.add(
-                            new OptionsLineParser(options.singerBracket(singer).choirBracket(choir).scatBracket(scat)));
+            for (final Bracket back : allBrackets) {
+                if (!(singer == null || singer != back)) continue;
+                for (final Bracket non : allBrackets) {
+                    if (!(back == null || back != non)) continue;
+                    if (!(singer == null || singer != non)) continue;
+                    ALL_VALID_OLP.add(new OptionsLineParser(options.singer(singer).backVocals(back).nonLexical(non)));
                 }
             }
         }
@@ -60,56 +59,58 @@ class OptionsLineParserTest {
     }
 
     /**
-     * @param singerMustBeNull {@code null} if not filter must be applied on the singer bracket option, {@code true}
-     *                         if it must be {@code null}, {@code false} if it must be non-null.
-     * @param choirMustBeNull  {@code null} if not filter must be applied on the choir bracket option, {@code true}
-     *                         if it must be {@code null}, {@code false} if it must be non-null.
-     * @param scatMustBeNull   {@code null} if not filter must be applied on the scat bracket option, {@code true}
-     *                         if it must be {@code null}, {@code false} if it must be non-null.
+     * @param singerNull           {@code null} if not filter must be applied on the singer bracket option, {@code true}
+     *                             if it must be {@code null}, {@code false} if it must be non-null.
+     * @param backVocalsMustBeNull {@code null} if not filter must be applied on the backup vocals bracket option,
+     *                             {@code true} if it must be {@code null}, {@code false} if it must be non-null.
+     * @param NonLexicalMustBeNull {@code null} if not filter must be applied on the non-lexical vocables bracket
+     *                             option, {@code true} if it must be {@code null}, {@code false} if it must be non-null.
      *
      * @return The stream of valid {@link fr.byowares.game.miq.core.model.lyrics.OptionsLineParser} with filters
      * applied.
      */
     public static Stream<OptionsLineParser> generateOLP(
-            final Boolean singerMustBeNull,
-            final Boolean choirMustBeNull,
-            final Boolean scatMustBeNull
+            final Boolean singerNull,
+            final Boolean backVocalsMustBeNull,
+            final Boolean NonLexicalMustBeNull
     ) {
         return ALL_VALID_OLP.stream().filter(p -> {
             final LyricsParsingOptions options = p.options();
-            if (singerMustBeNull != null && Objects.isNull(options.singerBracket()) != singerMustBeNull) return false;
-            if (choirMustBeNull != null && Objects.isNull(options.choirBracket()) != choirMustBeNull) return false;
-            return (scatMustBeNull == null || Objects.isNull(options.scatBracket()) == scatMustBeNull);
+            if (singerNull != null && Objects.isNull(options.singerBracket()) != singerNull) return false;
+            if (backVocalsMustBeNull != null && Objects.isNull(options.backVocalsBracket()) != backVocalsMustBeNull)
+                return false;
+            return (NonLexicalMustBeNull == null || Objects.isNull(
+                    options.nonLexicalBracket()) == NonLexicalMustBeNull);
         });
     }
 
-    public static Stream<OptionsLineParser> generateOLPChoirDefined() {
+    public static Stream<OptionsLineParser> generateOLPBackVocalsDefined() {
         return generateOLP(null, false, null);
     }
 
-    public static Stream<OptionsLineParser> generateOLPScatDefined() {
+    public static Stream<OptionsLineParser> generateOLPNonLexicalDefined() {
         return generateOLP(null, null, false);
     }
 
-    public static Stream<OptionsLineParser> generateOLPSingerChoirDefined() {
+    public static Stream<OptionsLineParser> generateOLPSingerBackVocalsDefined() {
         return generateOLP(false, false, null);
     }
 
-    public static Stream<OptionsLineParser> generateOLPSingerScatDefined() {
+    public static Stream<OptionsLineParser> generateOLPSingerNonLexicalDefined() {
         return generateOLP(false, null, false);
     }
 
-    public static Stream<OptionsLineParser> generateOLPChoirScatDefined() {
+    public static Stream<OptionsLineParser> generateOLPBackVocalsNonLexicalDefined() {
         return generateOLP(null, false, false);
     }
 
-    public static Stream<OptionsLineParser> generateOLPSingerChoirScatDefined() {
+    public static Stream<OptionsLineParser> generateOLPAllDefined() {
         return generateOLP(false, false, false);
     }
 
     @Test
     public void testInvalidOption() {
-        final var options = new LyricsParsingOptions().singerBracket(Bracket.ANGLE).choirBracket(Bracket.ANGLE);
+        final var options = new LyricsParsingOptions().singer(Bracket.ANGLE).backVocals(Bracket.ANGLE);
         final var e = assertThrows(IllegalStateException.class, () -> new OptionsLineParser(options));
         assertTrue(e.getMessage().startsWith("LyricsParsingOptions are not valid: "));
     }
@@ -201,8 +202,8 @@ class OptionsLineParserTest {
 
     private static SimpleLine buildLine(
             final Set<Singer> singers,
-            final boolean choir,
-            final boolean scat,
+            final boolean isBackupVocals,
+            final boolean isNonLexicalVocables,
             final String... array
     ) {
         final List<LineElement> elements = new ArrayList<>(array.length);
@@ -210,14 +211,14 @@ class OptionsLineParserTest {
             final LineElement elt = i % 2 == 0 ? new Word(array[i]) : new Punctuation(array[i]);
             elements.add(elt);
         }
-        return new SimpleLine(elements, singers, choir, scat);
+        return new SimpleLine(elements, singers, isBackupVocals, isNonLexicalVocables);
     }
 
     @ParameterizedTest(name = "[{index}] Options={0}")
-    @MethodSource("generateOLPChoirDefined")
-    public void testChoirContext(final OptionsLineParser parser) {
-        final String open = Character.toString(parser.options().choirBracket().getOpen());
-        final String close = Character.toString(parser.options().choirBracket().getClose());
+    @MethodSource("generateOLPBackVocalsDefined")
+    public void testBackupVocalsContext(final OptionsLineParser parser) {
+        final String open = Character.toString(parser.options().backVocalsBracket().getOpen());
+        final String close = Character.toString(parser.options().backVocalsBracket().getClose());
         final String pair = open + close;
         final String ws = SpaceCleanerLineParserTest.WHITESPACES_STRING;
 
@@ -241,21 +242,21 @@ class OptionsLineParserTest {
         // Only punctuation line are ignored.
         assertEquals(BlankLine.ONE_BLANK_LINE, parser.parse(open + ".-/!" + close));
 
-        final String o = "Opening bracket (choir) does not match any closing one: {bracket=";
-        final String c = "Closing bracket (choir) does not match any opening one: {bracket=";
+        final String o = "Opening bracket (backup vocals) does not match any closing one: {bracket=";
+        final String c = "Closing bracket (backup vocals) does not match any opening one: {bracket=";
         assertThrowsISE(parser, open + "Dave Hey you", o + open + ", position=0}");
         assertThrowsISE(parser, "Dave Hey you" + open, o + open + ", position=12}");
         assertThrowsISE(parser, open + "Dave" + open + " Hey you",
-                        "Opening bracket (choir) found: {bracket=" + open + ", position=0}, but previous one was not closed: {bracket=" + open + ", position=5}");
+                        "Opening bracket (backup vocals) found: {bracket=" + open + ", position=0}, but previous one was not closed: {bracket=" + open + ", position=5}");
         assertThrowsISE(parser, "Dave" + close + " Hey you", c + close + ", position=4}");
         assertThrowsISE(parser, "Dave Hey you" + close, c + close + ", position=12}");
     }
 
     @ParameterizedTest(name = "[{index}] Options={0}")
-    @MethodSource("generateOLPScatDefined")
-    public void testScatContext(final OptionsLineParser parser) {
-        final String open = Character.toString(parser.options().scatBracket().getOpen());
-        final String close = Character.toString(parser.options().scatBracket().getClose());
+    @MethodSource("generateOLPNonLexicalDefined")
+    public void testNonLexicalVocablesContext(final OptionsLineParser parser) {
+        final String open = Character.toString(parser.options().nonLexicalBracket().getOpen());
+        final String close = Character.toString(parser.options().nonLexicalBracket().getClose());
         final String pair = open + close;
         final String ws = SpaceCleanerLineParserTest.WHITESPACES_STRING;
 
@@ -279,24 +280,24 @@ class OptionsLineParserTest {
         // Only punctuation line are ignored.
         assertEquals(BlankLine.ONE_BLANK_LINE, parser.parse(open + ".-/!" + close));
 
-        final String o = "Opening bracket (scat) does not match any closing one: {bracket=";
-        final String c = "Closing bracket (scat) does not match any opening one: {bracket=";
+        final String o = "Opening bracket (non-lexical vocables) does not match any closing one: {bracket=";
+        final String c = "Closing bracket (non-lexical vocables) does not match any opening one: {bracket=";
         assertThrowsISE(parser, open + "Dave Hey you", o + open + ", position=0}");
         assertThrowsISE(parser, "Dave Hey you" + open, o + open + ", position=12}");
         assertThrowsISE(parser, open + "Dave" + open + " Hey you",
-                        "Opening bracket (scat) found: {bracket=" + open + ", position=0}, but previous one was not closed: {bracket=" + open + ", position=5}");
+                        "Opening bracket (non-lexical vocables) found: {bracket=" + open + ", position=0}, but previous one was not closed: {bracket=" + open + ", position=5}");
         assertThrowsISE(parser, "Dave" + close + " Hey you", c + close + ", position=4}");
         assertThrowsISE(parser, "Dave Hey you" + close, c + close + ", position=12}");
     }
 
     @ParameterizedTest(name = "[{index}] Options={0}")
-    @MethodSource("generateOLPSingerChoirDefined")
-    public void testSingerChoirContext(final OptionsLineParser parser) {
+    @MethodSource("generateOLPSingerBackVocalsDefined")
+    public void testSingerBackupVocalsContext(final OptionsLineParser parser) {
         final String so = Character.toString(parser.options().singerBracket().getOpen());
         final String sc = Character.toString(parser.options().singerBracket().getClose());
         final String sp = so + sc;
-        final String co = Character.toString(parser.options().choirBracket().getOpen());
-        final String cc = Character.toString(parser.options().choirBracket().getClose());
+        final String co = Character.toString(parser.options().backVocalsBracket().getOpen());
+        final String cc = Character.toString(parser.options().backVocalsBracket().getClose());
 
         final String l1 = "Hey you, out there";
         final String n1 = so + "David" + sc;
@@ -324,13 +325,13 @@ class OptionsLineParserTest {
     }
 
     @ParameterizedTest(name = "[{index}] Options={0}")
-    @MethodSource("generateOLPSingerScatDefined")
-    public void testSingerScatContext(final OptionsLineParser parser) {
+    @MethodSource("generateOLPSingerNonLexicalDefined")
+    public void testSingerNonLexicalVocablesContext(final OptionsLineParser parser) {
         final String so = Character.toString(parser.options().singerBracket().getOpen());
         final String sc = Character.toString(parser.options().singerBracket().getClose());
         final String sp = so + sc;
-        final String co = Character.toString(parser.options().scatBracket().getOpen());
-        final String cc = Character.toString(parser.options().scatBracket().getClose());
+        final String co = Character.toString(parser.options().nonLexicalBracket().getOpen());
+        final String cc = Character.toString(parser.options().nonLexicalBracket().getClose());
 
         final String l1 = "Hey you, out there";
         final String n1 = so + "David" + sc;
@@ -358,13 +359,13 @@ class OptionsLineParserTest {
     }
 
     @ParameterizedTest(name = "[{index}] Options={0}")
-    @MethodSource("generateOLPChoirScatDefined")
-    public void testChoirScatContext(final OptionsLineParser parser) {
-        final String so = Character.toString(parser.options().scatBracket().getOpen());
-        final String sc = Character.toString(parser.options().scatBracket().getClose());
+    @MethodSource("generateOLPBackVocalsNonLexicalDefined")
+    public void testBackupVocalsNonLexicalVocablesContext(final OptionsLineParser parser) {
+        final String so = Character.toString(parser.options().nonLexicalBracket().getOpen());
+        final String sc = Character.toString(parser.options().nonLexicalBracket().getClose());
         final String sp = so + sc;
-        final String co = Character.toString(parser.options().choirBracket().getOpen());
-        final String cc = Character.toString(parser.options().choirBracket().getClose());
+        final String co = Character.toString(parser.options().backVocalsBracket().getOpen());
+        final String cc = Character.toString(parser.options().backVocalsBracket().getClose());
         final String cp = co + cc;
 
         final String l1 = "Hey you, out there";
@@ -380,22 +381,22 @@ class OptionsLineParserTest {
         final String i3 = ", position=2}, but last opening bracket (";
         final String i4 = ") does not match: {bracket=";
         final String i5 = ", position=1}";
-        assertThrowsISE(parser, co + so + cc, i1 + "choir" + i2 + cc + i3 + "scat" + i4 + so + i5);
-        assertThrowsISE(parser, so + co + sc, i1 + "scat" + i2 + sc + i3 + "choir" + i4 + co + i5);
+
+        final String back = "backup vocals";
+        final String non = "non-lexical vocables";
+        assertThrowsISE(parser, co + so + cc, i1 + back + i2 + cc + i3 + non + i4 + so + i5);
+        assertThrowsISE(parser, so + co + sc, i1 + non + i2 + sc + i3 + back + i4 + co + i5);
     }
 
     @ParameterizedTest(name = "[{index}] Options={0}")
-    @MethodSource("generateOLPSingerChoirScatDefined")
+    @MethodSource("generateOLPAllDefined")
     public void testAllContext(final OptionsLineParser parser) {
         final String io = Character.toString(parser.options().singerBracket().getOpen());
         final String ic = Character.toString(parser.options().singerBracket().getClose());
-        final String ip = io + ic;
-        final String so = Character.toString(parser.options().scatBracket().getOpen());
-        final String sc = Character.toString(parser.options().scatBracket().getClose());
-        final String sp = so + sc;
-        final String co = Character.toString(parser.options().choirBracket().getOpen());
-        final String cc = Character.toString(parser.options().choirBracket().getClose());
-        final String cp = co + cc;
+        final String so = Character.toString(parser.options().nonLexicalBracket().getOpen());
+        final String sc = Character.toString(parser.options().nonLexicalBracket().getClose());
+        final String co = Character.toString(parser.options().backVocalsBracket().getOpen());
+        final String cc = Character.toString(parser.options().backVocalsBracket().getClose());
 
         final String l1 = "Hey you, out there";
         final String n1 = io + "David" + ic;

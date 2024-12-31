@@ -33,27 +33,27 @@ class LyricsParsingOptionsTest {
         final List<Bracket> allBrackets = new ArrayList<>(Arrays.asList(Bracket.values()));
         allBrackets.add(null);
         for (final Bracket singer : allBrackets) {
-            for (final Bracket choir : allBrackets) {
-                final boolean scValid = singer == null || singer != choir;
-                for (final Bracket scat : allBrackets) {
-                    final boolean csValid = choir == null || choir != scat;
-                    final boolean ssValid = singer == null || singer != scat;
-                    res.add(Arguments.of(singer, choir, scat, scValid && csValid && ssValid));
+            for (final Bracket backVocals : allBrackets) {
+                final boolean sbValid = singer == null || singer != backVocals;
+                for (final Bracket nonLexical : allBrackets) {
+                    final boolean bnValid = backVocals == null || backVocals != nonLexical;
+                    final boolean snValid = singer == null || singer != nonLexical;
+                    res.add(Arguments.of(singer, backVocals, nonLexical, sbValid && bnValid && snValid));
                 }
             }
         }
         return res.stream();
     }
 
-    @ParameterizedTest(name = "[{index}] Singer={0}, Choir={1}, Scat={2}, IsValid={3}")
+    @ParameterizedTest(name = "[{index}] Singer={0}, BackVocals={1}, NonLexical={2}, IsValid={3}")
     @MethodSource("provideBracketOptions")
     void testIsValidMethod(
             final Bracket singer,
-            final Bracket choir,
-            final Bracket scat,
+            final Bracket backVocals,
+            final Bracket nonLexical,
             final boolean isValid
     ) {
-        final var options = new LyricsParsingOptions().singerBracket(singer).choirBracket(choir).scatBracket(scat);
+        final var options = new LyricsParsingOptions().singer(singer).backVocals(backVocals).nonLexical(nonLexical);
         assertEquals(isValid, options.isValid());
     }
 }
