@@ -64,7 +64,7 @@ public abstract class Deserializers<T> {
      *
      * @return The deserialized object.
      */
-    public final T load(final InputStream is) {
+    public final T deserialize(final InputStream is) {
         final Map<String, Object> map = new Yaml().load(is);
         // Will throw NPE if the version is not found in the map.
         final Version version = Version.from(Objects.toString(Objects.requireNonNull(map.remove(Constants.VERSION))));

@@ -22,8 +22,9 @@ import java.util.NoSuchElementException;
 /**
  * A simple recyclable CSV (Character Separated Value) parser:
  * <ul>
- *     <li>Character separating fields can be chosen, but cannot be {@link #BACK_SLASH};</li>
+ *     <li>Character separating fields can be chosen, but cannot be {@link #BACK_SLASH} or {@link #SPACE};</li>
  *     <li>{@link #BACK_SLASH} is used to escape the separator character and itself;</li>
+ *     <li>{@link #SPACE} is used to join collection's elements together;</li>
  *     <li>String field cannot contain new line character;</li>
  *     <li>Double and simple quote hold no special meaning here.</li>
  * </ul>
@@ -48,6 +49,9 @@ public class CSVParser {
 
     /** Escape character. */
     static final char BACK_SLASH = '\\';
+    /** List joiner character. */
+    static final char SPACE = ' ';
+
     private static final ThreadLocal<BitSet> TL_BITSET = ThreadLocal.withInitial(BitSet::new);
     private static final ThreadLocal<CharSequenceIterator> TL_CSI = //
             ThreadLocal.withInitial(() -> new CharSequenceIterator(""));
@@ -67,11 +71,32 @@ public class CSVParser {
             final char separator,
             final CharSequence text
     ) {
-        if (areCharEquals(separator, BACK_SLASH))
-            throw new IllegalArgumentException("Separator cannot be " + BACK_SLASH);
+        validateSeparator(separator);
         this.separator = separator;
         this.text = text;
         this.resetBeginEnd();
+    }
+
+    /**
+     * @param separator The separator character to use.
+     *
+     * @throws java.lang.IllegalArgumentException If the provided separator is {@link #BACK_SLASH} or {@link #SPACE}.
+     */
+    static void validateSeparator(final char separator) {
+        validateSeparator(separator, BACK_SLASH);
+        validateSeparator(separator, SPACE);
+    }
+
+    private void resetBeginEnd() {
+        this.begin = -1;
+        this.end = -1;
+    }
+
+    private static void validateSeparator(
+            final char separator,
+            final char c
+    ) {
+        if (areCharEquals(separator, c)) throw new IllegalArgumentException("Separator cannot be '" + c + "'");
     }
 
     /**
@@ -85,11 +110,6 @@ public class CSVParser {
             final char b
     ) {
         return (int) a == (int) b;
-    }
-
-    private void resetBeginEnd() {
-        this.begin = -1;
-        this.end = -1;
     }
 
     /**

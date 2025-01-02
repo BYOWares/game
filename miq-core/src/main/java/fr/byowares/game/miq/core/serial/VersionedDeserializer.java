@@ -16,6 +16,7 @@
 package fr.byowares.game.miq.core.serial;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Generic versioned deserializer, that used a map to build an object. The strategy is to remove every key from the
@@ -31,15 +32,34 @@ public abstract class VersionedDeserializer<T> {
      * @param map The map containing all data.
      * @param key The key required in the map.
      *
-     * @return The value associated to the {@code key}, or an empty String if none.
+     * @return The value associated to the {@code key}, or an {@code null} if none.
      *
      * @see #remove(java.util.Map, String, Class, Object)
      */
-    protected static String ramoveAsString(
+    protected static char removeAsCharacter(
             final Map<String, Object> map,
             final String key
     ) {
-        return remove(map, key, String.class, "");
+        final String v = Objects.requireNonNull(removeAsString(map, key, null));
+        if (v.length() != 1) throw new IllegalArgumentException("A single character is expected here (" + v + ")");
+        return v.charAt(0);
+    }
+
+    /**
+     * @param map          The map containing all data.
+     * @param key          The key required in the map.
+     * @param defaultValue The default value when not found in the map.
+     *
+     * @return The value associated to the {@code key}, or {@code defaultValue} if none.
+     *
+     * @see #remove(java.util.Map, String, Class, Object)
+     */
+    protected static String removeAsString(
+            final Map<String, Object> map,
+            final String key,
+            final String defaultValue
+    ) {
+        return remove(map, key, String.class, defaultValue);
     }
 
     /**
@@ -64,9 +84,24 @@ public abstract class VersionedDeserializer<T> {
     ) {
         final Object v = map.remove(key);
         if (v == null) return defaultValue;
-        if (valueClass.equals(v.getClass())) return valueClass.cast(v);
+        if (valueClass.isAssignableFrom(v.getClass())) return valueClass.cast(v);
         throw new IllegalArgumentException(
                 "Invalid type. Expected " + valueClass.getTypeName() + ", but was " + v.getClass().getTypeName() + " (" + v + ")");
+    }
+
+    /**
+     * @param map The map containing all data.
+     * @param key The key required in the map.
+     *
+     * @return The value associated to the {@code key}, or an {@code null} if none.
+     *
+     * @see #remove(java.util.Map, String, Class, Object)
+     */
+    protected static String removeAsString(
+            final Map<String, Object> map,
+            final String key
+    ) {
+        return removeAsString(map, key, null);
     }
 
     /**

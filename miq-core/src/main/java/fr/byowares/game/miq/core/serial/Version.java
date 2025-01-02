@@ -23,7 +23,6 @@ package fr.byowares.game.miq.core.serial;
 public record Version(int version)
         implements Comparable<Version> {
 
-
     /**
      * Convert a {@link java.lang.CharSequence} into a version
      *

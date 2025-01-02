@@ -147,12 +147,12 @@ public record SimpleLine(
 
     @Override
     public boolean isBackVocals() {
-        return false;
+        return this.isBackVocals;
     }
 
     @Override
     public boolean isNonLexicalVocables() {
-        return false;
+        return this.isNonLexical;
     }
 
     @Override

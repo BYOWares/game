@@ -35,9 +35,15 @@ class CSVBuilderTest {
     }
 
     @Test
-    void testConstructorInvalid() {
+    void testConstructorInvalidBackSlash() {
         final var e = assertThrows(IllegalArgumentException.class, () -> new CSVBuilder('\\'));
-        assertEquals("Separator cannot be \\", e.getMessage());
+        assertEquals("Separator cannot be '\\'", e.getMessage());
+    }
+
+    @Test
+    void testConstructorInvalidSpace() {
+        final var e = assertThrows(IllegalArgumentException.class, () -> new CSVBuilder(' '));
+        assertEquals("Separator cannot be ' '", e.getMessage());
     }
 
     @Test

@@ -40,15 +40,22 @@ import java.util.Objects;
 public class LyricsDeserializerV1
         extends VersionedDeserializer<Lyrics> {
 
+    /** Singleton pattern. */
+    public static final LyricsDeserializerV1 INSTANCE = new LyricsDeserializerV1();
+
     /** Bit mask for the backup vocal information. */
     public static final int BACK_VOCALS_BIT = 1;
     /** Bit mask for the non-lexical vocables information. */
     public static final int NON_LEXICAL_BIT = 2;
 
+    private LyricsDeserializerV1() {
+        // Singleton pattern
+    }
+
     @Override
     protected Lyrics buildFromMap(final Map<String, Object> map) {
-        final String comment = ramoveAsString(map, Constants.COMMENT);
-        final char separator = Objects.requireNonNull(remove(map, Constants.SEPARATOR, Character.class, null));
+        final String comment = removeAsString(map, Constants.COMMENT);
+        final char separator = removeAsCharacter(map, Constants.SEPARATOR);
         final List<?> unparsedLyrics = Objects.requireNonNull(remove(map, Constants.LYRICS, List.class, null));
         final CSVParser csv = new CSVParser(separator, "");
 
@@ -67,7 +74,7 @@ public class LyricsDeserializerV1
         csv.setText(Objects.toString(unparsedLyric));
         final Range range = new Range(csv.nextFieldAsLong(), csv.nextFieldAsLong());
         final int nbLines = csv.nextFieldAsInt();
-        if (nbLines == 0) return new TimeCodedVerse(BlankLine.ONE_BLANK_LINE, range);
+        if (nbLines == 0) return new TimeCodedVerse(range, BlankLine.ONE_BLANK_LINE);
 
         final List<Line> lines = new ArrayList<>(nbLines);
         for (int line = 0; line < nbLines; line++) {
@@ -78,7 +85,7 @@ public class LyricsDeserializerV1
             final var elements = SpaceCleanerLineParser.parseLineElements(csv.nextFieldAsCharacterIterator());
             lines.add(new SimpleLine(elements, singers, isBackupVocals, isNonLexicalVocables));
         }
-        return new TimeCodedVerse(lines, range);
+        return new TimeCodedVerse(range, lines);
     }
 
     @Override

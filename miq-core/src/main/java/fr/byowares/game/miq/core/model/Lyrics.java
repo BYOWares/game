@@ -26,8 +26,6 @@ import java.util.List;
  * @since XXX
  */
 public record Lyrics(
-        String comment,
+        CharSequence comment,
         List<TimeCodedVerse> lyrics
-) {
-
-}
+) {}

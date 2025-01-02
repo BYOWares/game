@@ -28,8 +28,15 @@ class CSVParserTest {
     public static final long _123L = 123L;
 
     @Test
-    public void testInvalidConstructor() {
-        assertThrows(IllegalArgumentException.class, () -> new CSVParser('\\', ""));
+    public void testInvalidConstructorBackSlash() {
+        final var e = assertThrows(IllegalArgumentException.class, () -> new CSVParser('\\', ""));
+        assertEquals("Separator cannot be '\\'", e.getMessage());
+    }
+
+    @Test
+    public void testInvalidConstructorSpace() {
+        final var e = assertThrows(IllegalArgumentException.class, () -> new CSVParser(' ', ""));
+        assertEquals("Separator cannot be ' '", e.getMessage());
     }
 
     @Test
@@ -204,7 +211,6 @@ class CSVParserTest {
 
         assertDoesNotThrow(csv::nextField);
         assertTrue(csv.hasNext());
-        System.out.println("csv = " + csv);
         assertText(csv, "char '#' is used as\\ a separator");
 
         assertDoesNotThrow(csv::nextField);

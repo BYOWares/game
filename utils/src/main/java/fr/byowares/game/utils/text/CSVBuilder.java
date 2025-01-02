@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 import static fr.byowares.game.utils.text.CSVParser.BACK_SLASH;
 import static fr.byowares.game.utils.text.CSVParser.areCharEquals;
+import static fr.byowares.game.utils.text.CSVParser.validateSeparator;
 
 /**
  * Offer the capacity to build CSV text that can be parsed by a {@link CSVParser}. An internal buffer is updated as
@@ -35,11 +36,10 @@ public class CSVBuilder {
     /**
      * @param separator The separator used to separate fields.
      *
-     * @throws java.lang.IllegalArgumentException If the provided separator is {@link CSVParser#BACK_SLASH}.
+     * @see fr.byowares.game.utils.text.CSVParser#validateSeparator(char)
      */
     public CSVBuilder(final char separator) {
-        if (areCharEquals(separator, BACK_SLASH))
-            throw new IllegalArgumentException("Separator cannot be " + BACK_SLASH);
+        validateSeparator(separator);
         this.separator = separator;
         this.buffer = new StringBuilder();
     }

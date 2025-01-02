@@ -29,9 +29,15 @@ import java.util.SortedMap;
 public class LyricsDeserializers
         extends Deserializers<Lyrics> {
 
-    private static final List<? extends VersionedDeserializer<Lyrics>> ALL = List.of(new LyricsDeserializerV1());
+    /** Singleton pattern */
+    public static final LyricsDeserializers INSTANCE = new LyricsDeserializers();
+
+    private static final List<? extends VersionedDeserializer<Lyrics>> ALL = List.of(LyricsDeserializerV1.INSTANCE);
     private static final SortedMap<Version, VersionedDeserializer<Lyrics>> ALL_AS_MAP = buildVersionMap(ALL);
 
+    private LyricsDeserializers() {
+        // Singleton pattern
+    }
 
     @Override
     SortedMap<Version, VersionedDeserializer<Lyrics>> getAllDeserializersAsMap() {

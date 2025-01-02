@@ -20,14 +20,14 @@ import fr.byowares.game.miq.core.model.Range;
 import java.util.List;
 
 /**
- * @param lines The lines sung during that period.
  * @param range The period during which the line is sung.
+ * @param lines The lines sung during that period.
  *
  * @since XXX
  */
 public record TimeCodedVerse(
-        List<Line> lines,
-        Range range
+        Range range,
+        List<Line> lines
 )
         implements Comparable<TimeCodedVerse> {
 

@@ -39,6 +39,9 @@ import java.util.Map;
 public class LyricsSerializer
         implements Serializer<Lyrics> {
 
+    /** Singleton pattern. */
+    public static final LyricsSerializer INSTANCE = new LyricsSerializer();
+
     private static final Version VERSION = Constants.V1;
     private static final char SEP = '#';
     private static final DumperOptions DUMPER_OPTIONS = new DumperOptions();
@@ -47,6 +50,10 @@ public class LyricsSerializer
         DUMPER_OPTIONS.setIndent(2);
         DUMPER_OPTIONS.setPrettyFlow(true);
         DUMPER_OPTIONS.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+    }
+
+    private LyricsSerializer() {
+        // Singleton pattern
     }
 
     @Override
@@ -73,17 +80,11 @@ public class LyricsSerializer
             }
             verses.add(builder.asCharSequenceAndReset());
         }
-        map.put(Constants.VERSION, VERSION.toString());
+        map.put(Constants.VERSION, VERSION.version());
         map.put(Constants.COMMENT, lyrics.comment());
         map.put(Constants.SEPARATOR, SEP);
         map.put(Constants.LYRICS, verses);
 
-        final DumperOptions dumpOptions = new DumperOptions();
-        dumpOptions.setIndent(2);
-        dumpOptions.setPrettyFlow(true);
-        dumpOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-
         new Yaml(DUMPER_OPTIONS).dump(map, writer);
     }
-
 }
