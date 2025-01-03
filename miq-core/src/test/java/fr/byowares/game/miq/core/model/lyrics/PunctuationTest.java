@@ -22,15 +22,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PunctuationTest {
 
+    private static ThrowingSupplier<Punctuation> getSupplier(final String content) {
+        return () -> new Punctuation(content);
+    }
+
     @Test
     public void constructorTestAcceptAnything() {
         assertDoesNotThrow(getSupplier("Toto"));
         assertDoesNotThrow(getSupplier(" .-a !]"));
         assertDoesNotThrow(getSupplier("    "));
-    }
-
-    private static ThrowingSupplier<Punctuation> getSupplier(final String content) {
-        return () -> new Punctuation(content);
     }
 
     @Test

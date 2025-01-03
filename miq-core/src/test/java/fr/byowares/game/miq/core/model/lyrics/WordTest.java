@@ -22,15 +22,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WordTest {
 
+    private static ThrowingSupplier<Word> getSupplier(final String content) {
+        return () -> new Word(content);
+    }
+
+    private static void assertTrimHead(final String word) {
+        final Word w = new Word(word);
+        assertEquals(w, w.trimHead());
+    }
+
+    private static void assertTrimTail(final String word) {
+        final Word w = new Word(word);
+        assertEquals(w, w.trimTail());
+    }
+
     @Test
     public void constructorTestAcceptAnything() {
         assertDoesNotThrow(getSupplier("Toto"));
         assertDoesNotThrow(getSupplier(" .-a !]"));
         assertDoesNotThrow(getSupplier("    "));
-    }
-
-    private static ThrowingSupplier<Word> getSupplier(final String content) {
-        return () -> new Word(content);
     }
 
     @Test
@@ -55,11 +65,6 @@ class WordTest {
         assertTrimHead("." + wso + ".");
     }
 
-    private static void assertTrimHead(final String word) {
-        final Word w = new Word(word);
-        assertEquals(w, w.trimHead());
-    }
-
     @Test
     public void testTrimTail() {
         final String wso = SpaceCleanerLineParserTest.WHITESPACES_STRING;
@@ -68,10 +73,5 @@ class WordTest {
         assertTrimTail("." + wso);
         assertTrimTail(".");
         assertTrimTail("." + wso + ".");
-    }
-
-    private static void assertTrimTail(final String word) {
-        final Word w = new Word(word);
-        assertEquals(w, w.trimTail());
     }
 }

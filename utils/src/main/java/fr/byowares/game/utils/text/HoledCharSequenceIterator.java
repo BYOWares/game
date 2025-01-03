@@ -128,11 +128,6 @@ public class HoledCharSequenceIterator
         return this.current();
     }
 
-    private void previousNoHoles() {
-        if (this.pos < this.begin) return;
-        this.pos = this.holes.previousClearBit(this.pos);
-    }
-
     @Override
     public char current() {
         if (this.pos >= this.begin && this.pos < this.end) {
@@ -184,6 +179,11 @@ public class HoledCharSequenceIterator
     @Override
     public int getIndex() {
         return this.pos;
+    }
+
+    private void previousNoHoles() {
+        if (this.pos < this.begin) return;
+        this.pos = this.holes.previousClearBit(this.pos);
     }
 
     @Override

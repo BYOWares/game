@@ -85,6 +85,33 @@ public record OptionsLineParser(LyricsParsingOptions options)
         throw new IllegalStateException(message);
     }
 
+    /**
+     * @param l  The list of {@code CharPosition} to add new ones.
+     * @param cs The {@code CharSequence} the parse.
+     * @param b  The {@code Bracket} to look for in the {@code cs}.
+     */
+    private static void extractCharPosition(
+            final List<CharPosition> l,
+            final CharSequence cs,
+            final Bracket b
+    ) {
+        if (b == null) return;
+        for (int i = 0; i < cs.length(); i++) {
+            if (areCharEquals(b.getOpen(), cs.charAt(i))) l.add(new CharPosition(b, true, i));
+            if (areCharEquals(b.getClose(), cs.charAt(i))) l.add(new CharPosition(b, false, i));
+        }
+    }
+
+    /**
+     * @return {@code true} if the two characters are equals, false otherwise.
+     */
+    private static boolean areCharEquals(
+            final char a,
+            final char b
+    ) {
+        return (int) a == (int) b;
+    }
+
     @Override
     public List<Line> parse(final CharSequence input) {
         if (input.chars().allMatch(Character::isWhitespace)) return BlankLine.ONE_BLANK_LINE;
@@ -182,33 +209,6 @@ public record OptionsLineParser(LyricsParsingOptions options)
     }
 
     /**
-     * @param l  The list of {@code CharPosition} to add new ones.
-     * @param cs The {@code CharSequence} the parse.
-     * @param b  The {@code Bracket} to look for in the {@code cs}.
-     */
-    private static void extractCharPosition(
-            final List<CharPosition> l,
-            final CharSequence cs,
-            final Bracket b
-    ) {
-        if (b == null) return;
-        for (int i = 0; i < cs.length(); i++) {
-            if (areCharEquals(b.getOpen(), cs.charAt(i))) l.add(new CharPosition(b, true, i));
-            if (areCharEquals(b.getClose(), cs.charAt(i))) l.add(new CharPosition(b, false, i));
-        }
-    }
-
-    /**
-     * @return {@code true} if the two characters are equals, false otherwise.
-     */
-    private static boolean areCharEquals(
-            final char a,
-            final char b
-    ) {
-        return (int) a == (int) b;
-    }
-
-    /**
      * @param bracket  The kind of bracket encountered.
      * @param open     Whether it's the opening or closing character.
      * @param position The position of the character in the characters' sequence.
@@ -219,6 +219,15 @@ public record OptionsLineParser(LyricsParsingOptions options)
             int position
     )
             implements Comparable<CharPosition> {
+
+        private static CharPosition getMax(
+                final CharPosition a,
+                final CharPosition b
+        ) {
+            if (a == null) return b;
+            if (b == null) return a;
+            return a.compareTo(b) > 0 ? a : b;
+        }
 
         private String detailedToString() {
             final String detailedToString = this.bracket == null ? "null" : this.bracket.detailedToString();
@@ -259,15 +268,6 @@ public record OptionsLineParser(LyricsParsingOptions options)
                     isf(CLOSING_NESTED, currentKind, this, otherKind, lastOther);
                 return null;
             }
-        }
-
-        private static CharPosition getMax(
-                final CharPosition a,
-                final CharPosition b
-        ) {
-            if (a == null) return b;
-            if (b == null) return a;
-            return a.compareTo(b) > 0 ? a : b;
         }
 
         @Override

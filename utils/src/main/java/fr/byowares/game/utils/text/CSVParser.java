@@ -87,11 +87,6 @@ public class CSVParser {
         validateSeparator(separator, SPACE);
     }
 
-    private void resetBeginEnd() {
-        this.begin = -1;
-        this.end = -1;
-    }
-
     private static void validateSeparator(
             final char separator,
             final char c
@@ -110,24 +105,6 @@ public class CSVParser {
             final char b
     ) {
         return (int) a == (int) b;
-    }
-
-    /**
-     * Reset this parser to point to a new text. Separator cannot be changed. This method avoid allocating a new
-     * {@link CSVParser} each time this method is called.
-     *
-     * @param text The {@code CharSequence} to parse.
-     */
-    public void setText(final CharSequence text) {
-        this.text = text;
-        this.resetBeginEnd();
-    }
-
-    /**
-     * @return {@code true} if another there is another field after the current one, {@code false} otherwise.
-     */
-    public boolean hasNext() {
-        return nextSeparatorPosition(this.text, this.separator, this.end + 1) > this.end;
     }
 
     private static int nextSeparatorPosition(
@@ -153,6 +130,29 @@ public class CSVParser {
             throw new IllegalArgumentException("Last character on line was a single \\, which is forbidden");
 
         return text.length();
+    }
+
+    private void resetBeginEnd() {
+        this.begin = -1;
+        this.end = -1;
+    }
+
+    /**
+     * Reset this parser to point to a new text. Separator cannot be changed. This method avoid allocating a new
+     * {@link CSVParser} each time this method is called.
+     *
+     * @param text The {@code CharSequence} to parse.
+     */
+    public void setText(final CharSequence text) {
+        this.text = text;
+        this.resetBeginEnd();
+    }
+
+    /**
+     * @return {@code true} if another there is another field after the current one, {@code false} otherwise.
+     */
+    public boolean hasNext() {
+        return nextSeparatorPosition(this.text, this.separator, this.end + 1) > this.end;
     }
 
     /**

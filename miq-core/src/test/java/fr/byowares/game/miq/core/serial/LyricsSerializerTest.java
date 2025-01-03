@@ -39,12 +39,6 @@ class LyricsSerializerTest {
     private static final List<TimeCodedVerse> OBL = List.of(
             new TimeCodedVerse(new Range(0L, 1L), BlankLine.ONE_BLANK_LINE));
 
-
-    @Test
-    public void testNullComment() {
-        assertBijection(null, OBL);
-    }
-
     private static void assertBijection(
             final CharSequence comment,
             final List<TimeCodedVerse> verses
@@ -58,6 +52,11 @@ class LyricsSerializerTest {
 
     private static InputStream inputStream(final StringWriter sw) {
         return new ByteArrayInputStream(sw.toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void testNullComment() {
+        assertBijection(null, OBL);
     }
 
     @Test

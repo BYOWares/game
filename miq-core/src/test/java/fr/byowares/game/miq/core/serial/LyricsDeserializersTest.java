@@ -31,9 +31,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class LyricsDeserializersTest {
 
-    @Test
-    public void testValid() {
-        assertEquals(LYRICS_V1, assertDeserializeDoesNotThrow(INPUT_V1, "XXX", ""));
+    public static ByteArrayInputStream inputStream(final String input) {
+        return new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
     }
 
     public static Lyrics assertDeserializeDoesNotThrow(
@@ -45,19 +44,6 @@ public class LyricsDeserializersTest {
                 () -> LyricsDeserializers.INSTANCE.deserialize(inputStream(input.replace(target, replacement))));
     }
 
-    public static ByteArrayInputStream inputStream(final String input) {
-        return new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
-    }
-
-    /******************************************************************************************************************
-     *                                                VERSION TESTS                                                   *
-     ******************************************************************************************************************/
-    @Test
-    public void testVersionInvalidMissing() {
-        assertDeserializeThrows(NullPointerException.class, INPUT_V1, VERSION_V1, "");
-        assertDeserializeThrows(NullPointerException.class, INPUT_V1, VERSION_V1, "version:");
-    }
-
     public static <T extends Throwable> T assertDeserializeThrows(
             final Class<T> expectedType,
             final String input,
@@ -66,6 +52,20 @@ public class LyricsDeserializersTest {
     ) {
         return assertThrows(expectedType, () -> LyricsDeserializers.INSTANCE.deserialize(
                 inputStream(input.replace(target, replacement))));
+    }
+
+    /******************************************************************************************************************
+     *                                                VERSION TESTS                                                   *
+     ******************************************************************************************************************/
+    @Test
+    public void testValid() {
+        assertEquals(LYRICS_V1, assertDeserializeDoesNotThrow(INPUT_V1, "XXX", ""));
+    }
+
+    @Test
+    public void testVersionInvalidMissing() {
+        assertDeserializeThrows(NullPointerException.class, INPUT_V1, VERSION_V1, "");
+        assertDeserializeThrows(NullPointerException.class, INPUT_V1, VERSION_V1, "version:");
     }
 
     @Test

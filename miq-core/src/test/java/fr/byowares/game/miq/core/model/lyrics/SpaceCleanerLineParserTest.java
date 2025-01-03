@@ -50,12 +50,6 @@ class SpaceCleanerLineParserTest {
         return res.stream();
     }
 
-    @Test
-    public void testSimpleLine() {
-        doTest("My name is what? Who? Unknown!", true, //
-               "My", " ", "name", " ", "is", " ", "what", "? ", "Who", "? ", "Unknown", "!");
-    }
-
     private static void doTest(
             final CharSequence input,
             final boolean firstIsWord,
@@ -72,6 +66,12 @@ class SpaceCleanerLineParserTest {
         final List<Line> actualOLP = OLP_NO_BRACKET.parse(input);
         assertEquals(expected, actual);
         assertEquals(expected, actualOLP);
+    }
+
+    @Test
+    public void testSimpleLine() {
+        doTest("My name is what? Who? Unknown!", true, //
+               "My", " ", "name", " ", "is", " ", "what", "? ", "Who", "? ", "Unknown", "!");
     }
 
     @Test

@@ -40,6 +40,75 @@ public abstract class StatusPlayer
     }
 
     /**
+     * Set {@link #shouldBePlaying()} to {@code false} and then delegate the actual stop.
+     */
+    @Override
+    public final void stop() {
+        this.listener.shouldBePlaying.set(false);
+        this.doStop();
+    }
+
+    /**
+     * Set {@link #shouldBePlaying()} to {@code true} and then delegate the actual resume.
+     */
+    @Override
+    public final void play() {
+        this.listener.shouldBePlaying.set(true);
+        this.doPlay();
+    }
+
+    /**
+     * Makes sure the position is withing the range of the audio (else, set it to its closest boundary).
+     * The playing status ({@link #shouldBePlaying()}) is saved before changing the position. Playing is resume once
+     * the new position is set, accordingly to the saved playing status.
+     */
+    @Override
+    public final void setPosition(final long positionInMicroseconds) {
+        final long newPos = Math.min(Math.max(0L, positionInMicroseconds), this.getDurationInMicroseconds());
+        final boolean shouldBePlaying = this.shouldBePlaying();
+        this.stop();
+        this.doSetPosition(newPos);
+        if (shouldBePlaying) this.play();
+    }
+
+    @Override
+    public final void moveBackward(final long durationInMicroseconds) {
+        if (durationInMicroseconds == 0L) return;
+        this.setPosition(this.getPosition() - durationInMicroseconds);
+    }
+
+    @Override
+    public final void moveForward(final long durationInMicroseconds) {
+        if (durationInMicroseconds == 0L) return;
+        this.setPosition(this.getPosition() + durationInMicroseconds);
+    }
+
+    @Override
+    public boolean shouldBePlaying() {
+        return this.listener.shouldBePlaying();
+    }
+
+    @Override
+    public final boolean isPlaying() {
+        return this.listener.isPlaying();
+    }
+
+    /**
+     * Pause the playing of the audio.
+     */
+    abstract void doStop();
+
+    /**
+     * Resume the playing of the audio.
+     */
+    abstract void doPlay();
+
+    /**
+     * @param positionInMicroSeconds The new position of the player (always in the range of possible values).
+     */
+    abstract void doSetPosition(final long positionInMicroSeconds);
+
+    /**
      * LineListener that aggregates playing status:
      * <ul>
      *     <li>Whether we want the audio to be played.</li>
@@ -69,74 +138,5 @@ public abstract class StatusPlayer
         private boolean shouldBePlaying() {
             return this.shouldBePlaying.get();
         }
-    }
-
-    /**
-     * Set {@link #shouldBePlaying()} to {@code false} and then delegate the actual stop.
-     */
-    @Override
-    public final void stop() {
-        this.listener.shouldBePlaying.set(false);
-        this.doStop();
-    }
-
-    /**
-     * Pause the playing of the audio.
-     */
-    abstract void doStop();
-
-    /**
-     * Set {@link #shouldBePlaying()} to {@code true} and then delegate the actual resume.
-     */
-    @Override
-    public final void play() {
-        this.listener.shouldBePlaying.set(true);
-        this.doPlay();
-    }
-
-    /**
-     * Resume the playing of the audio.
-     */
-    abstract void doPlay();
-
-    /**
-     * Makes sure the position is withing the range of the audio (else, set it to its closest boundary).
-     * The playing status ({@link #shouldBePlaying()}) is saved before changing the position. Playing is resume once
-     * the new position is set, accordingly to the saved playing status.
-     */
-    @Override
-    public final void setPosition(final long positionInMicroseconds) {
-        final long newPos = Math.min(Math.max(0L, positionInMicroseconds), this.getDurationInMicroseconds());
-        final boolean shouldBePlaying = this.shouldBePlaying();
-        this.stop();
-        this.doSetPosition(newPos);
-        if (shouldBePlaying) this.play();
-    }
-
-    /**
-     * @param positionInMicroSeconds The new position of the player (always in the range of possible values).
-     */
-    abstract void doSetPosition(final long positionInMicroSeconds);
-
-    @Override
-    public final void moveBackward(final long durationInMicroseconds) {
-        if (durationInMicroseconds == 0L) return;
-        this.setPosition(this.getPosition() - durationInMicroseconds);
-    }
-
-    @Override
-    public final void moveForward(final long durationInMicroseconds) {
-        if (durationInMicroseconds == 0L) return;
-        this.setPosition(this.getPosition() + durationInMicroseconds);
-    }
-
-    @Override
-    public boolean shouldBePlaying() {
-        return this.listener.shouldBePlaying();
-    }
-
-    @Override
-    public final boolean isPlaying() {
-        return this.listener.isPlaying();
     }
 }

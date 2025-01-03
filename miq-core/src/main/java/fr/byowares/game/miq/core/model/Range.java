@@ -25,7 +25,10 @@ import fr.byowares.game.utils.hashcodes.HashCodesLong;
  *
  * @since XXX
  */
-public record Range(long start, long end)
+public record Range(
+        long start,
+        long end
+)
         implements Comparable<Range> {
 
     /**

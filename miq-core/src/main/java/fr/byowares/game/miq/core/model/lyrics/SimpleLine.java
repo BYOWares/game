@@ -140,6 +140,10 @@ public record SimpleLine(
         return new SimpleLine(newElements, sl1.singers, sl1.isBackVocals, sl1.isNonLexical);
     }
 
+    private static CharSequence hideWord(final int length) {
+        return HIDDEN_CHAR.repeat(length);
+    }
+
     @Override
     public Set<Singer> getSingers() {
         return this.singers;
@@ -164,10 +168,6 @@ public record SimpleLine(
             else sb.append(options.whileGuessingShowPunctuation() ? elt.getText() : SPACE);
         }
         return sb.toString();
-    }
-
-    private static CharSequence hideWord(final int length) {
-        return HIDDEN_CHAR.repeat(length);
     }
 
     @Override

@@ -54,10 +54,6 @@ class OptionsLineParserTest {
         return ALL_VALID_OLP.stream();
     }
 
-    public static Stream<OptionsLineParser> generateOLPSingerDefined() {
-        return generateOLP(false, null, null);
-    }
-
     /**
      * @param singerNull           {@code null} if not filter must be applied on the singer bracket option, {@code true}
      *                             if it must be {@code null}, {@code false} if it must be non-null.
@@ -84,6 +80,10 @@ class OptionsLineParserTest {
         });
     }
 
+    public static Stream<OptionsLineParser> generateOLPSingerDefined() {
+        return generateOLP(false, null, null);
+    }
+
     public static Stream<OptionsLineParser> generateOLPBackVocalsDefined() {
         return generateOLP(null, false, null);
     }
@@ -106,6 +106,36 @@ class OptionsLineParserTest {
 
     public static Stream<OptionsLineParser> generateOLPAllDefined() {
         return generateOLP(false, false, false);
+    }
+
+    private static SimpleLine buildLine(
+            final Set<Singer> singers,
+            final String... array
+    ) {
+        return buildLine(singers, false, false, array);
+    }
+
+    private static void assertThrowsISE(
+            final OptionsLineParser parser,
+            final CharSequence input,
+            final String message
+    ) {
+        final IllegalStateException e = assertThrows(IllegalStateException.class, () -> parser.parse(input));
+        if (message != null) assertEquals(message, e.getMessage());
+    }
+
+    private static SimpleLine buildLine(
+            final Set<Singer> singers,
+            final boolean isBackupVocals,
+            final boolean isNonLexicalVocables,
+            final String... array
+    ) {
+        final List<LineElement> elements = new ArrayList<>(array.length);
+        for (int i = 0; i < array.length; i++) {
+            final LineElement elt = i % 2 == 0 ? new Word(array[i]) : new Punctuation(array[i]);
+            elements.add(elt);
+        }
+        return new SimpleLine(elements, singers, isBackupVocals, isNonLexicalVocables);
     }
 
     @Test
@@ -182,36 +212,6 @@ class OptionsLineParserTest {
                         "Next bracket shall close this (singer) one " + "(current: {bracket=" + open + ", position=0}, next: {bracket=" + open + ", position=5})");
         assertThrowsISE(parser, "Dave" + close + " Hey you", c + close + ", position=4}");
         assertThrowsISE(parser, "Dave Hey you" + close, c + close + ", position=12}");
-    }
-
-    private static SimpleLine buildLine(
-            final Set<Singer> singers,
-            final String... array
-    ) {
-        return buildLine(singers, false, false, array);
-    }
-
-    private static void assertThrowsISE(
-            final OptionsLineParser parser,
-            final CharSequence input,
-            final String message
-    ) {
-        final IllegalStateException e = assertThrows(IllegalStateException.class, () -> parser.parse(input));
-        if (message != null) assertEquals(message, e.getMessage());
-    }
-
-    private static SimpleLine buildLine(
-            final Set<Singer> singers,
-            final boolean isBackupVocals,
-            final boolean isNonLexicalVocables,
-            final String... array
-    ) {
-        final List<LineElement> elements = new ArrayList<>(array.length);
-        for (int i = 0; i < array.length; i++) {
-            final LineElement elt = i % 2 == 0 ? new Word(array[i]) : new Punctuation(array[i]);
-            elements.add(elt);
-        }
-        return new SimpleLine(elements, singers, isBackupVocals, isNonLexicalVocables);
     }
 
     @ParameterizedTest(name = "[{index}] Options={0}")

@@ -73,6 +73,19 @@ public enum Size {
         return (currentScale >= targetScale) ? (currentScale / targetScale) : (targetScale / currentScale);
     }
 
+    private static long convert(
+            final long size,
+            final long currentScale,
+            final long targetScale,
+            final long maxSize,
+            final long ratio
+    ) {
+        if (currentScale <= targetScale) return (currentScale == targetScale) ? size : size / ratio;
+        else if (size > maxSize) return Long.MAX_VALUE;
+        else if (size < -maxSize) return Long.MIN_VALUE;
+        else return size * ratio;
+    }
+
     /**
      * Convert a size in the given unit to Bytes. Conversions from finer to coarser units truncate number, thus losing
      * precision. For example, converting {@code 1023} Bytes to KibiBytes results in {@code 0}. Conversions from coarser
@@ -87,19 +100,6 @@ public enum Size {
      */
     public long toBytes(final long size) {
         return convert(size, this.scale, BYTE_SCALE, this.maxBytes, this.scale);
-    }
-
-    private static long convert(
-            final long size,
-            final long currentScale,
-            final long targetScale,
-            final long maxSize,
-            final long ratio
-    ) {
-        if (currentScale <= targetScale) return (currentScale == targetScale) ? size : size / ratio;
-        else if (size > maxSize) return Long.MAX_VALUE;
-        else if (size < -maxSize) return Long.MIN_VALUE;
-        else return size * ratio;
     }
 
     /**

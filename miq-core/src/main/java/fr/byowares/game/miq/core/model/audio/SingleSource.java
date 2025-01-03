@@ -33,6 +33,9 @@ public class SingleSource
 
     private final File audioTrack;
 
+    /**
+     * @param audioTrack The file containing both voice & music audios.
+     */
     public SingleSource(final File audioTrack) {
         this.audioTrack = audioTrack;
     }
