@@ -16,7 +16,6 @@
 package fr.byowares.game.miq.core.serial;
 
 import fr.byowares.game.miq.core.model.Lyrics;
-import fr.byowares.game.miq.core.model.lyrics.BlankLine;
 import fr.byowares.game.miq.core.model.lyrics.Line;
 import fr.byowares.game.miq.core.model.lyrics.Singer;
 import fr.byowares.game.miq.core.model.lyrics.TimeCodedVerse;
@@ -67,14 +66,14 @@ public class LyricsSerializer
         for (final TimeCodedVerse verse : lyrics.lyrics()) {
             builder.newField(verse.range().start());
             builder.newField(verse.range().end());
-            if (BlankLine.ONE_BLANK_LINE.equals(verse.lines())) builder.newField(0L);
+            if (Line.EMPTY_LIST.equals(verse.lines())) builder.newField(0L);
             else {
                 builder.newField(verse.lines().size());
                 for (final Line line : verse.lines()) {
                     final int mask = (line.isBackVocals() ? LyricsDeserializerV1.BACK_VOCALS_BIT : 0) | //
-                            (line.isNonLexicalVocables() ? LyricsDeserializerV1.NON_LEXICAL_BIT : 0);
+                            (line.isNonLexical() ? LyricsDeserializerV1.NON_LEXICAL_BIT : 0);
                     builder.newField(mask);
-                    builder.newField(line.getSingers(), Singer::name);
+                    builder.newField(line.singers(), Singer::name);
                     builder.newField(line.getClearText());
                 }
             }

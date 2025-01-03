@@ -17,6 +17,7 @@ package fr.byowares.game.miq.core.model.lyrics;
 
 import fr.byowares.game.miq.core.model.Range;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,5 +35,23 @@ public record TimeCodedVerse(
     @Override
     public int compareTo(final TimeCodedVerse o) {
         return this.range.compareTo(o.range);
+    }
+
+    /**
+     * Make a copy of this instance:
+     * <ul>
+     *     <li>The list of LineElement is a shallow copy;</li>
+     *     <li>The set of Singer is a shallow copy.</li>
+     * </ul>
+     *
+     * @return A copy of this instance as described above.
+     */
+    public TimeCodedVerse copy() {
+        if (this.lines == null) return new TimeCodedVerse(this.range, null);
+        final List<Line> lines = new ArrayList<>(this.lines.size());
+        for (final Line line : this.lines)
+            lines.add(new Line(line.elements(), line.singers(), line.isBackVocals(), line.isNonLexical()));
+
+        return new TimeCodedVerse(this.range, lines);
     }
 }

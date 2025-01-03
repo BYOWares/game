@@ -61,7 +61,7 @@ class SpaceCleanerLineParserTest {
             final LineElement elt = i % 2 == modulo ? new Word(expectedArray[i]) : new Punctuation(expectedArray[i]);
             lineElements.add(elt);
         }
-        final List<Line> expected = List.of(new SimpleLine(lineElements, Set.of(), false, false));
+        final List<Line> expected = List.of(new Line(lineElements, Set.of(), false, false));
         final List<Line> actual = SpaceCleanerLineParser.INSTANCE.parse(input);
         final List<Line> actualOLP = OLP_NO_BRACKET.parse(input);
         assertEquals(expected, actual);
@@ -83,15 +83,15 @@ class SpaceCleanerLineParserTest {
     @Test
     public void testBlankLine() {
         final String empty = "";
-        assertEquals(BlankLine.ONE_BLANK_LINE, SpaceCleanerLineParser.INSTANCE.parse(empty));
-        assertEquals(BlankLine.ONE_BLANK_LINE, OLP_NO_BRACKET.parse(empty));
+        assertEquals(Line.EMPTY_LIST, SpaceCleanerLineParser.INSTANCE.parse(empty));
+        assertEquals(Line.EMPTY_LIST, OLP_NO_BRACKET.parse(empty));
     }
 
     @Test
     public void testWhiteSpaceLine() {
         assertNotEquals(0, WHITESPACES_STRING.length());
-        assertEquals(BlankLine.ONE_BLANK_LINE, SpaceCleanerLineParser.INSTANCE.parse(WHITESPACES_STRING));
-        assertEquals(BlankLine.ONE_BLANK_LINE, OLP_NO_BRACKET.parse(WHITESPACES_STRING));
+        assertEquals(Line.EMPTY_LIST, SpaceCleanerLineParser.INSTANCE.parse(WHITESPACES_STRING));
+        assertEquals(Line.EMPTY_LIST, OLP_NO_BRACKET.parse(WHITESPACES_STRING));
     }
 
     @Test
@@ -117,7 +117,7 @@ class SpaceCleanerLineParserTest {
 
     @Test
     public void testNoWords() {
-        assertEquals(BlankLine.ONE_BLANK_LINE,
+        assertEquals(Line.EMPTY_LIST,
                      SpaceCleanerLineParser.INSTANCE.parse(WHITESPACES_STRING + ".+/[" + WHITESPACES_STRING));
     }
 

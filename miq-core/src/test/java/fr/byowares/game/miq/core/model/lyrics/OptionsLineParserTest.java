@@ -108,7 +108,7 @@ class OptionsLineParserTest {
         return generateOLP(false, false, false);
     }
 
-    private static SimpleLine buildLine(
+    private static Line buildLine(
             final Set<Singer> singers,
             final String... array
     ) {
@@ -124,7 +124,7 @@ class OptionsLineParserTest {
         if (message != null) assertEquals(message, e.getMessage());
     }
 
-    private static SimpleLine buildLine(
+    private static Line buildLine(
             final Set<Singer> singers,
             final boolean isBackupVocals,
             final boolean isNonLexicalVocables,
@@ -135,7 +135,7 @@ class OptionsLineParserTest {
             final LineElement elt = i % 2 == 0 ? new Word(array[i]) : new Punctuation(array[i]);
             elements.add(elt);
         }
-        return new SimpleLine(elements, singers, isBackupVocals, isNonLexicalVocables);
+        return new Line(elements, singers, isBackupVocals, isNonLexicalVocables);
     }
 
     @Test
@@ -148,7 +148,7 @@ class OptionsLineParserTest {
     @ParameterizedTest(name = "[{index}] Options={0}")
     @MethodSource("generateOLPAllValid")
     public void testEmptyLine(final OptionsLineParser parser) {
-        assertEquals(BlankLine.ONE_BLANK_LINE, parser.parse(""));
+        assertEquals(Line.EMPTY_LIST, parser.parse(""));
     }
 
     @ParameterizedTest(name = "[{index}] Options={0}")
@@ -158,10 +158,10 @@ class OptionsLineParserTest {
         final char close = parser.options().singerBracket().getClose();
         final String ws = SpaceCleanerLineParserTest.WHITESPACES_STRING;
         final String name = "David";
-        assertEquals(BlankLine.ONE_BLANK_LINE, parser.parse(open + name + close));
-        assertEquals(BlankLine.ONE_BLANK_LINE, parser.parse(open + name + close + ws));
-        assertEquals(BlankLine.ONE_BLANK_LINE, parser.parse(ws + open + name + close));
-        assertEquals(BlankLine.ONE_BLANK_LINE, parser.parse(ws + open + name + close + ws));
+        assertEquals(Line.EMPTY_LIST, parser.parse(open + name + close));
+        assertEquals(Line.EMPTY_LIST, parser.parse(open + name + close + ws));
+        assertEquals(Line.EMPTY_LIST, parser.parse(ws + open + name + close));
+        assertEquals(Line.EMPTY_LIST, parser.parse(ws + open + name + close + ws));
     }
 
     @ParameterizedTest(name = "[{index}] Options={0}")
@@ -240,7 +240,7 @@ class OptionsLineParserTest {
         assertEquals(e2, parser.parse(open + "Hey " + close + ws + open + " you!" + close));
 
         // Only punctuation line are ignored.
-        assertEquals(BlankLine.ONE_BLANK_LINE, parser.parse(open + ".-/!" + close));
+        assertEquals(Line.EMPTY_LIST, parser.parse(open + ".-/!" + close));
 
         final String o = "Opening bracket (backup vocals) does not match any closing one: {bracket=";
         final String c = "Closing bracket (backup vocals) does not match any opening one: {bracket=";
@@ -278,7 +278,7 @@ class OptionsLineParserTest {
         assertEquals(e2, parser.parse(open + "Hey " + close + ws + open + " you!" + close));
 
         // Only punctuation line are ignored.
-        assertEquals(BlankLine.ONE_BLANK_LINE, parser.parse(open + ".-/!" + close));
+        assertEquals(Line.EMPTY_LIST, parser.parse(open + ".-/!" + close));
 
         final String o = "Opening bracket (non-lexical vocables) does not match any closing one: {bracket=";
         final String c = "Closing bracket (non-lexical vocables) does not match any opening one: {bracket=";

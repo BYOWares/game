@@ -17,10 +17,9 @@ package fr.byowares.game.miq.core.serial.v1;
 
 import fr.byowares.game.miq.core.model.Lyrics;
 import fr.byowares.game.miq.core.model.Range;
-import fr.byowares.game.miq.core.model.lyrics.BlankLine;
+import fr.byowares.game.miq.core.model.lyrics.Line;
 import fr.byowares.game.miq.core.model.lyrics.LineElement;
 import fr.byowares.game.miq.core.model.lyrics.Punctuation;
-import fr.byowares.game.miq.core.model.lyrics.SimpleLine;
 import fr.byowares.game.miq.core.model.lyrics.Singer;
 import fr.byowares.game.miq.core.model.lyrics.TimeCodedVerse;
 import fr.byowares.game.miq.core.model.lyrics.Word;
@@ -38,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LyricsDeserializerV1Test {
 
-    public static final TimeCodedVerse VERSE = new TimeCodedVerse(new Range(0L, 1L), BlankLine.ONE_BLANK_LINE);
+    public static final TimeCodedVerse VERSE = new TimeCodedVerse(new Range(0L, 1L), Line.EMPTY_LIST);
     public static final Lyrics LYRICS_V1 = new Lyrics("null", List.of(VERSE));
     public static final String INPUT_V1 = """
             version: 1
@@ -86,36 +85,36 @@ public class LyricsDeserializerV1Test {
         final String[] scatI = {"La", " ", "la", " ", "la", "..."};
         final String[] scatHe = {"Le", " ", "le", " ", "le", "..."};
 
-        final SimpleLine l0ff = buildLine(s0, false, false, wordsI);
-        final SimpleLine l1ff = buildLine(s1, false, false, wordsI);
-        final SimpleLine l3ff = buildLine(s3, false, false, wordsI);
+        final Line l0ff = buildLine(s0, false, false, wordsI);
+        final Line l1ff = buildLine(s1, false, false, wordsI);
+        final Line l3ff = buildLine(s3, false, false, wordsI);
 
-        final SimpleLine l0ft = buildLine(s0, false, true, scatI);
-        final SimpleLine l1ft = buildLine(s1, false, true, scatI);
-        final SimpleLine l3ft = buildLine(s3, false, true, scatI);
+        final Line l0ft = buildLine(s0, false, true, scatI);
+        final Line l1ft = buildLine(s1, false, true, scatI);
+        final Line l3ft = buildLine(s3, false, true, scatI);
 
-        final SimpleLine l0tf = buildLine(s0, true, false, wordsHe);
-        final SimpleLine l1tf = buildLine(s1, true, false, wordsHe);
-        final SimpleLine l3tf = buildLine(s3, true, false, wordsHe);
+        final Line l0tf = buildLine(s0, true, false, wordsHe);
+        final Line l1tf = buildLine(s1, true, false, wordsHe);
+        final Line l3tf = buildLine(s3, true, false, wordsHe);
 
-        final SimpleLine l0tt = buildLine(s0, true, true, scatHe);
-        final SimpleLine l1tt = buildLine(s1, true, true, scatHe);
-        final SimpleLine l3tt = buildLine(s3, true, true, scatHe);
+        final Line l0tt = buildLine(s0, true, true, scatHe);
+        final Line l1tt = buildLine(s1, true, true, scatHe);
+        final Line l3tt = buildLine(s3, true, true, scatHe);
 
         final List<TimeCodedVerse> verses = new ArrayList<>();
-        verses.add(new TimeCodedVerse(new Range(ts0, ts1), BlankLine.ONE_BLANK_LINE));
+        verses.add(new TimeCodedVerse(new Range(ts0, ts1), Line.EMPTY_LIST));
         verses.add(new TimeCodedVerse(new Range(ts1, ts2), List.of(l0ff, l0tf, l0ff, l0tf)));
         verses.add(new TimeCodedVerse(new Range(ts2, ts3), List.of(l1ff, l3tf)));
         verses.add(new TimeCodedVerse(new Range(ts3, ts4), List.of(l3ff, l1tf)));
-        verses.add(new TimeCodedVerse(new Range(ts4, ts5), BlankLine.ONE_BLANK_LINE));
+        verses.add(new TimeCodedVerse(new Range(ts4, ts5), Line.EMPTY_LIST));
         verses.add(new TimeCodedVerse(new Range(ts5, ts6), List.of(l0ft, l0tt, l0ft, l0tt)));
         verses.add(new TimeCodedVerse(new Range(ts6, ts7), List.of(l1ft, l1tt)));
         verses.add(new TimeCodedVerse(new Range(ts7, ts8), List.of(l3ft, l3tt)));
-        verses.add(new TimeCodedVerse(new Range(ts8, ts9), BlankLine.ONE_BLANK_LINE));
+        verses.add(new TimeCodedVerse(new Range(ts8, ts9), Line.EMPTY_LIST));
         COMPLEX_V1 = new Lyrics("No comment", verses);
     }
 
-    private static SimpleLine buildLine(
+    private static Line buildLine(
             final Set<Singer> singers,
             final boolean isBackupVocals,
             final boolean isNonLexicalVocables,
@@ -126,7 +125,7 @@ public class LyricsDeserializerV1Test {
             final LineElement elt = i % 2 == 0 ? new Word(array[i]) : new Punctuation(array[i]);
             elements.add(elt);
         }
-        return new SimpleLine(elements, singers, isBackupVocals, isNonLexicalVocables);
+        return new Line(elements, singers, isBackupVocals, isNonLexicalVocables);
     }
 
     @Test

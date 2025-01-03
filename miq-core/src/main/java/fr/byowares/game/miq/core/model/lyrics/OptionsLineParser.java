@@ -114,7 +114,7 @@ public record OptionsLineParser(LyricsParsingOptions options)
 
     @Override
     public List<Line> parse(final CharSequence input) {
-        if (input.chars().allMatch(Character::isWhitespace)) return BlankLine.ONE_BLANK_LINE;
+        if (input.chars().allMatch(Character::isWhitespace)) return Line.EMPTY_LIST;
 
         // Will throw an exception if the input is badly formatted
         final List<CharPosition> charPositions = this.analyseInput(input);
@@ -128,7 +128,7 @@ public record OptionsLineParser(LyricsParsingOptions options)
         boolean isBackVocals = false;
         boolean isNonLexical = false;
         Set<Singer> singers = Set.of();
-        final List<SimpleLine> res = new ArrayList<>();
+        final List<Line> res = new ArrayList<>();
 
         for (final CharPosition cp : charPositions) {
             if (this.options.backVocalsBracket() != null && this.options.backVocalsBracket() == lastCp.bracket) {
@@ -149,9 +149,9 @@ public record OptionsLineParser(LyricsParsingOptions options)
             if (lineElements.stream().noneMatch(LineElement::isWord)) continue;
 
             if (isParsingSinger) singers = SpaceCleanerLineParser.parseAsSingers(lineElements);
-            else res.add(new SimpleLine(lineElements, singers, isBackVocals, isNonLexical));
+            else res.add(new Line(lineElements, singers, isBackVocals, isNonLexical));
         }
-        return res.isEmpty() ? BlankLine.ONE_BLANK_LINE : SimpleLine.merge(res);
+        return res.isEmpty() ? Line.EMPTY_LIST : Line.merge(res);
     }
 
     /**

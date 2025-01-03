@@ -15,6 +15,10 @@
  */
 package fr.byowares.game.miq.core.model.lyrics;
 
+import java.util.Collection;
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * @param name The name of the singer.
  *
@@ -22,6 +26,27 @@ package fr.byowares.game.miq.core.model.lyrics;
  */
 public record Singer(CharSequence name)
         implements Comparable<Singer> {
+
+    /**
+     * @return An empty mutable set.
+     */
+    public static Set<Singer> emptySet() {
+        return new TreeSet<>();
+    }
+
+    /**
+     * Convert each element from the {@code collection} as a {@code Singer}.
+     *
+     * @param collection The collection to convert in a set of {@code Singer}.
+     *
+     * @return The set of {@code Singer}.
+     */
+    public static Set<Singer> from(final Collection<CharSequence> collection) {
+        final var set = emptySet();
+        for (final CharSequence seq : collection)
+            set.add(new Singer(seq));
+        return set;
+    }
 
     @Override
     public int compareTo(final Singer o) {

@@ -17,7 +17,7 @@ package fr.byowares.game.miq.core.serial;
 
 import fr.byowares.game.miq.core.model.Lyrics;
 import fr.byowares.game.miq.core.model.Range;
-import fr.byowares.game.miq.core.model.lyrics.BlankLine;
+import fr.byowares.game.miq.core.model.lyrics.Line;
 import fr.byowares.game.miq.core.model.lyrics.TimeCodedVerse;
 import fr.byowares.game.miq.core.serial.v1.LyricsDeserializerV1Test;
 import org.junit.jupiter.api.Test;
@@ -36,8 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class LyricsSerializerTest {
 
-    private static final List<TimeCodedVerse> OBL = List.of(
-            new TimeCodedVerse(new Range(0L, 1L), BlankLine.ONE_BLANK_LINE));
+    private static final List<TimeCodedVerse> OBL = List.of(new TimeCodedVerse(new Range(0L, 1L), Line.EMPTY_LIST));
 
     private static void assertBijection(
             final CharSequence comment,

@@ -17,9 +17,7 @@ package fr.byowares.game.miq.core.serial.v1;
 
 import fr.byowares.game.miq.core.model.Lyrics;
 import fr.byowares.game.miq.core.model.Range;
-import fr.byowares.game.miq.core.model.lyrics.BlankLine;
 import fr.byowares.game.miq.core.model.lyrics.Line;
-import fr.byowares.game.miq.core.model.lyrics.SimpleLine;
 import fr.byowares.game.miq.core.model.lyrics.SpaceCleanerLineParser;
 import fr.byowares.game.miq.core.model.lyrics.TimeCodedVerse;
 import fr.byowares.game.miq.core.serial.Constants;
@@ -52,6 +50,27 @@ public class LyricsDeserializerV1
         // Singleton pattern
     }
 
+    private static TimeCodedVerse parseAsVerse(
+            final Object unparsedLyric,
+            final CSVParser csv
+    ) {
+        csv.setText(Objects.toString(unparsedLyric));
+        final Range range = new Range(csv.nextFieldAsLong(), csv.nextFieldAsLong());
+        final int nbLines = csv.nextFieldAsInt();
+        if (nbLines == 0) return new TimeCodedVerse(range, Line.EMPTY_LIST);
+
+        final List<Line> lines = new ArrayList<>(nbLines);
+        for (int line = 0; line < nbLines; line++) {
+            final int annotations = csv.nextFieldAsInt();
+            final boolean isBackupVocals = (annotations & BACK_VOCALS_BIT) != 0;
+            final boolean isNonLexicalVocables = (annotations & NON_LEXICAL_BIT) != 0;
+            final var singers = SpaceCleanerLineParser.parseAsSingers(csv.nextFieldAsCharacterIterator());
+            final var elements = SpaceCleanerLineParser.parseLineElements(csv.nextFieldAsCharacterIterator());
+            lines.add(new Line(elements, singers, isBackupVocals, isNonLexicalVocables));
+        }
+        return new TimeCodedVerse(range, lines);
+    }
+
     @Override
     protected Lyrics buildFromMap(final Map<String, Object> map) {
         final String comment = removeAsString(map, Constants.COMMENT);
@@ -65,27 +84,6 @@ public class LyricsDeserializerV1
         }
 
         return new Lyrics(comment, lyrics);
-    }
-
-    private static TimeCodedVerse parseAsVerse(
-            final Object unparsedLyric,
-            final CSVParser csv
-    ) {
-        csv.setText(Objects.toString(unparsedLyric));
-        final Range range = new Range(csv.nextFieldAsLong(), csv.nextFieldAsLong());
-        final int nbLines = csv.nextFieldAsInt();
-        if (nbLines == 0) return new TimeCodedVerse(range, BlankLine.ONE_BLANK_LINE);
-
-        final List<Line> lines = new ArrayList<>(nbLines);
-        for (int line = 0; line < nbLines; line++) {
-            final int annotations = csv.nextFieldAsInt();
-            final boolean isBackupVocals = (annotations & BACK_VOCALS_BIT) != 0;
-            final boolean isNonLexicalVocables = (annotations & NON_LEXICAL_BIT) != 0;
-            final var singers = SpaceCleanerLineParser.parseAsSingers(csv.nextFieldAsCharacterIterator());
-            final var elements = SpaceCleanerLineParser.parseLineElements(csv.nextFieldAsCharacterIterator());
-            lines.add(new SimpleLine(elements, singers, isBackupVocals, isNonLexicalVocables));
-        }
-        return new TimeCodedVerse(range, lines);
     }
 
     @Override

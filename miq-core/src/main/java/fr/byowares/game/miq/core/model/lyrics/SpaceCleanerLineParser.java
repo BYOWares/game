@@ -19,7 +19,6 @@ import java.text.CharacterIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * A simple {@link fr.byowares.game.miq.core.model.lyrics.LineParser} that treat each line as plain text (no special
@@ -31,9 +30,9 @@ import java.util.TreeSet;
  *     <li>Trailing white spaces in the last LineElement are trimmed.</li>
  * </ul>
  * Result of
- * {@link fr.byowares.game.miq.core.model.lyrics.LineParser#parse(CharSequence) parse(Charsequence} is always a list
- * of 1 element: either a {@link fr.byowares.game.miq.core.model.lyrics.BlankLine} or a
- * {@link fr.byowares.game.miq.core.model.lyrics.SimpleLine} that contains at least one word, with no singers, and not
+ * {@link fr.byowares.game.miq.core.model.lyrics.LineParser#parse(CharSequence) parse(Charsequence} is either
+ * {@link fr.byowares.game.miq.core.model.lyrics.Line#EMPTY_LIST} or a list of one
+ * {@link fr.byowares.game.miq.core.model.lyrics.Line} that contains at least one word, with no singers, and not
  * considered as backup vocals or non-lexical vocables.
  *
  * @since XXX
@@ -136,7 +135,7 @@ public class SpaceCleanerLineParser
      */
     static Set<Singer> parseAsSingers(final List<LineElement> elements) {
         if (elements.isEmpty()) return Set.of();
-        final Set<Singer> res = new TreeSet<>();
+        final Set<Singer> res = Singer.emptySet();
         for (final LineElement elt : elements) {
             if (elt.isWord()) res.add(new Singer(elt.getText()));
         }
@@ -145,13 +144,13 @@ public class SpaceCleanerLineParser
 
     @Override
     public List<Line> parse(final CharSequence input) {
-        if (input.chars().allMatch(Character::isWhitespace)) return BlankLine.ONE_BLANK_LINE;
+        if (input.chars().allMatch(Character::isWhitespace)) return Line.EMPTY_LIST;
 
         final var it = OptionsLineParser.CHAR_ITERATOR_TL.get();
         it.setText(input, 0, input.length());
         final List<LineElement> list = parseLineElements(it);
 
-        if (list.stream().noneMatch(LineElement::isWord)) return BlankLine.ONE_BLANK_LINE;
-        return List.of(new SimpleLine(list, Set.of(), false, false));
+        if (list.stream().noneMatch(LineElement::isWord)) return Line.EMPTY_LIST;
+        return List.of(new Line(list, Set.of(), false, false));
     }
 }
