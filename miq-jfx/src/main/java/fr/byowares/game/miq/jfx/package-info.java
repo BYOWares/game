@@ -17,15 +17,4 @@
 /**
  * @since XXX
  */
-module fr.byowares.game.utils {
-    requires org.agrona.core;
-    requires org.slf4j;
-    requires org.yaml.snakeyaml;
-
-    exports fr.byowares.game.utils.hashcodes;
-    exports fr.byowares.game.utils.info;
-    exports fr.byowares.game.utils.enums;
-    exports fr.byowares.game.utils.text;
-    exports fr.byowares.game.utils.serial;
-    exports fr.byowares.game.utils.serial.source;
-}
+package fr.byowares.game.miq.jfx;

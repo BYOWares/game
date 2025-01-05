@@ -1,0 +1,122 @@
+/*
+ * Copyright BYOWares
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package fr.byowares.game.utils.jfx.theme;
+
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.css.PseudoClass;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.util.Duration;
+
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+/**
+ * A manager to help refresh when Theme is updated.
+ *
+ * @since XXX
+ */
+public class ThemeManager {
+
+    private static final ThemeManager INSTANCE = new ThemeManager();
+
+    private static final PseudoClass DARK = PseudoClass.getPseudoClass("dark");
+    private static final double ANIMATION_DURATION = 750.0;
+
+    private final Set<Scene> scenes;
+    private Theme currentTheme = null;
+
+    private ThemeManager() {
+        this.scenes = new CopyOnWriteArraySet<>();
+    }
+
+    /**
+     * Update the theme and refresh all pages.
+     *
+     * @param theme The new theme to use.
+     */
+    public static synchronized void updateTheme(final Theme theme) {
+        Objects.requireNonNull(theme);
+        if (theme == INSTANCE.currentTheme) return;
+
+        if (INSTANCE.currentTheme != null) {
+            for (final Scene scene : INSTANCE.scenes) {
+                animateThemeChange(scene, Duration.millis(ANIMATION_DURATION));
+            }
+        }
+        Application.setUserAgentStylesheet(Objects.requireNonNull(theme.styleSheets()));
+
+        for (final Scene scene : INSTANCE.scenes) {
+            updateThemeForScene(scene, theme, INSTANCE.currentTheme);
+        }
+        INSTANCE.currentTheme = theme;
+    }
+
+    /**
+     * Subscribe the {@code scene} from Theme update.
+     *
+     * @param scene The scene that needs to be updated when the theme is modified.
+     */
+    public static synchronized void subscribe(final Scene scene) {
+        INSTANCE.scenes.add(scene);
+        updateThemeForScene(scene, INSTANCE.currentTheme, null);
+    }
+
+    /**
+     * Unsubscribe the {@code scene} from Theme update.
+     *
+     * @param scene The scene that needs to stop receiving update when the theme is updated.
+     */
+    public static void unsubscribe(final Scene scene) {
+        INSTANCE.scenes.remove(scene);
+    }
+
+    private static void updateThemeForScene(
+            final Scene scene,
+            final Theme newTheme,
+            final Theme oldTheme
+    ) {
+        if (newTheme == null) return;
+        if (oldTheme != null) scene.getStylesheets().remove(oldTheme.styleSheets());
+        scene.getStylesheets().setAll(newTheme.styleSheets());
+        scene.getRoot().pseudoClassStateChanged(DARK, newTheme.isDarkMode());
+    }
+
+    /* In order to make the animation pretty, all scene root element shall be StackPane. */
+    private static void animateThemeChange(
+            final Scene scene,
+            final Duration duration
+    ) {
+        final Image snapshot = scene.snapshot(null);
+        final Pane root = (Pane) scene.getRoot();
+
+        final ImageView imageView = new ImageView(snapshot);
+        root.getChildren().addFirst(imageView);
+
+        final var transition = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(imageView.opacityProperty(), 1, Interpolator.EASE_OUT)),
+                new KeyFrame(duration, new KeyValue(imageView.opacityProperty(), 0, Interpolator.EASE_OUT)));
+        transition.setOnFinished(e -> root.getChildren().remove(imageView));
+        transition.play();
+    }
+}

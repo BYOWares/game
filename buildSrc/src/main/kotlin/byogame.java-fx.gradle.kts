@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-/**
- * @since XXX
- */
-module fr.byowares.game.utils {
-    requires org.agrona.core;
-    requires org.slf4j;
-    requires org.yaml.snakeyaml;
+import org.gradle.internal.extensions.stdlib.uncheckedCast
 
-    exports fr.byowares.game.utils.hashcodes;
-    exports fr.byowares.game.utils.info;
-    exports fr.byowares.game.utils.enums;
-    exports fr.byowares.game.utils.text;
-    exports fr.byowares.game.utils.serial;
-    exports fr.byowares.game.utils.serial.source;
+plugins {
+    id("byogame.java-common")
+    id("org.openjfx.javafxplugin")
+}
+
+javafx {
+    var javaPluginExtension = project.extensions.findByName("java")!!.uncheckedCast<JavaPluginExtension>()
+    version = javaPluginExtension.toolchain.languageVersion.get().toString()
+    modules = listOf("javafx.base", "javafx.graphics", "javafx.controls", "javafx.fxml")
 }

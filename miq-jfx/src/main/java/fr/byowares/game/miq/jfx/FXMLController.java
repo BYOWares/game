@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.jfx;
 
-/**
- * @since XXX
- */
-module fr.byowares.game.utils {
-    requires org.agrona.core;
-    requires org.slf4j;
-    requires org.yaml.snakeyaml;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 
-    exports fr.byowares.game.utils.hashcodes;
-    exports fr.byowares.game.utils.info;
-    exports fr.byowares.game.utils.enums;
-    exports fr.byowares.game.utils.text;
-    exports fr.byowares.game.utils.serial;
-    exports fr.byowares.game.utils.serial.source;
+public class FXMLController {
+
+    @FXML
+    private Label label;
+
+    public void initialize() {
+        final String javaVersion = System.getProperty("java.version");
+        final String javafxVersion = System.getProperty("javafx.version");
+        this.label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
+    }
 }

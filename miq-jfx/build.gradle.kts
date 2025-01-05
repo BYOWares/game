@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-/**
- * @since XXX
- */
-module fr.byowares.game.utils {
-    requires org.agrona.core;
-    requires org.slf4j;
-    requires org.yaml.snakeyaml;
+plugins {
+    id("byogame.java-library")
+    id("byogame.java-fx")
+    id("byogame.java-application")
+}
 
-    exports fr.byowares.game.utils.hashcodes;
-    exports fr.byowares.game.utils.info;
-    exports fr.byowares.game.utils.enums;
-    exports fr.byowares.game.utils.text;
-    exports fr.byowares.game.utils.serial;
-    exports fr.byowares.game.utils.serial.source;
+dependencies {
+    implementation(project(":utils"))
+    implementation(project(":miq-core"))
+
+    implementation(libs.bundles.log4jImpl)
+    implementation(libs.bundles.yamlImpl)
+    runtimeOnly(libs.bundles.log4jRun)
+
+    testImplementation(libs.bundles.junitImpl)
+    testRuntimeOnly(libs.bundles.junitRun)
+}
+
+application {
+    mainClass = "fr.byowares.game.miq.jfx.MainApp"
+    mainModule = "fr.byowares.game.miq.jfx"
 }

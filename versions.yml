@@ -1,4 +1,7 @@
 versionToPublish: 0.1.0
 modulesFirstVersion:
+  app: XXX
   miq-core: XXX
+  miq-jfx: XXX
   utils: XXX
+  utils-jfx: XXX

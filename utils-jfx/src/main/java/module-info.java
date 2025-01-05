@@ -17,15 +17,14 @@
 /**
  * @since XXX
  */
-module fr.byowares.game.utils {
-    requires org.agrona.core;
+module fr.byowares.game.utils.jfx {
+    requires javafx.fxml;
+    requires javafx.controls;
+    requires fr.byowares.game.utils;
     requires org.slf4j;
-    requires org.yaml.snakeyaml;
 
-    exports fr.byowares.game.utils.hashcodes;
-    exports fr.byowares.game.utils.info;
-    exports fr.byowares.game.utils.enums;
-    exports fr.byowares.game.utils.text;
-    exports fr.byowares.game.utils.serial;
-    exports fr.byowares.game.utils.serial.source;
+    opens fr.byowares.game.utils.jfx to javafx.fxml;
+    exports fr.byowares.game.utils.jfx;
+    exports fr.byowares.game.utils.jfx.i18n;
+    exports fr.byowares.game.utils.jfx.theme;
 }
