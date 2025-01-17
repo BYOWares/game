@@ -46,7 +46,7 @@ public class Libraries {
 
     private static final Logger log = LoggerFactory.getLogger(Libraries.class);
 
-    private static final String MIQ_FILE_NAME = ".miq";
+    private static final String MIQ_FILE_NAME = "miq.yml";
 
     private final Path root;
     private final Library undefined;
@@ -104,7 +104,7 @@ public class Libraries {
                     final Song song = SongDeserializers.INSTANCE.updateSource(source).deserialize(load);
                     song.setSource(miqSource);
                     album.getSongs().add(song);
-                    retrieveLyrics(source, song);
+                    retrieveLyrics(source, miqSource, song);
                 }
                 default -> {
                     log.warn("Unknown type '{}' while parsing file {}", type, miqPath);
@@ -123,10 +123,12 @@ public class Libraries {
     }
 
     private static void retrieveLyrics(
-            final SourcePath source,
+            final Source source,
+            final Source miqsource,
             final Song song
     ) {
         final List<Source> children = source.getChildSources();
+        children.remove(miqsource);
         if (song.getSingleSource() != null) children.remove(song.getSingleSource().audioSource());
         if (song.getDuoSource() != null) {
             children.remove(song.getDuoSource().voiceSource());

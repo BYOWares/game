@@ -29,15 +29,15 @@ public interface Source {
     /**
      * @return An {@link java.io.InputStream} used to read the content of this source.
      *
-     * @throws java.io.IOException
+     * @throws java.io.IOException If an I/O error occurs while loading this source.
      */
     InputStream load()
             throws IOException;
 
     /**
-     * @param childName The name of the child element
+     * @param childName The name of the child element.
      *
-     * @return
+     * @return The child source with the given name (might not exist).
      */
     Source resolve(final String childName);
 

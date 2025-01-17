@@ -33,8 +33,7 @@ import java.util.TreeMap;
 
 /**
  * A collection of {@link VersionedDeserializer} of the same type.
- * Since they are all versioned, when the correct one can be used after the version was read. In addition, this
- * deserializer make sure that all field from the provided map are consumed.
+ * Since they are all versioned, the correct one can be selected after extracting the version.
  *
  * @param <T> The type of the object deserialized.
  *
