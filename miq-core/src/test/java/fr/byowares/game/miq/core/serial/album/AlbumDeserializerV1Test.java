@@ -23,9 +23,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AlbumDeserializerV1Test
+public class AlbumDeserializerV1Test
         extends AbstractDesSerTest<Album> {
-    static final Album ALBUM_V1 = new Album("Some fancy title");
+
+    public static final Album ALBUM_V1 = new Album("Some fancy title");
     static final Album ALBUM_V1_NO_ML = new Album(ALBUM_V1.getTitle());
     static final String INPUT_V1 = """
             version: 1

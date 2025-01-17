@@ -37,7 +37,7 @@ public class LyricsDeserializerV1Test
         extends AbstractDesSerTest<Lyrics> {
 
     static final TimeCodedVerse VERSE = new TimeCodedVerse(new Range(0L, 1L), Line.EMPTY_LIST);
-    static final Lyrics LYRICS_V1 = new Lyrics("null", "Eubehi", List.of(VERSE));
+    public static final Lyrics LYRICS_V1 = new Lyrics("null", "Eubehi", List.of(VERSE));
     static final String INPUT_V1 = """
             version: 1
             comment: 'null'

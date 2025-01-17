@@ -17,17 +17,20 @@ package fr.byowares.game.miq.core.serial.library;
 
 import fr.byowares.game.miq.core.model.song.Library;
 import fr.byowares.game.miq.core.serial.AbstractSerializerTest;
+import fr.byowares.game.miq.core.serial.album.AlbumDeserializerV1Test;
 import fr.byowares.game.utils.serial.Deserializers;
 import fr.byowares.game.utils.serial.Serializer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Test that latest {@link fr.byowares.game.miq.core.model.song.Library} serializer/deserializer consecutive
  * transformations are bijective.
  */
-class LibrarySerializerTest
+public class LibrarySerializerTest
         extends AbstractSerializerTest<Library> {
 
     @Override
@@ -49,5 +52,15 @@ class LibrarySerializerTest
     @MethodSource("getStringNonNullValues")
     public void testValidTitle(final StringInput input) {
         this.assertBijection(new Library("Who cares ?"), Library::setName, input.value());
+    }
+
+    @Test
+    public void testAlbumAreNotSerialized() {
+        final Library input = new Library("Lib");
+        input.getAlbums().add(AlbumDeserializerV1Test.ALBUM_V1);
+        final Library output = new Library("Lib");
+        assertEquals(2, input.getAlbums().size());
+        assertEquals(1, output.getAlbums().size()); // Only the undefined one
+        this.assertConversion(input, output);
     }
 }

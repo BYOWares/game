@@ -29,7 +29,7 @@ import static fr.byowares.game.miq.core.serial.album.AlbumDeserializerV1Test.VER
  * Testing the version.<br>
  * Other fields shall be tested in versioned deserializers.
  */
-class AlbumDeserializersTest
+public class AlbumDeserializersTest
         extends AbstractDeserializersTest<Album> {
 
     @Override

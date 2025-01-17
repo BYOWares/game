@@ -80,7 +80,7 @@ public abstract class AbstractSerializerTest<T>
 
     protected abstract Serializer<T> getSerializer();
 
-    protected record StringInput(
+    public record StringInput(
             String description,
             String value
     ) {

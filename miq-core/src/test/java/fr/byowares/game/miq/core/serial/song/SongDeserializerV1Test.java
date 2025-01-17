@@ -25,10 +25,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SongDeserializerV1Test
+public class SongDeserializerV1Test
         extends AbstractDesSerTest<Song> {
 
-    static final Song SONG_V1 = new Song("Some fancy title");
+    public static final Song SONG_V1 = new Song("Some fancy title");
     static final String INPUT_V1 = """
             version: 1
             title: Some fancy title

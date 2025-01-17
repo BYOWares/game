@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LibraryDeserializerV1Test
+public class LibraryDeserializerV1Test
         extends AbstractDesSerTest<Library> {
 
     static final Library LIBRARY_V1 = new Library("Library 1");

@@ -32,7 +32,7 @@ import java.util.List;
  * Test that latest {@link fr.byowares.game.miq.core.model.lyrics.Lyrics} serializer/deserializer consecutive
  * transformations are bijective.
  */
-class LyricsSerializerTest
+public class LyricsSerializerTest
         extends AbstractSerializerTest<Lyrics> {
 
     private static final List<TimeCodedVerse> OBL = List.of(new TimeCodedVerse(new Range(0L, 1L), Line.EMPTY_LIST));

@@ -29,7 +29,7 @@ import static fr.byowares.game.miq.core.serial.library.LibraryDeserializerV1Test
  * Testing the version.<br>
  * Other fields shall be tested in versioned deserializers.
  */
-class LibraryDeserializersTest
+public class LibraryDeserializersTest
         extends AbstractDeserializersTest<Library> {
 
     @Override

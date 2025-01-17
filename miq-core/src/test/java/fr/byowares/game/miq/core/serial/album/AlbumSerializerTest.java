@@ -17,17 +17,20 @@ package fr.byowares.game.miq.core.serial.album;
 
 import fr.byowares.game.miq.core.model.song.Album;
 import fr.byowares.game.miq.core.serial.AbstractSerializerTest;
+import fr.byowares.game.miq.core.serial.song.SongDeserializerV1Test;
 import fr.byowares.game.utils.serial.Deserializers;
 import fr.byowares.game.utils.serial.Serializer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Test that latest {@link fr.byowares.game.miq.core.model.song.Album} serializer/deserializer consecutive
  * transformations are bijective.
  */
-class AlbumSerializerTest
+public class AlbumSerializerTest
         extends AbstractSerializerTest<Album> {
 
     private static Album getGenericAlbum() {
@@ -69,5 +72,15 @@ class AlbumSerializerTest
     @MethodSource("getStringValues")
     public void testValidCopyright(final StringInput input) {
         this.assertBijection(getGenericAlbum(), Album::setCopyright, input.value());
+    }
+
+    @Test
+    public void testSongAreNotSerialized() {
+        final Album input = getGenericAlbum();
+        input.getSongs().add(SongDeserializerV1Test.SONG_V1);
+        final Album output = getGenericAlbum();
+        assertFalse(input.getSongs().isEmpty());
+        assertTrue(output.getSongs().isEmpty());
+        this.assertConversion(input, output);
     }
 }
