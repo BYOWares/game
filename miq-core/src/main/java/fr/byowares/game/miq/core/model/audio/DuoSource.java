@@ -15,44 +15,36 @@
  */
 package fr.byowares.game.miq.core.model.audio;
 
+import fr.byowares.game.utils.serial.source.Source;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
 import java.io.IOException;
 
 /**
  * Description of a song using two tracks: one for the vocals and one for the music.
  *
+ * @param voiceSource The source of the voice audio.
+ * @param musicSource The source of the music audio.
+ *
  * @since XXX
  */
-public class DuoSource
+public record DuoSource(
+        Source voiceSource,
+        Source musicSource
+)
         implements AudioSource {
-
-    private final File voiceTrack;
-    private final File musicTrack;
-
-    /**
-     * @param voiceTrack The file containing the voice audio.
-     * @param musicTrack The file containing the music audio.
-     */
-    public DuoSource(
-            final File voiceTrack,
-            final File musicTrack
-    ) {
-        this.voiceTrack = voiceTrack;
-        this.musicTrack = musicTrack;
-    }
 
     @Override
     public AudioPlayer load() {
         try {
-            final AudioInputStream voice = AudioSystem.getAudioInputStream(this.voiceTrack);
+            final AudioInputStream voice = AudioSystem.getAudioInputStream(this.voiceSource.load());
             final Clip voiceClip = AudioSystem.getClip();
             voiceClip.open(voice);
-            final AudioInputStream music = AudioSystem.getAudioInputStream(this.musicTrack);
+            final AudioInputStream music = AudioSystem.getAudioInputStream(this.musicSource.load());
             final Clip musicClip = AudioSystem.getClip();
             musicClip.open(music);
             return new DuoPlayer(voiceClip, musicClip);

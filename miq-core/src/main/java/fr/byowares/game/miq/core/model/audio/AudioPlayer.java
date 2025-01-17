@@ -20,7 +20,7 @@ import fr.byowares.game.miq.core.model.volume.Volume;
 /**
  * A music player with extended capabilities.
  * <ul>
- *     <li>Control the voice and music’s volume separately.</li>
+ *     <li>Control the voice and music volume separately.</li>
  *     <li>Rewind or Fast-forward the time.</li>
  * </ul>
  *

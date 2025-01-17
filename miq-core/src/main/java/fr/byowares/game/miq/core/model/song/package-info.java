@@ -13,19 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * @since XXX
- */
-module fr.byowares.game.utils {
-    requires org.slf4j;
-    requires org.yaml.snakeyaml;
-    requires org.agrona.core;
-
-    exports fr.byowares.game.utils.hashcodes;
-    exports fr.byowares.game.utils.info;
-    exports fr.byowares.game.utils.enums;
-    exports fr.byowares.game.utils.text;
-    exports fr.byowares.game.utils.serial;
-    exports fr.byowares.game.utils.serial.source;
-}
+package fr.byowares.game.miq.core.model.song;

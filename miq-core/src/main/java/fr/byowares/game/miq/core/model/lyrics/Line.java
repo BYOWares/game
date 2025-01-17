@@ -16,34 +16,55 @@
 package fr.byowares.game.miq.core.model.lyrics;
 
 import fr.byowares.game.miq.core.option.LyricsDisplayOptions;
+import fr.byowares.game.utils.hashcodes.HashCodes;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * A basic line that can have singers, and is not a back vocals or a non-lexical vocables one.
- *
- * @param elements     The LineElements composing the Line.
- * @param singers      The set of singers in charge of singing this Line.
- * @param isBackVocals Whether they are sung by back vocalists.
- * @param isNonLexical Whether it's made of non-lexical vocables (e.g.: La la la lala, la la la lala).
+ * Represent a homogeneous part of text to sing:
+ * <ul>
+ *     <li>{@code elements}: the actual text to sing;</li>
+ *     <li>{@code singers}: the singers in charge of singing this text;</li>
+ *     <li>{@code isBackVocals}: whether it is back vocals;</li>
+ *     <li>{@code elements}: whether the text shall be considered as non-lexical vocables (e.g.: La la la lala, la la la lala).</li>
+ * </ul>
  *
  * @since XXX
  */
-public record Line(
-        List<LineElement> elements,
-        Set<Singer> singers,
-        boolean isBackVocals,
-        boolean isNonLexical
-) {
+public final class Line {
 
     /** Immutable empty list. */
     public static final List<Line> EMPTY_LIST = List.of();
     private static final String SPACE = " ";
     private static final String HIDDEN_CHAR = "_";
+
+    private final List<LineElement> elements;
+    private final Set<Singer> singers;
+    private final boolean isBackVocals;
+    private final boolean isNonLexical;
+
+    /**
+     * @param elements     The LineElements composing the Line.
+     * @param singers      The set of singers in charge of singing this Line.
+     * @param isBackVocals Whether they are sung by back vocalists.
+     * @param isNonLexical Whether it's made of non-lexical vocables (e.g.: La la la lala, la la la lala).
+     */
+    public Line(
+            final List<LineElement> elements,
+            final Set<Singer> singers,
+            final boolean isBackVocals,
+            final boolean isNonLexical
+    ) {
+        this.elements = elements;
+        this.singers = singers;
+        this.isBackVocals = isBackVocals;
+        this.isNonLexical = isNonLexical;
+    }
 
     /**
      * Take a list of {@code Line}, merge all consecutive lines that can be merged into a single one, and then
@@ -53,8 +74,8 @@ public record Line(
      *
      * @return A new list with elements merged if possible.
      *
-     * @see #canBeMerged(Line, Line)
-     * @see #merge(Line, Line)
+     * @see #canBeMerged (Line, Line)
+     * @see #merge (Line, Line)
      */
     public static List<Line> merge(final List<Line> lines) {
         final List<Line> res = new ArrayList<>(lines.size());
@@ -140,6 +161,27 @@ public record Line(
     }
 
     /**
+     * @return {@code true} if this line represent back vocals, {@code false} otherwise.
+     */
+    public boolean isBackVocals() {
+        return this.isBackVocals;
+    }
+
+    /**
+     * @return {@code true} if this line represent non-lexical vocables, {@code false} otherwise.
+     */
+    public boolean isNonLexical() {
+        return this.isNonLexical;
+    }
+
+    /**
+     * @return The singers in charge of this line.
+     */
+    public Set<Singer> getSingers() {
+        return this.singers;
+    }
+
+    /**
      * @param options The set of display options.
      *
      * @return The text value representing this line when hidden.
@@ -163,5 +205,43 @@ public record Line(
             sb.append(elt.getText());
         }
         return sb.toString();
+    }
+
+    /**
+     * @return A Shallow copy of this instance.
+     */
+    public Line copy() {
+        return new Line(this.elements, this.singers, this.isBackVocals, this.isNonLexical);
+    }
+
+    /**
+     * Copy this line text, but update the fields as follow.
+     *
+     * @param singers      The set of singers in charge of singing this Line.
+     * @param isBackVocals Whether they are sung by back vocalists.
+     * @param isNonLexical Whether it's made of non-lexical vocables (e.g.: La la la lala, la la la lala).
+     *
+     * @return A shallow copy of this instance.
+     */
+    public Line copy(
+            final Collection<CharSequence> singers,
+            final boolean isBackVocals,
+            final boolean isNonLexical
+    ) {
+        return new Line(this.elements, Singer.from(singers), isBackVocals, isNonLexical);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodes.hash(this.elements, this.singers, this.isBackVocals, this.isNonLexical);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof final Line line)) return false;
+        return this.isBackVocals == line.isBackVocals //
+                && this.isNonLexical == line.isNonLexical //
+                && Objects.equals(this.elements, line.elements) //
+                && Objects.equals(this.singers, line.singers);
     }
 }

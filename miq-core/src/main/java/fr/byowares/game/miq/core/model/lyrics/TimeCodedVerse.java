@@ -16,9 +16,11 @@
 package fr.byowares.game.miq.core.model.lyrics;
 
 import fr.byowares.game.miq.core.model.Range;
+import fr.byowares.game.utils.hashcodes.HashCodes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @param range The period during which the line is sung.
@@ -50,8 +52,19 @@ public record TimeCodedVerse(
         if (this.lines == null) return new TimeCodedVerse(this.range, null);
         final List<Line> lines = new ArrayList<>(this.lines.size());
         for (final Line line : this.lines)
-            lines.add(new Line(line.elements(), line.singers(), line.isBackVocals(), line.isNonLexical()));
+            lines.add(line.copy());
 
         return new TimeCodedVerse(this.range, lines);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof TimeCodedVerse(final Range r, final List<Line> l))) return false;
+        return Objects.equals(this.range, r) && Objects.equals(this.lines, l);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodes.hash(this.range, this.lines);
     }
 }

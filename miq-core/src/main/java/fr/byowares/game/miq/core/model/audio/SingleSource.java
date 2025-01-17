@@ -15,35 +15,29 @@
  */
 package fr.byowares.game.miq.core.model.audio;
 
+import fr.byowares.game.utils.serial.source.Source;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
 import java.io.IOException;
 
 /**
- * Description of a song using a single track, which means that vocals and music share the same source file.
+ * Description of a song using a single track, which means that vocals and music share the same source.
+ *
+ * @param audioSource The source containing both voice & music audios.
  *
  * @since XXX
  */
-public class SingleSource
+public record SingleSource(Source audioSource)
         implements AudioSource {
-
-    private final File audioTrack;
-
-    /**
-     * @param audioTrack The file containing both voice & music audios.
-     */
-    public SingleSource(final File audioTrack) {
-        this.audioTrack = audioTrack;
-    }
 
     @Override
     public AudioPlayer load() {
         try {
-            final AudioInputStream ais = AudioSystem.getAudioInputStream(this.audioTrack);
+            final AudioInputStream ais = AudioSystem.getAudioInputStream(this.audioSource.load());
             final Clip clip = AudioSystem.getClip();
             clip.open(ais);
             return new SinglePlayer(clip);

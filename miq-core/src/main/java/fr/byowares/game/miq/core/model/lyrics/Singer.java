@@ -30,7 +30,7 @@ public record Singer(CharSequence name)
     /**
      * @return An empty mutable set.
      */
-    public static Set<Singer> emptySet() {
+    static Set<Singer> emptySet() {
         return new TreeSet<>();
     }
 
@@ -41,7 +41,7 @@ public record Singer(CharSequence name)
      *
      * @return The set of {@code Singer}.
      */
-    public static Set<Singer> from(final Collection<CharSequence> collection) {
+    static Set<Singer> from(final Collection<CharSequence> collection) {
         final var set = emptySet();
         for (final CharSequence seq : collection)
             set.add(new Singer(seq));

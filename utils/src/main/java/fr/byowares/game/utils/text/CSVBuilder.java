@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.function.Function;
 
 import static fr.byowares.game.utils.text.CSVParser.BACK_SLASH;
+import static fr.byowares.game.utils.text.CSVParser.SPACE;
 import static fr.byowares.game.utils.text.CSVParser.areCharEquals;
 import static fr.byowares.game.utils.text.CSVParser.validateSeparator;
 
@@ -103,9 +104,9 @@ public class CSVBuilder {
         this.appendSeparatorIfNeeded(this.buffer);
         boolean isFirst = true;
         for (final T t : collection) {
-            if (!isFirst) this.buffer.append(' ');
+            if (!isFirst) this.buffer.append(SPACE);
+            else isFirst = false;
             this.appendText(toCharSequence.apply(t));
-            isFirst = false;
         }
     }
 

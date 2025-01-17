@@ -20,13 +20,15 @@
 module fr.byowares.game.miq.core {
     exports fr.byowares.game.miq.core.info;
     exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.volume;
     exports fr.byowares.game.miq.core.model.audio;
     exports fr.byowares.game.miq.core.model.lyrics;
+    exports fr.byowares.game.miq.core.model.song;
+    exports fr.byowares.game.miq.core.model.volume;
     exports fr.byowares.game.miq.core.option;
 
     requires fr.byowares.game.utils;
     requires java.desktop;
     requires org.slf4j;
     requires org.yaml.snakeyaml;
+    requires org.agrona.core;
 }
