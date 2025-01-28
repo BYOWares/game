@@ -1,0 +1,2 @@
+.game-button      { -fx-background-image: url("../icon/MIQ__lit__light_250.png"); }
+.game-button:dark { -fx-background-image: url("../icon/MIQ__lit__dark_250.png");  }

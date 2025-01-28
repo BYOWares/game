@@ -27,26 +27,26 @@ import java.util.Objects;
 public final class ResourcesApp {
 
     /** Icon for the Moon unselected. */
-    static final Image ICO_MOON_OFF = getIcon("moon_off_32");
+    public static final Image ICO_MOON_OFF = getIcon("moon_off_32");
     /** Icon for the Moon selected. */
-    static final Image ICO_MOON_ON = getIcon("moon_on_32");
+    public static final Image ICO_MOON_ON = getIcon("moon_on_32");
     /** Icon for the Sun unselected. */
-    static final Image ICO_SUN_OFF = getIcon("sun_off_32");
+    public static final Image ICO_SUN_OFF = getIcon("sun_off_32");
     /** Icon for the Sun selected. */
-    static final Image ICO_SUN_ON = getIcon("sun_on_32");
-//    static final Image MIQ_DARK = getImage("MIQ__lit__dark");
-//    static final Image MIQ_LIGHT = getImage("MIQ__lit__light");
+    public static final Image ICO_SUN_ON = getIcon("sun_on_32");
+    /** MIQ Specific CSS. */
+    public static final String MIQ_CSS = getCss("MIQGameAccess");
 
     private ResourcesApp() {
         // Utility class
     }
 
-    private static Image getImage(final String fileName) {
-        return new Image(get("image", fileName + ".png"));
-    }
-
     private static Image getIcon(final String fileName) {
         return new Image(get("icon", fileName + ".png"));
+    }
+
+    private static String getCss(final String fileName) {
+        return get("css", fileName + ".css");
     }
 
     private static String get(

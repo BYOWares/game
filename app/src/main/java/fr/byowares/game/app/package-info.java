@@ -15,7 +15,7 @@
  */
 
 /**
- * Java FX elements used by the application.
+ * Resources and entry point of the application
  *
  * @since XXX
  */

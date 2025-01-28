@@ -15,20 +15,8 @@
  */
 
 /**
+ * FXML model and controllers used by the application.
+ *
  * @since XXX
  */
-module fr.byowares.game.app {
-    requires fr.byowares.game.utils.jfx;
-    requires java.desktop;
-    requires java.xml;
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires org.slf4j;
-
-    opens fr.byowares.game.app to javafx.fxml;
-    opens fr.byowares.game.app.i18n to fr.byowares.game.utils.jfx;
-
-    exports fr.byowares.game.app;
-    exports fr.byowares.game.app.fxml;
-    opens fr.byowares.game.app.fxml to javafx.fxml;
-}
+package fr.byowares.game.app.fxml;

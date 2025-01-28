@@ -1,0 +1,13 @@
+@font-face {
+    font-family: "BareCast";
+    src: url("../font/Barecast-Regular.otf");
+}
+
+.game-title {
+    -fx-font-family: "BareCast";
+    -fx-font-size: 50;
+}
+
+.game-button {
+    -fx-shape: "M 100 250 L 200 200 L 300 250 L 300 350 L 200 400 L 100 350 L 100 250 ";
+}

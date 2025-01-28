@@ -21,6 +21,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.css.PseudoClass;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -44,10 +45,12 @@ public class ThemeManager {
     private static final double ANIMATION_DURATION = 750.0;
 
     private final Set<Scene> scenes;
+    private final Set<Node> nodes;
     private Theme currentTheme = null;
 
     private ThemeManager() {
         this.scenes = new CopyOnWriteArraySet<>();
+        this.nodes = new CopyOnWriteArraySet<>();
     }
 
     /**
@@ -60,15 +63,18 @@ public class ThemeManager {
         if (theme == INSTANCE.currentTheme) return;
 
         if (INSTANCE.currentTheme != null) {
-            for (final Scene scene : INSTANCE.scenes) {
+            for (final Scene scene : INSTANCE.scenes)
                 animateThemeChange(scene, Duration.millis(ANIMATION_DURATION));
-            }
+
         }
         Application.setUserAgentStylesheet(Objects.requireNonNull(theme.styleSheets()));
 
-        for (final Scene scene : INSTANCE.scenes) {
+        for (final Scene scene : INSTANCE.scenes)
             updateThemeForScene(scene, theme, INSTANCE.currentTheme);
-        }
+
+        for (final Node node : INSTANCE.nodes)
+            node.pseudoClassStateChanged(DARK, theme.isDarkMode());
+
         INSTANCE.currentTheme = theme;
     }
 
@@ -83,12 +89,31 @@ public class ThemeManager {
     }
 
     /**
+     * Subscribe the {@code node} from Theme update.
+     *
+     * @param node The Node that needs to be updated when the theme is modified.
+     */
+    public static synchronized void subscribe(final Node node) {
+        INSTANCE.nodes.add(node);
+        updateThemeForNode(node, INSTANCE.currentTheme);
+    }
+
+    /**
      * Unsubscribe the {@code scene} from Theme update.
      *
      * @param scene The scene that needs to stop receiving update when the theme is updated.
      */
     public static void unsubscribe(final Scene scene) {
         INSTANCE.scenes.remove(scene);
+    }
+
+    /**
+     * Unsubscribe the {@code node} from Theme update.
+     *
+     * @param node The node that needs to stop receiving update when the theme is updated.
+     */
+    public static void unsubscribe(final Node node) {
+        INSTANCE.nodes.remove(node);
     }
 
     private static void updateThemeForScene(
@@ -100,6 +125,14 @@ public class ThemeManager {
         if (oldTheme != null) scene.getStylesheets().remove(oldTheme.styleSheets());
         scene.getStylesheets().setAll(newTheme.styleSheets());
         scene.getRoot().pseudoClassStateChanged(DARK, newTheme.isDarkMode());
+    }
+
+    private static void updateThemeForNode(
+            final Node node,
+            final Theme newTheme
+    ) {
+        if (newTheme == null) return;
+        node.pseudoClassStateChanged(DARK, newTheme.isDarkMode());
     }
 
     /* In order to make the animation pretty, all scene root element shall be StackPane. */

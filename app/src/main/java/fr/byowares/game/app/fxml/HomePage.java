@@ -13,24 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.byowares.game.app;
+package fr.byowares.game.app.fxml;
 
+import fr.byowares.game.app.ResourcesApp;
 import fr.byowares.game.app.i18n.I18NApp;
-import fr.byowares.game.app.i18n.I18NHomePage;
+import fr.byowares.game.utils.jfx.ConRoot;
 import fr.byowares.game.utils.jfx.Styles;
 import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
 import fr.byowares.game.utils.jfx.i18n.Lang;
 import fr.byowares.game.utils.jfx.theme.Theme;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Menu;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
 
@@ -39,11 +43,9 @@ import java.util.Random;
  *
  * @since XXX
  */
-public class HomePageController {
+public class HomePage {
 
     private final ToggleGroup themeGroup = new ToggleGroup();
-    @FXML
-    private Button miqButton;
     @FXML
     private ToggleButton darkTheme;
     @FXML
@@ -51,13 +53,29 @@ public class HomePageController {
     @FXML
     private ComboBox<Lang> language;
     @FXML
-    private Menu options;
-    @FXML
-    private Menu about;
+    private VBox mainVBox;
+
+    private GameAccess miqAccess;
+
+    /**
+     * Load a new instance of the HomePage.
+     *
+     * @return The pair (Controller, StackPane) making the HomePage.
+     *
+     * @throws IOException If the resource could not be loaded.
+     */
+    public static ConRoot<HomePage, StackPane> load()
+            throws IOException {
+        final var loader = new FXMLLoader(Objects.requireNonNull(HomePage.class.getResource("HomePage.fxml")));
+        final HomePage hp = loader.getController();
+        final StackPane root = loader.load();
+        return new ConRoot<>(hp, root);
+    }
 
     /** FXML handle for initialization. */
     @FXML
-    public void initialize() {
+    public void initialize()
+            throws IOException {
         // TODO Retrieve those values from saved options
         final boolean isDarkTheme = new Random().nextBoolean();
         if (isDarkTheme) this.selectDarkTheme();
@@ -65,10 +83,6 @@ public class HomePageController {
 
         final Lang currentLang = isDarkTheme ? Lang.LANG_UK : Lang.LANG_FR;
         I18NLocaleManager.updateLocale(currentLang.locale());
-
-        /* Menu initialization */
-        I18NHomePage.get().bind(this.about.textProperty(), "homepage.menu.about");
-        I18NHomePage.get().bind(this.options.textProperty(), "homepage.menu.options");
 
         /* Theme button initialization */
         this.darkTheme.getStyleClass().add(Styles.LEFT_PILL);
@@ -99,8 +113,9 @@ public class HomePageController {
             if (!Objects.equals(oldValue, newValue)) I18NLocaleManager.updateLocale(newValue.locale());
         });
 
-        /* MIQ section */
-        this.miqButton.getStyleClass().add(Styles.FLAT);
+        final ConRoot<GameAccess, HBox> load = GameAccess.load();
+        this.miqAccess = load.controller();
+        this.mainVBox.getChildren().add(load.root());
     }
 
     private void selectDarkTheme() {
@@ -115,17 +130,5 @@ public class HomePageController {
         this.lightTheme.setSelected(true);
         this.darkTheme.setGraphic(new ImageView(ResourcesApp.ICO_MOON_OFF));
         this.lightTheme.setGraphic(new ImageView(ResourcesApp.ICO_SUN_ON));
-    }
-
-    /** Open a new window to manage options. */
-    @FXML
-    public void openOptions() {
-
-    }
-
-    /** Open a new window showing information about the platform. */
-    @FXML
-    public void openAbout() {
-
     }
 }

@@ -15,27 +15,26 @@
  */
 package fr.byowares.game.app;
 
+import fr.byowares.game.app.fxml.HomePage;
 import fr.byowares.game.app.info.AppInfo;
+import fr.byowares.game.utils.jfx.ConRoot;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Objects;
 
 /**
  * Entry point of the Java FX application.
  *
  * @since XXX
  */
-public class HomePage
+public class App
         extends Application {
 
-    private static final Logger log = LoggerFactory.getLogger(HomePage.class);
+    private static final Logger log = LoggerFactory.getLogger(App.class);
 
     /**
      * @param args Args used to start the application.
@@ -48,8 +47,8 @@ public class HomePage
     public void start(final Stage stage)
             throws Exception {
         log.info("Starting {}", AppInfo.TO_STRING);
-        final Parent root = FXMLLoader.load(Objects.requireNonNull(this.getClass().getResource("fxml/HomePage.fxml")));
-        final Scene scene = new Scene(root);
+        final ConRoot<HomePage, StackPane> pair = HomePage.load();
+        final Scene scene = new Scene(pair.root());
         ThemeManager.subscribe(scene);
         stage.setTitle("BYOWares Games " + AppInfo.VERSION);
         stage.setScene(scene);

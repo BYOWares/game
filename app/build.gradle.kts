@@ -36,6 +36,6 @@ dependencies {
 }
 
 application {
-    mainClass = "fr.byowares.game.app.HomePage"
+    mainClass = "fr.byowares.game.app.App"
     mainModule = "fr.byowares.game.app"
 }
