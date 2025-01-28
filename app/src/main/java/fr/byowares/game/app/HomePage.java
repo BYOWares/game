@@ -47,7 +47,11 @@ public class HomePage
     @Override
     public void start(final Stage stage)
             throws Exception {
+        log.trace("Starting {}", AppInfo.TO_STRING);
+        log.debug("Starting {}", AppInfo.TO_STRING);
         log.info("Starting {}", AppInfo.TO_STRING);
+        log.warn("Starting {}", AppInfo.TO_STRING);
+        log.error("Starting {}", AppInfo.TO_STRING);
         final Parent root = FXMLLoader.load(Objects.requireNonNull(this.getClass().getResource("fxml/HomePage.fxml")));
         final Scene scene = new Scene(root);
         ThemeManager.subscribe(scene);

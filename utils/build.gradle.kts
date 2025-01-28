@@ -19,6 +19,8 @@ plugins {
 }
 
 dependencies {
+    implementation(libs.log4J.core) // See https://github.com/apache/logging-log4j2/issues/3250
+
     implementation(libs.agrona)
     implementation(libs.bundles.log4jImpl)
     implementation(libs.bundles.yamlImpl)

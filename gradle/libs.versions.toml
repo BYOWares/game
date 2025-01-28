@@ -22,9 +22,11 @@ agrona = "2.0.0"
 disruptor = "4.0.0"
 guardian = "1.1.2"
 jPlatform = "1.11.4"
+jSpec = "1.0.0"
 jackson = "2.18.2"
 junit = "5.11.4"
-log4j = "2.24.3"
+log4j = "3.0.0-beta3"
+log4j_NOT_UPDATED = "3.0.0-beta2"
 opentest4j = "1.3.0"
 slf4j = "2.0.16"
 snake = "2.3"
@@ -50,10 +52,16 @@ junitP-commons = { group = "org.junit.platform", name = "junit-platform-commons"
 junitP-engine = { group = "org.junit.platform", name = "junit-platform-engine", version.ref = "jPlatform" }
 junitP-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "jPlatform" }
 
-log4J-api = { group = "org.apache.logging.log4j", name = "log4j-api", version.ref = "log4j" }
+jSpecify = { group = "org.jspecify", name = "jspecify", version.ref = "jSpec" }
+
+log4J-api = { group = "org.apache.logging.log4j", name = "log4j-api", version = "2.24.1" }
 log4J-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
-log4J-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j" }
+log4J-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j_NOT_UPDATED" }
+log4J-jackson = { group = "org.apache.logging.log4j", name = "log4j-config-jackson", version.ref = "log4j" }
 log4J-json = { group = "org.apache.logging.log4j", name = "log4j-layout-template-json", version.ref = "log4j" }
+log4J-kit = { group = "org.apache.logging.log4j", name = "log4j-kit", version.ref = "log4j" }
+log4J-plugin = { group = "org.apache.logging.log4j", name = "log4j-plugins", version.ref = "log4j" }
+log4J-yaml = { group = "org.apache.logging.log4j", name = "log4j-config-yaml", version.ref = "log4j" }
 
 opentest4J = { group = "org.opentest4j", name = "opentest4j", version.ref = "opentest4j" }
 
@@ -69,10 +77,13 @@ snakeYaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snake" }
 junitImpl = ["junit", "junit-api", "junit-params", "guardian"]
 junitRun = ["junit-engine", "opentest4J", "junitP-launcher", "junitP-commons", "junitP-engine"]
 
-log4jImpl = ["slf4J-api"]
-log4jRun = [
+log4jImpl = ["slf4J-api",
     "slf4J-jcl", "slf4J-log", "slf4J-jul",
-    "log4J-impl", "log4J-core", "log4J-api", "log4J-json",
+    "log4J-api", "log4J-core", "log4J-impl", "log4J-jackson", "log4J-json", "log4J-yaml",
+    "jSpecify",
+    "log4J-kit", "log4J-plugin"] # The last two are required for https://github.com/apache/logging-log4j2/issues/3250
+log4jRun = [
+
     "jackson-anno", "jackson-bind", "jackson-core", "jackson-yaml", "snakeYaml"
 ]
 

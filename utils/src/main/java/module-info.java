@@ -21,6 +21,7 @@ module fr.byowares.game.utils {
     requires org.agrona.core;
     requires org.slf4j;
     requires org.yaml.snakeyaml;
+    requires org.apache.logging.log4j.plugins;
 
     exports fr.byowares.game.utils.hashcodes;
     exports fr.byowares.game.utils.info;
@@ -28,4 +29,8 @@ module fr.byowares.game.utils {
     exports fr.byowares.game.utils.text;
     exports fr.byowares.game.utils.serial;
     exports fr.byowares.game.utils.serial.source;
+    // What follow is a temporary hack, see https://github.com/apache/logging-log4j2/issues/3250
+    exports fr.byowares.game.utils.log4j;
+
+    provides org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor with fr.byowares.game.utils.log4j.Log4jCorePostProcessor;
 }
