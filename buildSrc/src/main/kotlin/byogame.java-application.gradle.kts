@@ -14,7 +14,19 @@
  * limitations under the License.
  */
 
+import extension.BYOWaresExtension
+import task.CopyLog4JFileTask
+
 plugins {
     id("byogame.java-common")
     application
 }
+
+val copyLog4J2Conf = "copyLog4J2Conf"
+val byoExt = rootProject.extensions.getByType(BYOWaresExtension::class.java)
+
+tasks.register<CopyLog4JFileTask>(copyLog4J2Conf) {
+    log4J2ConfigFile = byoExt.log4J2ConfigFile.asFile
+}
+
+tasks.named(JavaPlugin.PROCESS_RESOURCES_TASK_NAME) { dependsOn(copyLog4J2Conf) }

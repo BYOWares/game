@@ -18,7 +18,9 @@ package task
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.plugins.BasePlugin
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
@@ -33,6 +35,9 @@ abstract class CopyLog4JFileTask : DefaultTask() {
         description = "Copy the Log4J2 configuration from plugin to project."
     }
 
+    @get:Input
+    val forTest: Property<Boolean> = project.objects.property(Boolean::class.java).convention(false)
+
     @get:InputFile
     abstract var log4J2ConfigFile: Provider<File>
 
@@ -44,7 +49,19 @@ abstract class CopyLog4JFileTask : DefaultTask() {
     @TaskAction
     fun copyFile() {
         val file = log4J2ConfigFile.get()
-        val updatedContent = file.readText().replace("PROJECT_NAME", project.name)
-        outputDirectory.get().asFile.resolve(file.name).writeText(updatedContent)
+        val suffix = if (forTest.get()) "-test" else ""
+        val newFileName = newFileName(forTest.get(), file.name)
+        val updatedContent = file.readText().replace("PROJECT_NAME", project.name + suffix)
+        outputDirectory.get().asFile.resolve(newFileName).writeText(updatedContent)
+    }
+
+    fun newFileName(
+        isForTest: Boolean,
+        fileName: String
+    ): String {
+        if (!isForTest) return fileName
+        val lastIndex = fileName.lastIndexOf('.')
+        if (lastIndex < 0) return fileName + "-test"
+        return "" + fileName.subSequence(0, lastIndex) + "-test" + fileName.subSequence(lastIndex, fileName.length)
     }
 }

@@ -53,7 +53,7 @@ tasks.named<Test>("test") {
 
 val genJavaInfoFile = "generateJavaInfoFile"
 val genPkgInfoFile = "generatePackageInfoFile"
-val copyLog4J2Conf = "copyLog4J2Conf"
+val copyLog4J2Conf4Test = "copyLog4J2Conf4Test"
 val byoExt = rootProject.extensions.getByType(BYOWaresExtension::class.java)
 
 tasks.register<GeneratePackageInfoFileTask>(genPkgInfoFile) {
@@ -76,11 +76,13 @@ tasks.register<UpdateSinceTagTask>(UpdateSinceTagTask.UPDATE_SINCE_TAG_TASK_NAME
     updateVersionsFile.set(false)
 }
 
-tasks.register<CopyLog4JFileTask>(copyLog4J2Conf) {
+tasks.register<CopyLog4JFileTask>(copyLog4J2Conf4Test) {
     log4J2ConfigFile = byoExt.log4J2ConfigFile.asFile
+    forTest.set(true)
+    outputDirectory.set(project.layout.projectDirectory.dir("src").dir("test").dir("resources"))
 }
 
 tasks.named(JavaPlugin.COMPILE_JAVA_TASK_NAME) { dependsOn(genJavaInfoFile) }
 tasks.named(genJavaInfoFile) { dependsOn(genPkgInfoFile) }
 tasks.named(genJavaInfoFile) { dependsOn(rootProject.tasks.named(SanitizeVersionsFileTask.SANITIZE_VERSIONS_FILE_TASK_NAME)) }
-tasks.named(JavaPlugin.PROCESS_RESOURCES_TASK_NAME) { dependsOn(copyLog4J2Conf) }
+tasks.named(JavaPlugin.PROCESS_TEST_RESOURCES_TASK_NAME) { dependsOn(copyLog4J2Conf4Test) }
