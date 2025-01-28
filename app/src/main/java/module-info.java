@@ -19,9 +19,10 @@
  */
 module fr.byowares.game.app {
     requires fr.byowares.game.utils.jfx;
-    requires javafx.fxml;
-    requires javafx.controls;
     requires java.desktop;
+    requires java.xml;
+    requires javafx.controls;
+    requires javafx.fxml;
     requires org.slf4j;
 
     opens fr.byowares.game.app to javafx.fxml;

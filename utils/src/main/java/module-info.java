@@ -18,6 +18,7 @@
  * @since XXX
  */
 module fr.byowares.game.utils {
+    requires java.xml;
     requires org.agrona.core;
     requires org.slf4j;
     requires org.yaml.snakeyaml;

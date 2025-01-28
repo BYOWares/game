@@ -33,7 +33,7 @@ build
 */src-generated/
 
 # Log4j2 configuration files
-*/src/main/resources/log4j2.yml
+*/src/main/resources/log4j2.*
 
 # idea specifics
 .idea/workspace.xml

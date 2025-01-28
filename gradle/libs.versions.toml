@@ -53,7 +53,6 @@ junitP-launcher = { group = "org.junit.platform", name = "junit-platform-launche
 log4J-api = { group = "org.apache.logging.log4j", name = "log4j-api", version.ref = "log4j" }
 log4J-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
 log4J-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j" }
-log4J-json = { group = "org.apache.logging.log4j", name = "log4j-layout-template-json", version.ref = "log4j" }
 
 opentest4J = { group = "org.opentest4j", name = "opentest4j", version.ref = "opentest4j" }
 
@@ -72,8 +71,7 @@ junitRun = ["junit-engine", "opentest4J", "junitP-launcher", "junitP-commons", "
 log4jImpl = ["slf4J-api"]
 log4jRun = [
     "slf4J-jcl", "slf4J-log", "slf4J-jul",
-    "log4J-impl", "log4J-core", "log4J-api", "log4J-json",
-    "jackson-anno", "jackson-bind", "jackson-core", "jackson-yaml", "snakeYaml"
+    "log4J-impl", "log4J-core", "log4J-api"
 ]
 
 yamlImpl = ["snakeYaml"]

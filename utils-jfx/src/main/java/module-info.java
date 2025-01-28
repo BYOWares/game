@@ -18,6 +18,7 @@
  * @since XXX
  */
 module fr.byowares.game.utils.jfx {
+    requires java.xml;
     requires javafx.fxml;
     requires javafx.controls;
     requires fr.byowares.game.utils;

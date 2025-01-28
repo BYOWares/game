@@ -30,7 +30,7 @@ import java.io.File
 abstract class CopyLog4JFileTask : DefaultTask() {
     init {
         group = BasePlugin.BUILD_GROUP
-        description = "Copy the YAML Log4J2 configuration from plugin to project."
+        description = "Copy the Log4J2 configuration from plugin to project."
     }
 
     @get:InputFile
