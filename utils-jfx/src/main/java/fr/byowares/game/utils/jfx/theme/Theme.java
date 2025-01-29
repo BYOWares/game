@@ -36,18 +36,24 @@ public final class Theme {
     private final boolean isDarkMode;
     private final String styleSheets;
 
-    public Theme(
+    private Theme(
             final String name,
             final boolean isDarkMode,
             final String styleSheets
     ) {
         this.name = name;
         this.isDarkMode = isDarkMode;
-        this.styleSheets = styleSheets;
+        this.styleSheets = Objects.requireNonNull(styleSheets);
     }
 
+    /**
+     * @return {@code true} if this theme is a dark mode, {@code false} otherwise.
+     */
     public boolean isDarkMode() {return this.isDarkMode;}
 
+    /**
+     * @return The style sheet used to skin everything.
+     */
     public String styleSheets() {return this.styleSheets;}
 
     @Override
@@ -68,5 +74,4 @@ public final class Theme {
     public String toString() {
         return "Theme[" + "name=" + this.name + ", " + "isDarkMode=" + this.isDarkMode + ", " + "styleSheets=" + this.styleSheets + ']';
     }
-
 }

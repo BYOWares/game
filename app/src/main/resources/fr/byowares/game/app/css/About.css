@@ -1,0 +1,2 @@
+.about-button      { -fx-background-image: url("../icon/about_light_48.png"); }
+.about-button:dark { -fx-background-image: url("../icon/about_dark_48.png");  }

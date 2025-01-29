@@ -24,6 +24,7 @@ module fr.byowares.game.app {
     requires javafx.controls;
     requires javafx.fxml;
     requires org.slf4j;
+    requires org.agrona.core;
 
     opens fr.byowares.game.app to javafx.fxml;
     opens fr.byowares.game.app.i18n to fr.byowares.game.utils.jfx;

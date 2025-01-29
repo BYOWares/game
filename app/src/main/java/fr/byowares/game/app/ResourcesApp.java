@@ -26,6 +26,21 @@ import java.util.Objects;
  */
 public final class ResourcesApp {
 
+    /** 16 pixel icon for the App. */
+    public static final Image GAME_16 = getIcon("GAME__ico__all_16");
+    /** 32 pixel icon for the App. */
+    public static final Image GAME_32 = getIcon("GAME__ico__all_32");
+    /** 64 pixel icon for the App. */
+    public static final Image GAME_64 = getIcon("GAME__ico__all_64");
+    /** 128 pixel icon for the App. */
+    public static final Image GAME_128 = getIcon("GAME__ico__all_128");
+    /** 256 pixel icon for the App. */
+    public static final Image GAME_256 = getIcon("GAME__ico__all_256");
+    /** 512 pixel icon for the App. */
+    public static final Image GAME_512 = getIcon("GAME__ico__all_512");
+    /** 1024 pixel icon for the App. */
+    public static final Image GAME_1024 = getIcon("GAME__ico__all_1024");
+
     /** Icon for the Moon unselected. */
     public static final Image ICO_MOON_OFF = getIcon("moon_off_32");
     /** Icon for the Moon selected. */
@@ -35,7 +50,7 @@ public final class ResourcesApp {
     /** Icon for the Sun selected. */
     public static final Image ICO_SUN_ON = getIcon("sun_on_32");
     /** MIQ Specific CSS. */
-    public static final String MIQ_CSS = getCss("MIQGameAccess");
+    public static final String MIQ_CSS = getCSS("MIQGameAccess");
 
     private ResourcesApp() {
         // Utility class
@@ -45,7 +60,7 @@ public final class ResourcesApp {
         return new Image(get("icon", fileName + ".png"));
     }
 
-    private static String getCss(final String fileName) {
+    private static String getCSS(final String fileName) {
         return get("css", fileName + ".css");
     }
 

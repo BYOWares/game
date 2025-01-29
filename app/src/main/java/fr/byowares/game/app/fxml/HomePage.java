@@ -17,6 +17,7 @@ package fr.byowares.game.app.fxml;
 
 import fr.byowares.game.app.ResourcesApp;
 import fr.byowares.game.app.i18n.I18NApp;
+import fr.byowares.game.app.info.AppInfo;
 import fr.byowares.game.utils.jfx.ConRoot;
 import fr.byowares.game.utils.jfx.Styles;
 import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
@@ -25,7 +26,9 @@ import fr.byowares.game.utils.jfx.theme.Theme;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
@@ -33,6 +36,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.agrona.LangUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -45,7 +51,8 @@ import java.util.Random;
  */
 public class HomePage {
 
-    private final ToggleGroup themeGroup = new ToggleGroup();
+    private static final Logger log = LoggerFactory.getLogger(HomePage.class);
+
     @FXML
     private ToggleButton darkTheme;
     @FXML
@@ -54,8 +61,11 @@ public class HomePage {
     private ComboBox<Lang> language;
     @FXML
     private VBox mainVBox;
+    @FXML
+    private Button about;
+    @FXML
+    private Label build;
 
-    private GameAccess miqAccess;
 
     /**
      * Load a new instance of the HomePage.
@@ -74,9 +84,7 @@ public class HomePage {
 
     /** FXML handle for initialization. */
     @FXML
-    public void initialize()
-            throws IOException {
-        // TODO Retrieve those values from saved options
+    public void initialize() {
         final boolean isDarkTheme = new Random().nextBoolean();
         if (isDarkTheme) this.selectDarkTheme();
         else this.selectLightTheme();
@@ -88,7 +96,7 @@ public class HomePage {
         this.darkTheme.getStyleClass().add(Styles.LEFT_PILL);
         this.lightTheme.getStyleClass().add(Styles.RIGHT_PILL);
 
-        this.themeGroup.getToggles().addAll(this.darkTheme, this.lightTheme);
+        new ToggleGroup().getToggles().addAll(this.darkTheme, this.lightTheme);
         this.darkTheme.selectedProperty().addListener((obs, old, isSelected) -> {
             if (isSelected) this.selectDarkTheme();
             else if (!this.lightTheme.isSelected()) this.lightTheme.setSelected(true); // Always one selected
@@ -113,9 +121,16 @@ public class HomePage {
             if (!Objects.equals(oldValue, newValue)) I18NLocaleManager.updateLocale(newValue.locale());
         });
 
-        final ConRoot<GameAccess, HBox> load = GameAccess.load();
-        this.miqAccess = load.controller();
-        this.mainVBox.getChildren().add(load.root());
+        ThemeManager.subscribe(this.about);
+        this.build.setText("Version: " + AppInfo.VERSION + "   Build: " + AppInfo.REVISION);
+
+        try {
+            final ConRoot<GameAccess, HBox> load = GameAccess.load();
+            this.mainVBox.getChildren().add(load.root());
+        } catch (final IOException e) {
+            log.error("Failed to load the GameAccess for MIQ", e);
+            LangUtil.rethrowUnchecked(e);
+        }
     }
 
     private void selectDarkTheme() {
@@ -130,5 +145,11 @@ public class HomePage {
         this.lightTheme.setSelected(true);
         this.darkTheme.setGraphic(new ImageView(ResourcesApp.ICO_MOON_OFF));
         this.lightTheme.setGraphic(new ImageView(ResourcesApp.ICO_SUN_ON));
+    }
+
+    /** Open the About Dialog. */
+    @FXML
+    public void openAboutDialog() {
+
     }
 }

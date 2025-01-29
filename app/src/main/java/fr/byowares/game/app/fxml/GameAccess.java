@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
+ * A controller to access a game from the HomePage.
+ *
  * @since XXX
  */
 public class GameAccess {
@@ -55,12 +57,15 @@ public class GameAccess {
         return new ConRoot<>(ga, root);
     }
 
+    /** FXML handle for initialization. */
     @FXML
     public void initialize() {
         I18NHomePage.get().bind(this.gameTitle.textProperty(), "homepage.miq.title");
         I18NHomePage.get().bind(this.gameDescription.textProperty(), "homepage.miq.description");
 
-        this.gameButton.getStylesheets().add(ResourcesApp.MIQ_CSS);
+        this.gameButton.getParent().getStylesheets().add(ResourcesApp.MIQ_CSS);
         ThemeManager.subscribe(this.gameButton);
+        ThemeManager.subscribe(this.gameTitle);
+        ThemeManager.subscribe(this.gameDescription);
     }
 }

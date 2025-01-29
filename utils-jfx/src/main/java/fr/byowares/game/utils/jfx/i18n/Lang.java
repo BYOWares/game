@@ -37,7 +37,7 @@ public record Lang(
 ) {
 
     /** The French instance. */
-    public static final Lang LANG_FR = new Lang(Locale.FRENCH, "French", Resources.FLAG_FRA);
+    public static final Lang LANG_FR = new Lang(Locale.FRENCH, "Français", Resources.FLAG_FRA);
     /** The United Kingdom instance. */
     public static final Lang LANG_UK = new Lang(Locale.ENGLISH, "English", Resources.FLAG_UK);
 

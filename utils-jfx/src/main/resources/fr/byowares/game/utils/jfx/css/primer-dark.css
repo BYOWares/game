@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "BareCast";
+    src: url("../font/Barecast-Regular.otf");
+}
+
 .root {
   -color-dark: #010409;
   -color-light: #ffffff;

@@ -16,8 +16,10 @@
 package fr.byowares.game.app;
 
 import fr.byowares.game.app.fxml.HomePage;
+import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
 import fr.byowares.game.utils.jfx.ConRoot;
+import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -25,6 +27,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Locale;
 
 /**
  * Entry point of the Java FX application.
@@ -47,11 +51,19 @@ public class App
     public void start(final Stage stage)
             throws Exception {
         log.info("Starting {}", AppInfo.TO_STRING);
+        I18NLocaleManager.updateLocale(Locale.ENGLISH);
         final ConRoot<HomePage, StackPane> pair = HomePage.load();
         final Scene scene = new Scene(pair.root());
         ThemeManager.subscribe(scene);
-        stage.setTitle("BYOWares Games " + AppInfo.VERSION);
+        I18NApp.get().bind(stage.titleProperty(), "app.title", AppInfo.VERSION);
         stage.setScene(scene);
+        stage.getIcons().add(ResourcesApp.GAME_16);
+        stage.getIcons().add(ResourcesApp.GAME_32);
+        stage.getIcons().add(ResourcesApp.GAME_64);
+        stage.getIcons().add(ResourcesApp.GAME_128);
+        stage.getIcons().add(ResourcesApp.GAME_256);
+        stage.getIcons().add(ResourcesApp.GAME_512);
+        stage.getIcons().add(ResourcesApp.GAME_1024);
         stage.setMaximized(true);
         stage.show();
     }

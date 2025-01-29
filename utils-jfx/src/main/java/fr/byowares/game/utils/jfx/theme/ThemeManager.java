@@ -67,7 +67,7 @@ public class ThemeManager {
                 animateThemeChange(scene, Duration.millis(ANIMATION_DURATION));
 
         }
-        Application.setUserAgentStylesheet(Objects.requireNonNull(theme.styleSheets()));
+        Application.setUserAgentStylesheet(theme.styleSheets());
 
         for (final Scene scene : INSTANCE.scenes)
             updateThemeForScene(scene, theme, INSTANCE.currentTheme);
@@ -122,7 +122,7 @@ public class ThemeManager {
             final Theme oldTheme
     ) {
         if (newTheme == null) return;
-        if (oldTheme != null) scene.getStylesheets().remove(oldTheme.styleSheets());
+        if (oldTheme != null) scene.getStylesheets().removeAll(oldTheme.styleSheets());
         scene.getStylesheets().setAll(newTheme.styleSheets());
         scene.getRoot().pseudoClassStateChanged(DARK, newTheme.isDarkMode());
     }

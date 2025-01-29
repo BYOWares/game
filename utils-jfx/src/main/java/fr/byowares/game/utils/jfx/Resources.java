@@ -27,9 +27,9 @@ import java.util.Objects;
 public final class Resources {
 
     /** The CSS for the Dark theme. */
-    public static final String CSS_DARK_THEME = getCSS("primer-dark.css");
+    public static final String CSS_DARK_THEME = getCSS("primer-dark");
     /** The CSS for the Light theme. */
-    public static final String CSS_LIGHT_THEME = getCSS("primer-light.css");
+    public static final String CSS_LIGHT_THEME = getCSS("primer-light");
 
     /** The Flag for the French language. */
     public static final Image FLAG_FRA = getFlag("france");
@@ -41,7 +41,7 @@ public final class Resources {
     }
 
     private static String getCSS(final String fileName) {
-        return get("css", fileName);
+        return get("css", fileName + ".css");
     }
 
     private static Image getFlag(final String fileName) {

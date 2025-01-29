@@ -1,2 +1,6 @@
 .game-button      { -fx-background-image: url("../icon/MIQ__lit__light_250.png"); }
 .game-button:dark { -fx-background-image: url("../icon/MIQ__lit__dark_250.png");  }
+.game-title       { -fx-fill: #401F1C; }
+.game-title:dark  { -fx-fill: #C7CFD9; }
+.game-desc        { -fx-fill: #401F1C; }
+.game-desc:dark   { -fx-fill: #C7CFD9; }
