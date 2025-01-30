@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.utils.jfx;
 
 /**
+ * Common interface for all controllers used in this application.
+ *
  * @since XXX
  */
-module fr.byowares.game.utils.jfx {
-    requires java.xml;
-    requires javafx.fxml;
-    requires javafx.controls;
-    requires fr.byowares.game.utils;
-    requires org.slf4j;
-    requires org.agrona.core;
+public interface Controller {
 
-    exports fr.byowares.game.utils.jfx;
-    exports fr.byowares.game.utils.jfx.i18n;
-    exports fr.byowares.game.utils.jfx.theme;
-    exports fr.byowares.game.utils.jfx.fxml;
+    /**
+     * Called when this controller is (or is owned by) a {@link fr.byowares.game.utils.jfx.SceneUniqueActor} that
+     * took control of the scene.
+     */
+    void onDisplay();
 
-    opens fr.byowares.game.utils.jfx.fxml to javafx.fxml;
+    /**
+     * Called when this controller is (or is owned by) a {@link fr.byowares.game.utils.jfx.SceneUniqueActor} just
+     * lost control of the scene.
+     */
+    void onHide();
+
 }

@@ -25,7 +25,7 @@ import java.util.Objects;
  *
  * @since XXX
  */
-public record ConRoot<C, R>(
+public record ConRoot<C extends Controller, R>(
         C controller,
         R root
 ) {

@@ -18,10 +18,11 @@ package fr.byowares.game.app;
 import fr.byowares.game.app.fxml.HomePage;
 import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
-import fr.byowares.game.utils.jfx.ConRoot;
 import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -52,11 +53,18 @@ public class App
             throws Exception {
         log.info("Starting {}", AppInfo.TO_STRING);
         I18NLocaleManager.updateLocale(Locale.ENGLISH);
-        final ConRoot<HomePage, StackPane> pair = HomePage.load();
-        final Scene scene = new Scene(pair.root());
-        ThemeManager.subscribe(scene);
-        I18NApp.get().bind(stage.titleProperty(), "app.title", AppInfo.VERSION);
+        I18NApp.get().bind(stage.titleProperty(), "title", AppInfo.VERSION);
+        stage.setMaximized(true);
+
+        final StackPane root = new StackPane();
+        root.setAlignment(Pos.TOP_LEFT);
+        final Scene scene = new Scene(root);
         stage.setScene(scene);
+        ThemeManager.subscribe(scene);
+
+        final HomePage homepageController = HomePage.load(stage, root);
+        homepageController.takeControlOfScene();
+
         stage.getIcons().add(ResourcesApp.GAME_16);
         stage.getIcons().add(ResourcesApp.GAME_32);
         stage.getIcons().add(ResourcesApp.GAME_64);
@@ -64,8 +72,10 @@ public class App
         stage.getIcons().add(ResourcesApp.GAME_256);
         stage.getIcons().add(ResourcesApp.GAME_512);
         stage.getIcons().add(ResourcesApp.GAME_1024);
-        stage.setMaximized(true);
-        stage.show();
-    }
 
+        Platform.runLater(() -> {
+            stage.show();
+            stage.requestFocus();
+        });
+    }
 }

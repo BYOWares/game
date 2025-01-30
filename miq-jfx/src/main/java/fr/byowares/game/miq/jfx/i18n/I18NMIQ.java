@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.byowares.game.app.i18n;
+package fr.byowares.game.miq.jfx.i18n;
 
 import fr.byowares.game.utils.jfx.i18n.I18NResourceBundle;
 
 /**
  * Factory of {@link javafx.beans.binding.Binding} based on {@link java.util.ResourceBundle} of name
- * {@link fr.byowares.game.app.i18n.I18NHomePage#NAME}.
+ * {@link fr.byowares.game.miq.jfx.i18n.I18NMIQ#NAME}.
  *
  * @since XXX
  */
-public final class I18NHomePage
+public final class I18NMIQ
         extends I18NResourceBundle {
 
-    private static final String NAME = "fr.byowares.game.app.i18n.homepage";
-    private static final I18NHomePage INSTANCE = new I18NHomePage();
+    private static final String NAME = "fr.byowares.game.miq.jfx.i18n.miq";
+    private static final I18NMIQ INSTANCE = new I18NMIQ();
 
-    private I18NHomePage() {
+    private I18NMIQ() {
         super(NAME);
     }
 
     /**
      * @return The unique instance
      */
-    public static I18NHomePage get() {
+    public static I18NMIQ get() {
         return INSTANCE;
     }
 }

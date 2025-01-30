@@ -49,8 +49,6 @@ public final class ResourcesApp {
     public static final Image ICO_SUN_OFF = getIcon("sun_off_32");
     /** Icon for the Sun selected. */
     public static final Image ICO_SUN_ON = getIcon("sun_on_32");
-    /** MIQ Specific CSS. */
-    public static final String MIQ_CSS = getCSS("MIQGameAccess");
 
     private ResourcesApp() {
         // Utility class

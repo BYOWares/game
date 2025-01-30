@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 /**
  * Allow binding {@link javafx.beans.property.StringProperty} to {@code key} from {@link java.util.ResourceBundle}.
@@ -64,6 +65,21 @@ public abstract class I18NResourceBundle {
             final Callable<String> func
     ) {
         prop.bind(Bindings.createStringBinding(func, I18NLocaleManager.getProperty()));
+    }
+
+    /**
+     * @param bundle The bundle to use to get the text.
+     * @param key    The key to the text.
+     * @param args   Extra argument to build the text.
+     *
+     * @return An object that will bind any {@link javafx.beans.property.StringProperty} to this bundle and key.
+     */
+    public static Consumer<StringProperty> binder(
+            final I18NResourceBundle bundle,
+            final String key,
+            final Object... args
+    ) {
+        return p -> bundle.bind(p, key, args);
     }
 
     private String get(

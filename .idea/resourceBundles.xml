@@ -4,20 +4,29 @@
     <file url="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/app.properties" />
     <file url="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/app_en.properties" />
     <file url="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/app_fr.properties" />
-    <file url="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/homepage.properties" />
-    <file url="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/homepage_en.properties" />
-    <file url="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/homepage_fr.properties" />
-    <custom-resource-bundle>
-      <file value="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/homepage.properties" />
-      <file value="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/homepage_en.properties" />
-      <file value="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/homepage_fr.properties" />
-      <base-name>homepage</base-name>
-    </custom-resource-bundle>
+    <file url="file://$PROJECT_DIR$/miq-jfx/src/main/resources/fr/byowares/game/miq/jfx/i18n/miq.properties" />
+    <file url="file://$PROJECT_DIR$/miq-jfx/src/main/resources/fr/byowares/game/miq/jfx/i18n/miq_en.properties" />
+    <file url="file://$PROJECT_DIR$/miq-jfx/src/main/resources/fr/byowares/game/miq/jfx/i18n/miq_fr.properties" />
+    <file url="file://$PROJECT_DIR$/utils-jfx/src/main/resources/fr/byowares/game/utils/jfx/i18n/utils.properties" />
+    <file url="file://$PROJECT_DIR$/utils-jfx/src/main/resources/fr/byowares/game/utils/jfx/i18n/utils_en.properties" />
+    <file url="file://$PROJECT_DIR$/utils-jfx/src/main/resources/fr/byowares/game/utils/jfx/i18n/utils_fr.properties" />
     <custom-resource-bundle>
       <file value="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/app.properties" />
       <file value="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/app_en.properties" />
       <file value="file://$PROJECT_DIR$/app/src/main/resources/fr/byowares/game/app/i18n/app_fr.properties" />
       <base-name>app</base-name>
+    </custom-resource-bundle>
+    <custom-resource-bundle>
+      <file value="file://$PROJECT_DIR$/utils-jfx/src/main/resources/fr/byowares/game/utils/jfx/i18n/utils.properties" />
+      <file value="file://$PROJECT_DIR$/utils-jfx/src/main/resources/fr/byowares/game/utils/jfx/i18n/utils_en.properties" />
+      <file value="file://$PROJECT_DIR$/utils-jfx/src/main/resources/fr/byowares/game/utils/jfx/i18n/utils_fr.properties" />
+      <base-name>utils</base-name>
+    </custom-resource-bundle>
+    <custom-resource-bundle>
+      <file value="file://$PROJECT_DIR$/miq-jfx/src/main/resources/fr/byowares/game/miq/jfx/i18n/miq.properties" />
+      <file value="file://$PROJECT_DIR$/miq-jfx/src/main/resources/fr/byowares/game/miq/jfx/i18n/miq_en.properties" />
+      <file value="file://$PROJECT_DIR$/miq-jfx/src/main/resources/fr/byowares/game/miq/jfx/i18n/miq_fr.properties" />
+      <base-name>miq</base-name>
     </custom-resource-bundle>
   </component>
 </project>

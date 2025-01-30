@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.byowares.game.miq.jfx;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-
-public class FXMLController {
-
-    @FXML
-    private Label label;
-
-    public void initialize() {
-        final String javaVersion = System.getProperty("java.version");
-        final String javafxVersion = System.getProperty("javafx.version");
-        this.label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
-    }
-}
+/**
+ * Collection of extensible FXML based controllers.
+ *
+ * @since XXX
+ */
+package fr.byowares.game.utils.jfx.fxml;

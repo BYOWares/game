@@ -18,17 +18,22 @@ package fr.byowares.game.app.fxml;
 import fr.byowares.game.app.ResourcesApp;
 import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
+import fr.byowares.game.miq.jfx.fxml.GameAccessMIQ;
 import fr.byowares.game.utils.jfx.ConRoot;
+import fr.byowares.game.utils.jfx.SceneUniqueActor;
 import fr.byowares.game.utils.jfx.Styles;
+import fr.byowares.game.utils.jfx.fxml.FXMLLoader;
 import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
 import fr.byowares.game.utils.jfx.i18n.Lang;
 import fr.byowares.game.utils.jfx.theme.Theme;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
@@ -36,20 +41,20 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.agrona.LangUtil;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
 
 /**
- * Controller for the welcoming page.
+ * SceneUniqueActor for the HomePage.
  *
  * @since XXX
  */
-public class HomePage {
+public class HomePage
+        extends SceneUniqueActor {
 
     private static final Logger log = LoggerFactory.getLogger(HomePage.class);
 
@@ -66,20 +71,26 @@ public class HomePage {
     @FXML
     private Label build;
 
+    private HomePage(
+            final Stage stage,
+            final StackPane root
+    ) {
+        super(stage, root);
+    }
 
     /**
      * Load a new instance of the HomePage.
      *
-     * @return The pair (Controller, StackPane) making the HomePage.
+     * @param stage     The stage
+     * @param sceneRoot The node
      *
-     * @throws IOException If the resource could not be loaded.
+     * @return The controller in charge of the HomePage.
      */
-    public static ConRoot<HomePage, StackPane> load()
-            throws IOException {
-        final var loader = new FXMLLoader(Objects.requireNonNull(HomePage.class.getResource("HomePage.fxml")));
-        final HomePage hp = loader.getController();
-        final StackPane root = loader.load();
-        return new ConRoot<>(hp, root);
+    public static HomePage load(
+            final Stage stage,
+            final StackPane sceneRoot
+    ) {
+        return FXMLLoader.loadActor(new HomePage(stage, sceneRoot), HomePage.class, "HomePage");
     }
 
     /** FXML handle for initialization. */
@@ -108,8 +119,8 @@ public class HomePage {
 
         this.darkTheme.setTooltip(new Tooltip());
         this.lightTheme.setTooltip(new Tooltip());
-        I18NApp.get().bind(this.darkTheme.getTooltip().textProperty(), "app.theme.dark");
-        I18NApp.get().bind(this.lightTheme.getTooltip().textProperty(), "app.theme.light");
+        I18NApp.get().bind(this.darkTheme.getTooltip().textProperty(), "theme.dark");
+        I18NApp.get().bind(this.lightTheme.getTooltip().textProperty(), "theme.light");
 
         /* Language initialization */
         this.language.getStyleClass().add(Styles.ALT_ICON);
@@ -121,16 +132,14 @@ public class HomePage {
             if (!Objects.equals(oldValue, newValue)) I18NLocaleManager.updateLocale(newValue.locale());
         });
 
-        ThemeManager.subscribe(this.about);
+        this.about.setTooltip(new Tooltip());
+        I18NApp.get().bind(this.about.getTooltip().textProperty(), "homepage.about");
+
         this.build.setText("Version: " + AppInfo.VERSION + "   Build: " + AppInfo.REVISION);
 
-        try {
-            final ConRoot<GameAccess, HBox> load = GameAccess.load();
-            this.mainVBox.getChildren().add(load.root());
-        } catch (final IOException e) {
-            log.error("Failed to load the GameAccess for MIQ", e);
-            LangUtil.rethrowUnchecked(e);
-        }
+        final ConRoot<GameAccessMIQ, HBox> miqAccess = GameAccessMIQ.load(this);
+        this.addController(miqAccess.controller());
+        this.mainVBox.getChildren().add(miqAccess.root());
     }
 
     private void selectDarkTheme() {
@@ -150,6 +159,32 @@ public class HomePage {
     /** Open the About Dialog. */
     @FXML
     public void openAboutDialog() {
+        final ImageView icon = new ImageView(ResourcesApp.GAME_256);
+        final double value = 290.0;
+        icon.setFitHeight(value);
+        icon.setFitWidth(value);
 
+        final TextArea textArea = new TextArea("TODO");
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setStyle("-fx-font-size: 18");
+
+        final Alert popup = new Alert(Alert.AlertType.NONE);
+        popup.initOwner(this.getStage());
+        I18NApp.get().bind(popup.titleProperty(), "homepage.about");
+        popup.getButtonTypes().add(ButtonType.CLOSE);
+        final double spacing = 10.0;
+        popup.getDialogPane().setContent(new HBox(spacing, icon, textArea));
+        popup.showAndWait();
+    }
+
+    @Override
+    public void onDisplay() {
+        ThemeManager.subscribe(this.about);
+    }
+
+    @Override
+    public void onHide() {
+        ThemeManager.unsubscribe(this.about);
     }
 }

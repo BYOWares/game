@@ -15,20 +15,8 @@
  */
 
 /**
+ * Collection of I18N services.
+ *
  * @since XXX
  */
-module fr.byowares.game.utils.jfx {
-    requires java.xml;
-    requires javafx.fxml;
-    requires javafx.controls;
-    requires fr.byowares.game.utils;
-    requires org.slf4j;
-    requires org.agrona.core;
-
-    exports fr.byowares.game.utils.jfx;
-    exports fr.byowares.game.utils.jfx.i18n;
-    exports fr.byowares.game.utils.jfx.theme;
-    exports fr.byowares.game.utils.jfx.fxml;
-
-    opens fr.byowares.game.utils.jfx.fxml to javafx.fxml;
-}
+package fr.byowares.game.miq.jfx.i18n;

@@ -21,7 +21,7 @@ import fr.byowares.game.utils.jfx.Resources;
 import java.util.Objects;
 
 /**
- * Representation of a Theme used to customize the appearance of the application.
+ * A stylesheet use to customize the application.
  *
  * @since XXX
  */

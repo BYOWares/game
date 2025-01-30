@@ -13,22 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
+ * FXML model and controllers used by the MIQ project.
+ *
  * @since XXX
  */
-module fr.byowares.game.utils.jfx {
-    requires java.xml;
-    requires javafx.fxml;
-    requires javafx.controls;
-    requires fr.byowares.game.utils;
-    requires org.slf4j;
-    requires org.agrona.core;
-
-    exports fr.byowares.game.utils.jfx;
-    exports fr.byowares.game.utils.jfx.i18n;
-    exports fr.byowares.game.utils.jfx.theme;
-    exports fr.byowares.game.utils.jfx.fxml;
-
-    opens fr.byowares.game.utils.jfx.fxml to javafx.fxml;
-}
+package fr.byowares.game.miq.jfx.fxml;

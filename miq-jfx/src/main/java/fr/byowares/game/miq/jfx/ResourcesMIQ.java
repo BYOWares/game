@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.miq.jfx;
+
+import java.util.Objects;
 
 /**
+ * A collection of resources provided by this module.
+ *
  * @since XXX
  */
-module fr.byowares.game.utils.jfx {
-    requires java.xml;
-    requires javafx.fxml;
-    requires javafx.controls;
-    requires fr.byowares.game.utils;
-    requires org.slf4j;
-    requires org.agrona.core;
+public final class ResourcesMIQ {
 
-    exports fr.byowares.game.utils.jfx;
-    exports fr.byowares.game.utils.jfx.i18n;
-    exports fr.byowares.game.utils.jfx.theme;
-    exports fr.byowares.game.utils.jfx.fxml;
+    /** MIQ Specific CSS. */
+    public static final String GA_MIQ_CSS = Objects.requireNonNull(
+            ResourcesMIQ.class.getResource("css/GameAccessMIQ.css")).toExternalForm();
 
-    opens fr.byowares.game.utils.jfx.fxml to javafx.fxml;
+    private ResourcesMIQ() {
+        // Utility class
+    }
 }

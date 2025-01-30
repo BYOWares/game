@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.utils.jfx.i18n;
 
 /**
+ * Factory of {@link javafx.beans.binding.Binding} based on {@link java.util.ResourceBundle} of name
+ * {@link fr.byowares.game.utils.jfx.i18n.I18NUtils#NAME}.
+ *
  * @since XXX
  */
-module fr.byowares.game.utils.jfx {
-    requires java.xml;
-    requires javafx.fxml;
-    requires javafx.controls;
-    requires fr.byowares.game.utils;
-    requires org.slf4j;
-    requires org.agrona.core;
+public class I18NUtils
+        extends I18NResourceBundle {
 
-    exports fr.byowares.game.utils.jfx;
-    exports fr.byowares.game.utils.jfx.i18n;
-    exports fr.byowares.game.utils.jfx.theme;
-    exports fr.byowares.game.utils.jfx.fxml;
+    private static final String NAME = "fr.byowares.game.utils.jfx.i18n.utils";
+    private static final I18NUtils INSTANCE = new I18NUtils();
 
-    opens fr.byowares.game.utils.jfx.fxml to javafx.fxml;
+    private I18NUtils() {
+        super(NAME);
+    }
+
+    /**
+     * @return The unique instance
+     */
+    public static I18NUtils get() {
+        return INSTANCE;
+    }
 }

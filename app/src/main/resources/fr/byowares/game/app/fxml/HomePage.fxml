@@ -23,40 +23,35 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane alignment="TOP_LEFT" minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.byowares.game.app.fxml.HomePage">
-    <children>
-      <BorderPane prefHeight="200.0" prefWidth="200.0">
-         <top>
-                <HBox alignment="CENTER" BorderPane.alignment="CENTER">
-                    <children>
-                        <ComboBox fx:id="language" prefHeight="48.0" prefWidth="85.0" />
-                        <HBox prefHeight="53.0" prefWidth="30.0" />
-                        <ToggleButton fx:id="darkTheme" mnemonicParsing="false" />
-                        <ToggleButton fx:id="lightTheme" layoutX="354.0" layoutY="19.0" mnemonicParsing="false" />
-                  <HBox layoutX="422.0" layoutY="10.0" prefHeight="53.0" prefWidth="30.0" />
-                  <Button fx:id="about" mnemonicParsing="false" onAction="#openAboutDialog" prefHeight="48.0" prefWidth="48.0" styleClass="about-button" stylesheets="@../css/About.css" />
-                    </children>
-                    <opaqueInsets>
-                        <Insets />
-                    </opaqueInsets>
-               <padding>
-                  <Insets bottom="25.0" top="25.0" />
-               </padding>
-                </HBox>
-         </top>
-         <center>
-              <VBox fx:id="mainVBox" BorderPane.alignment="CENTER" />
-         </center>
-         <bottom>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Label fx:id="build" alignment="CENTER" style="-fx-font-family: BareCast; -fx-font-size: 11px;" text="Dummy text to ease selection" />
-               </children>
-            </HBox>
-         </bottom>
-      </BorderPane>
-    </children>
-</StackPane>
+<BorderPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+            <children>
+                <ComboBox fx:id="language" prefHeight="48.0" prefWidth="85.0" />
+                <HBox prefHeight="53.0" prefWidth="30.0" />
+                <ToggleButton fx:id="darkTheme" mnemonicParsing="false" />
+                <ToggleButton fx:id="lightTheme" layoutX="354.0" layoutY="19.0" mnemonicParsing="false" />
+                <HBox layoutX="422.0" layoutY="10.0" prefHeight="53.0" prefWidth="30.0" />
+                <Button fx:id="about" mnemonicParsing="false" onAction="#openAboutDialog" prefHeight="48.0" prefWidth="48.0" styleClass="about-button" stylesheets="@../css/About.css" />
+            </children>
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+            <padding>
+                <Insets bottom="25.0" top="25.0" />
+            </padding>
+        </HBox>
+    </top>
+    <center>
+        <VBox fx:id="mainVBox" BorderPane.alignment="CENTER" />
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="build" alignment="CENTER" style="-fx-font-family: BareCast; -fx-font-size: 12px;" text="Dummy text to ease selection" />
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>

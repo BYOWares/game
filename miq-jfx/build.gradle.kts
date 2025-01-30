@@ -22,6 +22,7 @@ plugins {
 
 dependencies {
     implementation(project(":utils"))
+    implementation(project(":utils-jfx"))
     implementation(project(":miq-core"))
 
     implementation(libs.bundles.log4jImpl)
