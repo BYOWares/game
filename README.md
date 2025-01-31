@@ -37,6 +37,10 @@ Make sure the **xmlns** declaring the javafx version is inline with the version 
 warning logs while loading FXML. The Java Version is used, because we use it as well for the JavaFX version. See file:
 [byogame.java-fx.gradle.kts](buildSrc/src/main/kotlin/byogame.java-fx.gradle.kts).
 
+### [check_encoding.bash](scripts/check_encoding.bash)
+
+List all files with encoding not supported. We do not put this script in pre-commit because it is slow on Windows.
+
 ### lib.*
 
 Those scripts are libraries that other scripts can use. They have an _include_ mechanism that protect them from being
@@ -60,4 +64,3 @@ source "$LIB_DIR/lib.util.bash"
 This script is used to clean the unique environment variables from the current shell. Hence the required sourcing of it.
 
 * ``source scripts/project/clean.properties.bash``
-
