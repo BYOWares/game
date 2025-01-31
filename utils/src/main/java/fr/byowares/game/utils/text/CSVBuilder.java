@@ -51,12 +51,12 @@ public class CSVBuilder {
      * @param value The long value to append.
      */
     public void newField(final long value) {
-        this.appendSeparatorIfNeeded(this.buffer);
+        this.appendSeparatorIfNeeded();
         this.buffer.append(value);
     }
 
-    private void appendSeparatorIfNeeded(final StringBuilder sb) {
-        if (!sb.isEmpty()) sb.append(this.separator);
+    private void appendSeparatorIfNeeded() {
+        if (!this.buffer.isEmpty()) this.buffer.append(this.separator);
     }
 
     /**
@@ -65,7 +65,7 @@ public class CSVBuilder {
      * @param value The int value to append.
      */
     public void newField(final int value) {
-        this.appendSeparatorIfNeeded(this.buffer);
+        this.appendSeparatorIfNeeded();
         this.buffer.append(value);
     }
 
@@ -77,7 +77,7 @@ public class CSVBuilder {
      * @param text The text to append.
      */
     public void newField(final CharSequence text) {
-        this.appendSeparatorIfNeeded(this.buffer);
+        this.appendSeparatorIfNeeded();
         this.appendText(text);
     }
 
@@ -101,7 +101,7 @@ public class CSVBuilder {
             final Collection<T> collection,
             final Function<T, CharSequence> toCharSequence
     ) {
-        this.appendSeparatorIfNeeded(this.buffer);
+        this.appendSeparatorIfNeeded();
         boolean isFirst = true;
         for (final T t : collection) {
             if (!isFirst) this.buffer.append(SPACE);

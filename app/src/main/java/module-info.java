@@ -20,7 +20,9 @@
 module fr.byowares.game.app {
     requires fr.byowares.game.miq.jfx;
     requires fr.byowares.game.utils.jfx;
+    requires fr.byowares.game.utils;
     requires java.desktop;
+    requires java.management;
     requires java.xml;
     requires javafx.controls;
     requires javafx.fxml;

@@ -60,6 +60,13 @@ public final class I18NLocaleManager {
     }
 
     /**
+     * @return The Locale in use.
+     */
+    public static Locale get() {
+        return getProperty().get();
+    }
+
+    /**
      * @return The {@link javafx.beans.property.Property} used to manage the Locale.
      */
     static ObjectProperty<Locale> getProperty() {

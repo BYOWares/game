@@ -22,8 +22,10 @@ import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -48,6 +50,20 @@ public class App
         launch(args);
     }
 
+    /**
+     * @param stage The stage to which icons must be added.
+     */
+    public static void addIcons(final Stage stage) {
+        final ObservableList<Image> icons = stage.getIcons();
+        icons.add(ResourcesApp.GAME_16);
+        icons.add(ResourcesApp.GAME_32);
+        icons.add(ResourcesApp.GAME_64);
+        icons.add(ResourcesApp.GAME_128);
+        icons.add(ResourcesApp.GAME_256);
+        icons.add(ResourcesApp.GAME_512);
+        icons.add(ResourcesApp.GAME_1024);
+    }
+
     @Override
     public void start(final Stage stage)
             throws Exception {
@@ -65,13 +81,7 @@ public class App
         final HomePage homepageController = HomePage.load(stage, root);
         homepageController.takeControlOfScene();
 
-        stage.getIcons().add(ResourcesApp.GAME_16);
-        stage.getIcons().add(ResourcesApp.GAME_32);
-        stage.getIcons().add(ResourcesApp.GAME_64);
-        stage.getIcons().add(ResourcesApp.GAME_128);
-        stage.getIcons().add(ResourcesApp.GAME_256);
-        stage.getIcons().add(ResourcesApp.GAME_512);
-        stage.getIcons().add(ResourcesApp.GAME_1024);
+        addIcons(stage);
 
         Platform.runLater(() -> {
             stage.show();

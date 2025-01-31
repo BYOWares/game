@@ -15,6 +15,7 @@
  */
 package fr.byowares.game.app.fxml;
 
+import fr.byowares.game.app.App;
 import fr.byowares.game.app.ResourcesApp;
 import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
@@ -28,19 +29,19 @@ import fr.byowares.game.utils.jfx.i18n.Lang;
 import fr.byowares.game.utils.jfx.theme.Theme;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,23 +160,16 @@ public class HomePage
     /** Open the About Dialog. */
     @FXML
     public void openAboutDialog() {
-        final ImageView icon = new ImageView(ResourcesApp.GAME_256);
-        final double value = 290.0;
-        icon.setFitHeight(value);
-        icon.setFitWidth(value);
-
-        final TextArea textArea = new TextArea("TODO");
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setStyle("-fx-font-size: 18");
-
-        final Alert popup = new Alert(Alert.AlertType.NONE);
-        popup.initOwner(this.getStage());
-        I18NApp.get().bind(popup.titleProperty(), "homepage.about");
-        popup.getButtonTypes().add(ButtonType.CLOSE);
-        final double spacing = 10.0;
-        popup.getDialogPane().setContent(new HBox(spacing, icon, textArea));
-        popup.showAndWait();
+        final ConRoot<About, BorderPane> about = About.load();
+        final Scene scene = new Scene(about.root());
+        final Stage stage = new Stage();
+        I18NApp.get().bind(stage.titleProperty(), "homepage.about");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(this.getStage());
+        App.addIcons(stage);
+        stage.show();
     }
 
     @Override
