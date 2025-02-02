@@ -15,9 +15,14 @@
  */
 package fr.byowares.game.utils.jfx;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +38,9 @@ import java.util.Objects;
  */
 public abstract class SceneUniqueActor
         implements Controller {
+
+    private static final double TRANSITION_DURATION = 500.0;
+    private static final Interpolator EASE = Interpolator.SPLINE(0.25, 0.1, 0.25, 1.0);
 
     private final Stage stage;
     private final StackPane sceneRoot;
@@ -76,10 +84,15 @@ public abstract class SceneUniqueActor
 
     private static void switchController(
             final SceneUniqueActor newSceneUniqueActor,
-            final SceneUniqueActor oldSceneUniqueActor
+            final SceneUniqueActor oldSceneUniqueActor,
+            final boolean leftToRight
     ) {
-        newSceneUniqueActor.doTakeControlOfScene();
-        if (oldSceneUniqueActor != null) oldSceneUniqueActor.doGiveBackControlOfScene();
+        final Timeline tn = newSceneUniqueActor.doTakeControlOfScene(leftToRight);
+        if (oldSceneUniqueActor != null) {
+            final Timeline to = oldSceneUniqueActor.doGiveBackControlOfScene(leftToRight);
+            tn.play();
+            to.play();
+        } else tn.play();
     }
 
     /** Dummy method to avoid the warning about escaping this in the private constructor. */
@@ -115,7 +128,7 @@ public abstract class SceneUniqueActor
      * Give the control of the scene to the current controller.
      */
     public final void takeControlOfScene() {
-        switchController(this, this.previousActor);
+        switchController(this, this.previousActor, false);
     }
 
     /**
@@ -123,16 +136,34 @@ public abstract class SceneUniqueActor
      */
     public final void giveBackControlOfScene() {
         Objects.requireNonNull(this.previousActor);
-        switchController(this.previousActor, this);
+        switchController(this.previousActor, this, true);
     }
 
-    private void doTakeControlOfScene() {
+    private Timeline doTakeControlOfScene(final boolean leftToRight) {
         this.controllers.forEach(Controller::onDisplay);
+        final boolean isFirstActor = this.sceneRoot.getChildren().isEmpty();
+        final double startingXPosition = isFirstActor ?
+                0.0 :
+                this.sceneRoot.getScene().getWidth() * (leftToRight ? -1.0 : 1.0);
+        this.actorRootNode.setTranslateX(startingXPosition);
         this.sceneRoot.getChildren().add(this.actorRootNode);
+
+        return this.getSlideTimeline(0.0);
     }
 
-    private void doGiveBackControlOfScene() {
-        this.sceneRoot.getChildren().remove(this.actorRootNode);
+    private Timeline doGiveBackControlOfScene(final boolean leftToRight) {
+        // Removing the node once the transition is done
         this.controllers.forEach(Controller::onHide);
+
+        final double endingXPosition = this.actorRootNode.getScene().getWidth() * (leftToRight ? 1.0 : -1.0);
+        final Timeline timeline = this.getSlideTimeline(endingXPosition);
+        timeline.setOnFinished(e -> this.sceneRoot.getChildren().remove(this.actorRootNode));
+        return timeline;
+    }
+
+    private Timeline getSlideTimeline(final double endingPosition) {
+        final KeyValue value = new KeyValue(this.actorRootNode.translateXProperty(), endingPosition, EASE);
+        final KeyFrame frame = new KeyFrame(Duration.millis(TRANSITION_DURATION), value);
+        return new Timeline(frame);
     }
 }

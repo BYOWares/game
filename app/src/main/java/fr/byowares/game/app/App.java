@@ -68,6 +68,8 @@ public class App
     public void start(final Stage stage)
             throws Exception {
         log.info("Starting {}", AppInfo.TO_STRING);
+        addIcons(stage);
+
         I18NLocaleManager.updateLocale(Locale.ENGLISH);
         I18NApp.get().bind(stage.titleProperty(), "title", AppInfo.VERSION);
         stage.setMaximized(true);
@@ -80,8 +82,6 @@ public class App
 
         final HomePage homepageController = HomePage.load(stage, root);
         homepageController.takeControlOfScene();
-
-        addIcons(stage);
 
         Platform.runLater(() -> {
             stage.show();
