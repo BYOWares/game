@@ -55,12 +55,9 @@ public abstract class GameAccess
     private final Consumer<StringProperty> descBinder;
     private final String styleSheetURL;
 
-    @FXML
-    private Button icon;
-    @FXML
-    private Text title;
-    @FXML
-    private Text desc;
+    @FXML private Button icon;
+    @FXML private Text title;
+    @FXML private Text desc;
 
     /**
      * @param sceneUniqueActor The {@link fr.byowares.game.utils.jfx.SceneUniqueActor} in charge of the scene while this graphic is displayed.

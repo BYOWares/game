@@ -35,8 +35,7 @@ public class GameMenuButton
     private final Consumer<StringProperty> binder;
     private final Runnable onAction;
 
-    @FXML
-    private Button button;
+    @FXML private Button button;
 
     private GameMenuButton(
             final Consumer<StringProperty> binder,

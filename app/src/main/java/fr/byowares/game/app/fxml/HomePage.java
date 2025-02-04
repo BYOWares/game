@@ -59,18 +59,12 @@ public class HomePage
 
     private static final Logger log = LoggerFactory.getLogger(HomePage.class);
 
-    @FXML
-    private ToggleButton darkTheme;
-    @FXML
-    private ToggleButton lightTheme;
-    @FXML
-    private ComboBox<Lang> language;
-    @FXML
-    private VBox mainVBox;
-    @FXML
-    private Button about;
-    @FXML
-    private Label build;
+    @FXML private ToggleButton darkTheme;
+    @FXML private ToggleButton lightTheme;
+    @FXML private ComboBox<Lang> language;
+    @FXML private VBox mainVBox;
+    @FXML private Button about;
+    @FXML private Label build;
 
     private HomePage(
             final Stage stage,

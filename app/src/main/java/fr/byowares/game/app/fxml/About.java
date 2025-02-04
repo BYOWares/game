@@ -80,16 +80,11 @@ public class About
 
     private String yml = "NOT INITIALIZED";
 
-    @FXML
-    private ImageView icon;
-    @FXML
-    private Text title;
-    @FXML
-    private Text body;
-    @FXML
-    private Button copyAndClose;
-    @FXML
-    private Button close;
+    @FXML private ImageView icon;
+    @FXML private Text title;
+    @FXML private Text body;
+    @FXML private Button copyAndClose;
+    @FXML private Button close;
 
     private static String buildTextAsYaml() {
         final StringBuilder sb = new StringBuilder();

@@ -37,14 +37,10 @@ public class GameMenu
     private final Consumer<StringProperty> titleBinder;
     private final String styleSheetURL;
 
-    @FXML
-    private HBox holderBackMenu;
-    @FXML
-    private VBox holderMenus;
-    @FXML
-    private Label icon;
-    @FXML
-    private Text title;
+    @FXML private HBox holderBackMenu;
+    @FXML private VBox holderMenus;
+    @FXML private Label icon;
+    @FXML private Text title;
 
     /**
      * @param sceneUniqueActor The SceneUniqueActor in which this menu is used.
