@@ -37,6 +37,10 @@ public class LibraryDeserializerV1Test
             comment: Comment 1
             """;
 
+    static {
+        LIBRARY_V1.setComment("Comment 1");
+    }
+
     @Test
     public void testValidBasicInputV1() {
         assertEquals(LIBRARY_V1, this.getDeserializers().deserialize(inputStream(INPUT_V1)));

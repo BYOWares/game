@@ -15,6 +15,7 @@
  */
 package fr.byowares.game.miq.core.model.song;
 
+import fr.byowares.game.utils.hashcodes.HashCodes;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.Objects;
  * @since XXX
  */
 public class Library
-        extends NamedSourcedObject {
+        extends NamedSourcedObject<Library> {
 
     private final Album undefined;
     private final List<Album> albums;
@@ -61,17 +62,26 @@ public class Library
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.getName());
+        return HashCodes.hash(this.getName(), this.getComment());
     }
 
     @Override
     public boolean equals(final Object o) {
         if (!(o instanceof final Library library)) return false;
-        return Objects.equals(this.getName(), library.getName());
+        return Objects.equals(this.getName(), library.getName()) //
+                && Objects.equals(this.getComment(), library.getComment());
     }
 
     @Override
     public String toString() {
-        return "{Library=" + this.getName() + ", source=" + this.getSource() + ", albums=" + this.albums.size() + '}';
+        return "{Library=" + this.getName() + ", source=" + this.getSource() + ", comment=" + this.getComment() + //
+                ", albums=" + this.albums.size() + '}';
+    }
+
+    @Override
+    public Library copyInMemory() {
+        final Library library = new Library(this.getName());
+        library.setComment(this.getComment());
+        return library;
     }
 }

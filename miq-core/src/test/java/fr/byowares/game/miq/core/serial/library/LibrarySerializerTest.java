@@ -34,6 +34,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LibrarySerializerTest
         extends AbstractSerializerTest<Library> {
 
+    private static Library getGenericLibrary() {
+        final Library library = new Library("Who cares ?");
+        library.setComment("No comment");
+        return library;
+    }
+
     @Override
     protected Serializer<Library> getSerializer() {
         return LibrarySerializer.INSTANCE;
@@ -49,16 +55,16 @@ public class LibrarySerializerTest
         this.assertBijection(LibraryDeserializerV1Test.LIBRARY_V1);
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidTitle[{index}] input={0}")
     @MethodSource("getStringNonNullValues")
     public void testValidTitle(final StringInput input) {
-        this.assertBijection(new Library("Who cares ?"), Library::setName, input.value());
+        this.assertBijection(getGenericLibrary(), Library::setName, input.value());
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidComment [{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidComment(final StringInput input) {
-        this.assertBijection(new Library("Who cares ?"), NamedSourcedObject::setComment, input.value());
+        this.assertBijection(getGenericLibrary(), NamedSourcedObject::setComment, input.value());
     }
 
     @Test

@@ -26,26 +26,34 @@ import java.util.Objects;
  */
 public final class Resources {
 
-    /** The CSS for the Dark theme. */
-    public static final String CSS_DARK_THEME = getCSS("primer-dark");
-    /** The CSS for the Light theme. */
-    public static final String CSS_LIGHT_THEME = getCSS("primer-light");
-
     /** The Flag for the French language. */
     public static final Image FLAG_FRA = getFlag("france");
     /** The Flag for the English language. */
     public static final Image FLAG_UK = getFlag("united_kingdom");
 
+    /** Barecast font. */
+    public static final String FONT_BARECAST = getFont("Barecast-Regular.otf");
+
+    /** The CSS for the Dark theme. */
+    public static final String CSS_DARK_THEME = getCSS("primer-dark");
+    /** The CSS for the Light theme. */
+    public static final String CSS_LIGHT_THEME = getCSS("primer-light");
+
     private Resources() {
         // Utility class
     }
 
-    private static String getCSS(final String fileName) {
-        return get("css", fileName + ".css");
-    }
 
     private static Image getFlag(final String fileName) {
         return new Image(get("flag", fileName + ".png"));
+    }
+
+    private static String getFont(final String fileName) {
+        return get("font", fileName);
+    }
+
+    private static String getCSS(final String fileName) {
+        return get("css", fileName + ".css");
     }
 
     private static String get(

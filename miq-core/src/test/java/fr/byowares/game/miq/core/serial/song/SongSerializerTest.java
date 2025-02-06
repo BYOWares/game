@@ -63,31 +63,31 @@ public class SongSerializerTest
     }
 
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidTitle [{index}] input={0}")
     @MethodSource("getStringNonNullValues")
     public void testValidTitle(final StringInput input) {
         this.assertBijection(getGenericSong(), NamedSourcedObject::setName, input.value());
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidComment [{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidComment(final StringInput input) {
         this.assertBijection(getGenericSong(), NamedSourcedObject::setComment, input.value());
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidArtist [{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidArtist(final StringInput input) {
         this.assertBijection(getGenericSong(), Song::setArtist, input.value());
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidCopyright [{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidCopyright(final StringInput input) {
         this.assertBijection(getGenericSong(), Song::setCopyright, input.value());
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidAlbumName [{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidAlbumName(final StringInput input) {
         this.assertBijection(getGenericSong(), Song::setAlbumName, input.value());

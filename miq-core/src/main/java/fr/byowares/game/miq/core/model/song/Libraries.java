@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * @since XXX
  */
 public class Libraries
-        extends NamedSourcedObject {
+        extends NamedSourcedObject<Libraries> {
 
     private static final Logger log = LoggerFactory.getLogger(Libraries.class);
 
@@ -152,5 +152,10 @@ public class Libraries
     @Override
     public String toString() {
         return "{Libraries=" + this.libraries + ", root=" + this.root + '}';
+    }
+
+    @Override
+    public Libraries copyInMemory() {
+        throw new UnsupportedOperationException("This method makes no sense on this object");
     }
 }
