@@ -44,7 +44,7 @@ public class SongSerializer
     ) {
         map.put(Constants.TYPE, Constants.TYPE_SONG);
         map.put(Constants.COPYRIGHT, song.getCopyright());
-        map.put(Constants.TITLE, song.getTitle());
+        map.put(Constants.TITLE, song.getName());
         map.put(Constants.ARTIST, song.getArtist());
         map.put(Constants.ALBUM, song.getAlbumName());
         map.put(Constants.COMMENT, song.getComment());

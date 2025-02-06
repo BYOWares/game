@@ -25,7 +25,7 @@ import java.util.Objects;
  *
  * @since XXX
  */
-public record ConRoot<C extends Controller, R>(
+public record Pair<C extends Controller, R>(
         C controller,
         R root
 ) {
@@ -36,7 +36,7 @@ public record ConRoot<C extends Controller, R>(
      *
      * @throws NullPointerException If any of the argument is null.
      */
-    public ConRoot(
+    public Pair(
             final C controller,
             final R root
     ) {

@@ -17,7 +17,7 @@ package fr.byowares.game.miq.jfx.fxml;
 
 import fr.byowares.game.miq.jfx.ResourcesMIQ;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
-import fr.byowares.game.utils.jfx.ConRoot;
+import fr.byowares.game.utils.jfx.Pair;
 import fr.byowares.game.utils.jfx.SceneUniqueActor;
 import fr.byowares.game.utils.jfx.fxml.GameAccess;
 import javafx.beans.property.StringProperty;
@@ -50,7 +50,7 @@ public class GameAccessMIQ
      *
      * @see fr.byowares.game.utils.jfx.fxml.GameAccess#load(fr.byowares.game.utils.jfx.fxml.GameAccess)
      */
-    public static ConRoot<GameAccessMIQ, HBox> load(final SceneUniqueActor actor) {
+    public static Pair<GameAccessMIQ, HBox> load(final SceneUniqueActor actor) {
         return GameAccess.load(new GameAccessMIQ(actor));
     }
 

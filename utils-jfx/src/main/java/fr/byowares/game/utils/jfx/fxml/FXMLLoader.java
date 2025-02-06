@@ -15,8 +15,8 @@
  */
 package fr.byowares.game.utils.jfx.fxml;
 
-import fr.byowares.game.utils.jfx.ConRoot;
 import fr.byowares.game.utils.jfx.Controller;
+import fr.byowares.game.utils.jfx.Pair;
 import fr.byowares.game.utils.jfx.SceneUniqueActor;
 import javafx.scene.Node;
 import org.agrona.LangUtil;
@@ -44,12 +44,12 @@ public final class FXMLLoader {
      *
      * @return The pair (Controller, Root node).
      */
-    public static <C extends Controller, R> ConRoot<C, R> load(
+    public static <C extends Controller, R> Pair<C, R> load(
             final C controller,
             final Class<?> cl,
             final String filename
     ) {
-        return new ConRoot<>(controller, loadAux(controller, cl, filename));
+        return new Pair<>(controller, loadAux(controller, cl, filename));
     }
 
     /**

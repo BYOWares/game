@@ -20,7 +20,7 @@ import fr.byowares.game.app.ResourcesApp;
 import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
 import fr.byowares.game.miq.jfx.fxml.GameAccessMIQ;
-import fr.byowares.game.utils.jfx.ConRoot;
+import fr.byowares.game.utils.jfx.Pair;
 import fr.byowares.game.utils.jfx.SceneUniqueActor;
 import fr.byowares.game.utils.jfx.Styles;
 import fr.byowares.game.utils.jfx.fxml.FXMLLoader;
@@ -132,7 +132,7 @@ public class HomePage
 
         this.build.setText("Version: " + AppInfo.VERSION + "   Build: " + AppInfo.REVISION);
 
-        final ConRoot<GameAccessMIQ, HBox> miqAccess = GameAccessMIQ.load(this);
+        final Pair<GameAccessMIQ, HBox> miqAccess = GameAccessMIQ.load(this);
         this.addController(miqAccess.controller());
         this.mainVBox.getChildren().add(miqAccess.root());
     }
@@ -154,7 +154,7 @@ public class HomePage
     /** Open the About Dialog. */
     @FXML
     public void openAboutDialog() {
-        final ConRoot<About, BorderPane> about = About.load();
+        final Pair<About, BorderPane> about = About.load();
         final Scene scene = new Scene(about.root());
         final Stage stage = new Stage();
         I18NApp.get().bind(stage.titleProperty(), "homepage.about");

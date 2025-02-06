@@ -20,6 +20,7 @@ import fr.byowares.game.miq.core.serial.AbstractSerializerTest;
 import fr.byowares.game.miq.core.serial.song.SongDeserializerV1Test;
 import fr.byowares.game.utils.serial.Deserializers;
 import fr.byowares.game.utils.serial.Serializer;
+import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -59,7 +60,7 @@ public class AlbumSerializerTest
     @ParameterizedTest(name = "[{index}] input={0}")
     @MethodSource("getStringNonNullValues")
     public void testValidTitle(final StringInput input) {
-        this.assertBijection(getGenericAlbum(), Album::setTitle, input.value());
+        this.assertBijection(getGenericAlbum(), NamedSourcedObject::setName, input.value());
     }
 
     @ParameterizedTest(name = "[{index}] input={0}")

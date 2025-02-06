@@ -19,8 +19,8 @@ import fr.byowares.game.app.ResourcesApp;
 import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
 import fr.byowares.game.utils.enums.Size;
-import fr.byowares.game.utils.jfx.ConRoot;
 import fr.byowares.game.utils.jfx.Controller;
+import fr.byowares.game.utils.jfx.Pair;
 import fr.byowares.game.utils.jfx.fxml.FXMLLoader;
 import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
@@ -115,7 +115,7 @@ public class About
      *
      * @return The pair (Controller, BorderPane) in charge of the About.
      */
-    public static ConRoot<About, BorderPane> load() {
+    public static Pair<About, BorderPane> load() {
         return FXMLLoader.load(new About(), About.class, "About");
     }
 

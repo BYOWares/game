@@ -17,7 +17,7 @@ package fr.byowares.game.miq.core.model.lyrics;
 
 import fr.byowares.game.miq.core.model.Range;
 import fr.byowares.game.utils.hashcodes.HashCodes;
-import fr.byowares.game.utils.serial.source.SourcedObject;
+import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +31,7 @@ import java.util.Set;
  * @since XXX
  */
 public final class Lyrics
-        extends SourcedObject {
+        extends NamedSourcedObject {
 
     private static final Range NO_RANGE = Range.fromRelativeValues(Long.MAX_VALUE, 0L);
 
@@ -40,6 +40,7 @@ public final class Lyrics
     private CharSequence comment;
 
     /**
+     * @param name    The name used to identify those lyrics.
      * @param comment The comment about those lyrics.
      * @param author  The author of those lyrics.
      * @param verses  The verses (text + time codes) making those lyrics.
@@ -47,10 +48,12 @@ public final class Lyrics
      * @throws java.lang.NullPointerException If the {@code verse} is {@code null}.
      */
     public Lyrics(
+            final CharSequence name,
             final CharSequence comment,
             final CharSequence author,
             final List<TimeCodedVerse> verses
     ) {
+        super(name);
         this.comment = comment;
         this.author = author;
         this.verses = Objects.requireNonNull(verses);
@@ -58,9 +61,11 @@ public final class Lyrics
 
     /**
      * A default Lyrics (comment is empty, author is null, and verses are also empty).
+     *
+     * @param name The name used to identify those lyrics.
      */
-    public Lyrics() {
-        this("", null, new ArrayList<>());
+    public Lyrics(final CharSequence name) {
+        this(name, "", null, new ArrayList<>());
     }
 
     private static List<LineElement> todoLineElements() {

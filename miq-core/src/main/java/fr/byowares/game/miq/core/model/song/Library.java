@@ -15,7 +15,7 @@
  */
 package fr.byowares.game.miq.core.model.song;
 
-import fr.byowares.game.utils.serial.source.SourcedObject;
+import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +27,10 @@ import java.util.Objects;
  * @since XXX
  */
 public class Library
-        extends SourcedObject {
+        extends NamedSourcedObject {
 
     private final Album undefined;
     private final List<Album> albums;
-    private CharSequence name;
 
     /**
      * A new library with a dangling album (used to group all song not attached to any album).
@@ -39,24 +38,11 @@ public class Library
      * @param name The name of this library.
      */
     public Library(final CharSequence name) {
+        super(name);
         this.undefined = new Album("__UNDEFINED__");
         this.albums = new ArrayList<>();
         this.albums.add(this.undefined);
         this.setName(name);
-    }
-
-    /**
-     * @return The name of this Library.
-     */
-    public CharSequence getName() {
-        return this.name;
-    }
-
-    /**
-     * @param name The name to set for this Library.
-     */
-    public void setName(final CharSequence name) {
-        this.name = Objects.requireNonNull(name);
     }
 
     /**
@@ -75,17 +61,17 @@ public class Library
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.name);
+        return Objects.hashCode(this.getName());
     }
 
     @Override
     public boolean equals(final Object o) {
         if (!(o instanceof final Library library)) return false;
-        return Objects.equals(this.name, library.name);
+        return Objects.equals(this.getName(), library.getName());
     }
 
     @Override
     public String toString() {
-        return "{Library=" + this.name + ", source=" + this.getSource() + ", albums=" + this.albums.size() + '}';
+        return "{Library=" + this.getName() + ", source=" + this.getSource() + ", albums=" + this.albums.size() + '}';
     }
 }

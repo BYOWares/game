@@ -22,22 +22,50 @@ import java.util.Objects;
  *
  * @since XXX
  */
-public abstract class SourcedObject {
+public abstract class NamedSourcedObject {
 
     private Source source;
+    private CharSequence name;
 
     /**
+     * @param name   The name of this object.
      * @param source The source of this object to instantiate.
+     *
+     * @throws java.lang.NullPointerException If the {@code name} is {@code null}.
      */
-    public SourcedObject(final Source source) {
+    public NamedSourcedObject(
+            final CharSequence name,
+            final Source source
+    ) {
+        this.setName(name);
         this.source = source;
     }
 
     /**
      * A new sourced object whose source is {@link fr.byowares.game.utils.serial.source.SourceInMemory}.
+     *
+     * @param name The name of this object.
+     *
+     * @throws java.lang.NullPointerException If the {@code name} is {@code null}.
      */
-    public SourcedObject() {
-        this(SourceInMemory.INSTANCE);
+    public NamedSourcedObject(final CharSequence name) {
+        this(name, SourceInMemory.INSTANCE);
+    }
+
+    /**
+     * @return The name of this object.
+     */
+    public CharSequence getName() {
+        return this.name;
+    }
+
+    /**
+     * @param name The new name of this object.
+     *
+     * @throws java.lang.NullPointerException If the {@code name} is {@code null}.
+     */
+    public void setName(final CharSequence name) {
+        this.name = Objects.requireNonNull(name);
     }
 
     /**

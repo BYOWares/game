@@ -36,7 +36,7 @@ public final class Constants {
 
     /** A Copyright. */
     public static final String COPYRIGHT = "copyright";
-    /** Song's title. */
+    /** {@link fr.byowares.game.utils.serial.source.NamedSourcedObject} name. */
     public static final String TITLE = "title";
     /** An artist. */
     public static final String ARTIST = "artist";

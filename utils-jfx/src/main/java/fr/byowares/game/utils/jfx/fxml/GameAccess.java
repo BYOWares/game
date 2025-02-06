@@ -15,8 +15,8 @@
  */
 package fr.byowares.game.utils.jfx.fxml;
 
-import fr.byowares.game.utils.jfx.ConRoot;
 import fr.byowares.game.utils.jfx.Controller;
+import fr.byowares.game.utils.jfx.Pair;
 import fr.byowares.game.utils.jfx.SceneUniqueActor;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.beans.property.StringProperty;
@@ -85,7 +85,7 @@ public abstract class GameAccess
      *
      * @return The pair (controller, HBox) making the GameAccess.
      */
-    protected static <G extends GameAccess> ConRoot<G, HBox> load(final G ga) {
+    protected static <G extends GameAccess> Pair<G, HBox> load(final G ga) {
         return FXMLLoader.load(ga, GameAccess.class, "GameAccess");
     }
 

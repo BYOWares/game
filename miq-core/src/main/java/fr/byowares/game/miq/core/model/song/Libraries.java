@@ -22,6 +22,7 @@ import fr.byowares.game.miq.core.serial.library.LibraryDeserializers;
 import fr.byowares.game.miq.core.serial.lyrics.LyricsDeserializers;
 import fr.byowares.game.miq.core.serial.song.SongDeserializers;
 import fr.byowares.game.utils.serial.Deserializers;
+import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import fr.byowares.game.utils.serial.source.Source;
 import fr.byowares.game.utils.serial.source.SourcePath;
 import org.agrona.LangUtil;
@@ -42,7 +43,8 @@ import java.util.stream.Stream;
  *
  * @since XXX
  */
-public class Libraries {
+public class Libraries
+        extends NamedSourcedObject {
 
     private static final Logger log = LoggerFactory.getLogger(Libraries.class);
 
@@ -53,7 +55,8 @@ public class Libraries {
     private final List<Library> libraries;
 
     private Libraries(final Path root) {
-        this.root = Objects.requireNonNull(root);
+        super(Objects.requireNonNull(root).getFileName().toString(), new SourcePath(root));
+        this.root = root;
         this.undefined = new Library("__UNDEFINED__");
         this.libraries = new ArrayList<>();
         this.libraries.add(this.undefined);

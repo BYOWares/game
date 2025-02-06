@@ -16,7 +16,7 @@
 package fr.byowares.game.miq.core.model.song;
 
 import fr.byowares.game.utils.hashcodes.HashCodes;
-import fr.byowares.game.utils.serial.source.SourcedObject;
+import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +29,10 @@ import java.util.Objects;
  * @since XXX
  */
 public class Album
-        extends SourcedObject {
+        extends NamedSourcedObject {
 
     private final List<Song> songs;
     private CharSequence copyright;
-    private CharSequence title;
     private CharSequence artist;
 
     /**
@@ -44,7 +43,7 @@ public class Album
      * @throws java.lang.NullPointerException If {@code title} is {@code null}.
      */
     public Album(final CharSequence title) {
-        this.setTitle(title);
+        super(title);
         this.songs = new ArrayList<>();
     }
 
@@ -70,20 +69,6 @@ public class Album
     }
 
     /**
-     * @return The title of the album.
-     */
-    public CharSequence getTitle() {
-        return this.title;
-    }
-
-    /**
-     * @param title The title to set for this album.
-     */
-    public void setTitle(final CharSequence title) {
-        this.title = Objects.requireNonNull(title);
-    }
-
-    /**
      * @return The artist associated with this album.
      */
     public CharSequence getArtist() {
@@ -99,19 +84,19 @@ public class Album
 
     @Override
     public int hashCode() {
-        return HashCodes.hash(this.copyright, this.title, this.artist);
+        return HashCodes.hash(this.copyright, this.getName(), this.artist);
     }
 
     @Override
     public boolean equals(final Object o) {
         if (!(o instanceof final Album album)) return false;
         return Objects.equals(this.copyright, album.copyright) //
-                && Objects.equals(this.title, album.title) //
+                && Objects.equals(this.getName(), album.getName()) //
                 && Objects.equals(this.artist, album.artist);
     }
 
     @Override
     public String toString() {
-        return "{Album=" + this.title + ", source=" + this.getSource() + ", artist=" + this.artist + ", songs=" + this.songs.size() + '}';
+        return "{Album=" + this.getName() + ", source=" + this.getSource() + ", artist=" + this.artist + ", songs=" + this.songs.size() + '}';
     }
 }

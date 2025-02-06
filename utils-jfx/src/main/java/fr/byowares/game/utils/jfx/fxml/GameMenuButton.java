@@ -15,8 +15,8 @@
  */
 package fr.byowares.game.utils.jfx.fxml;
 
-import fr.byowares.game.utils.jfx.ConRoot;
 import fr.byowares.game.utils.jfx.Controller;
+import fr.byowares.game.utils.jfx.Pair;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -51,7 +51,7 @@ public class GameMenuButton
      *
      * @return The pair (
      */
-    public static ConRoot<GameMenuButton, HBox> load(
+    public static Pair<GameMenuButton, HBox> load(
             final Consumer<StringProperty> binder,
             final Runnable onAction
     ) {

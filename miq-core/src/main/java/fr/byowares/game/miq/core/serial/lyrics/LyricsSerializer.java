@@ -69,6 +69,7 @@ public class LyricsSerializer
             verses.add(builder.asCharSequenceAndReset());
         }
 
+        map.put(Constants.TITLE, lyrics.getName());
         map.put(Constants.COMMENT, lyrics.getComment());
         map.put(Constants.AUTHOR, lyrics.getAuthor());
         map.put(Constants.SEPARATOR, SEP);

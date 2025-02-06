@@ -19,7 +19,7 @@ import fr.byowares.game.miq.core.model.audio.DuoSource;
 import fr.byowares.game.miq.core.model.audio.SingleSource;
 import fr.byowares.game.miq.core.model.lyrics.Lyrics;
 import fr.byowares.game.utils.hashcodes.HashCodes;
-import fr.byowares.game.utils.serial.source.SourcedObject;
+import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +31,12 @@ import java.util.Objects;
  * @since XXX
  */
 public class Song
-        extends SourcedObject {
+        extends NamedSourcedObject {
 
     private final List<CharSequence> rawLyrics = new ArrayList<>();
     private final List<Lyrics> lyrics = new ArrayList<>();
 
     private CharSequence copyright;
-    private CharSequence title;
     private CharSequence artist;
     private CharSequence albumName;
     private CharSequence comment;
@@ -49,7 +48,7 @@ public class Song
      * @param title The title of the song.
      */
     public Song(final CharSequence title) {
-        this.setTitle(title);
+        super(title);
     }
 
     /**
@@ -78,20 +77,6 @@ public class Song
      */
     public void setCopyright(final CharSequence copyright) {
         this.copyright = copyright;
-    }
-
-    /**
-     * @return The title of this song.
-     */
-    public CharSequence getTitle() {
-        return this.title;
-    }
-
-    /**
-     * @param title The title of the song to set.
-     */
-    public void setTitle(final CharSequence title) {
-        this.title = Objects.requireNonNull(title);
     }
 
     /**
@@ -169,7 +154,7 @@ public class Song
         return HashCodes.hash(this.rawLyrics, //
                               this.lyrics, //
                               this.copyright, //
-                              this.title, //
+                              this.getName(), //
                               this.artist, //
                               this.albumName, //
                               this.comment, //
@@ -184,7 +169,7 @@ public class Song
         return Objects.equals(this.rawLyrics, song.rawLyrics) //
                 && Objects.equals(this.lyrics, song.lyrics) //
                 && Objects.equals(this.copyright, song.copyright) //
-                && Objects.equals(this.title, song.title) //
+                && Objects.equals(this.getName(), song.getName()) //
                 && Objects.equals(this.artist, song.artist) //
                 && Objects.equals(this.albumName, song.albumName) //
                 && Objects.equals(this.comment, song.comment) //
@@ -195,7 +180,7 @@ public class Song
 
     @Override
     public String toString() {
-        return "{Song=" + this.title + ", source=" + this.getSource() + ", comment=" + this.comment //
+        return "{Song=" + this.getName() + ", source=" + this.getSource() + ", comment=" + this.comment //
                 + ", albumName=" + this.albumName + ", artist=" + this.artist + '}';
     }
 }

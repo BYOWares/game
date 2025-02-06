@@ -27,7 +27,7 @@ public class AlbumDeserializerV1Test
         extends AbstractDesSerTest<Album> {
 
     public static final Album ALBUM_V1 = new Album("Some fancy title");
-    static final Album ALBUM_V1_NO_ML = new Album(ALBUM_V1.getTitle());
+    static final Album ALBUM_V1_NO_ML = new Album(ALBUM_V1.getName());
     static final String INPUT_V1 = """
             version: 1
             title: Some fancy title

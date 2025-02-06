@@ -24,6 +24,7 @@ import fr.byowares.game.miq.core.model.lyrics.Singer;
 import fr.byowares.game.miq.core.model.lyrics.TimeCodedVerse;
 import fr.byowares.game.miq.core.model.lyrics.Word;
 import fr.byowares.game.miq.core.serial.AbstractDesSerTest;
+import fr.byowares.game.miq.core.serial.Constants;
 import fr.byowares.game.utils.serial.Deserializers;
 import org.junit.jupiter.api.Test;
 
@@ -37,18 +38,21 @@ public class LyricsDeserializerV1Test
         extends AbstractDesSerTest<Lyrics> {
 
     static final TimeCodedVerse VERSE = new TimeCodedVerse(new Range(0L, 1L), Line.EMPTY_LIST);
-    public static final Lyrics LYRICS_V1 = new Lyrics("null", "Eubehi", List.of(VERSE));
+    public static final Lyrics LYRICS_V1 = new Lyrics("Name", "null", "Eubehi", List.of(VERSE));
     static final String INPUT_V1 = """
+            title: Name
             version: 1
             comment: 'null'
             author: Eubehi
             separator: '#'
             lyrics:
             - 0#1#0""";
+    static final String TITLE_V1 = "title: Name";
     static final String VERSION_V1 = "version: 1";
     static final String SEPARATOR_V1 = "separator: '#'";
     static final String COMMENT_V1 = "comment: 'null'";
     static final String COMPLEX_V1_AS_STRING = """
+            title: Complex lyrics
             version: 1
             comment: 'No comment'
             author: Eubehi
@@ -111,7 +115,7 @@ public class LyricsDeserializerV1Test
         verses.add(new TimeCodedVerse(new Range(ts6, ts7), List.of(l1ft, l1tt)));
         verses.add(new TimeCodedVerse(new Range(ts7, ts8), List.of(l3ft, l3tt)));
         verses.add(new TimeCodedVerse(new Range(ts8, ts9), Line.EMPTY_LIST));
-        COMPLEX_V1 = new Lyrics("No comment", "Eubehi", verses);
+        COMPLEX_V1 = new Lyrics("Complex lyrics", "No comment", "Eubehi", verses);
     }
 
     private static Line buildLine(
@@ -167,9 +171,16 @@ public class LyricsDeserializerV1Test
         assertEquals("Separator cannot be ' '", e.getMessage());
     }
 
-    /******************************************************************************************************************
+    /* ****************************************************************************************************************
      *                                                COMMENT TESTS                                                   *
      ******************************************************************************************************************/
+
+
+    @Test
+    public void testInvalidTitleMissing() {
+        this.assertInvalidWhenMissing(INPUT_V1, TITLE_V1, Constants.TITLE);
+    }
+
     @Test
     public void testCommentValidMissing() {
         final var l1 = this.assertDeserializeDoesNotThrow(INPUT_V1, COMMENT_V1, "");
@@ -181,7 +192,7 @@ public class LyricsDeserializerV1Test
     }
 
     @Test
-    public void testCommentValidNumber() {
+    public void testCommentInvalidNumber() {
         final var e = this.assertDeserializeThrows(IAE_CLASS, INPUT_V1, COMMENT_V1, "comment: 2");
         assertEquals("Invalid type. Expected java.lang.String, but was java.lang.Integer (2)", e.getMessage());
     }

@@ -73,6 +73,7 @@ public class LyricsDeserializerV1
 
     @Override
     protected Lyrics doDeserialize(final Map<String, Object> map) {
+        final String name = removeAsString(map, Constants.TITLE);
         final String comment = removeAsString(map, Constants.COMMENT);
         final String author = removeAsString(map, Constants.AUTHOR);
         final char separator = removeAsCharacter(map, Constants.SEPARATOR);
@@ -84,7 +85,7 @@ public class LyricsDeserializerV1
             lyrics.add(parseAsVerse(unparsedLyric, csv));
         }
 
-        return new Lyrics(comment, author, lyrics);
+        return new Lyrics(name, comment, author, lyrics);
     }
 
     @Override

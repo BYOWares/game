@@ -55,6 +55,7 @@ public abstract class AbstractDesSerTest<T> {
             final String line,
             final String field
     ) {
+        assertTrue(line.startsWith(field));
         final var e1 = this.assertDeserializeThrows(NullPointerException.class, input, line, "");
         final var e2 = this.assertDeserializeThrows(NullPointerException.class, input, line, field + ": ");
         final var e3 = this.assertDeserializeThrows(NullPointerException.class, input, line, field + ": null");

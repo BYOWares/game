@@ -49,7 +49,7 @@ public class LyricsSerializerTest
 
     @Test
     public void testEmptyLyrics() {
-        this.assertBijection(new Lyrics("Some comments", "Some Author", List.of()));
+        this.assertBijection(new Lyrics("The name", "Some comments", "Some Author", List.of()));
     }
 
     @Test
@@ -58,14 +58,20 @@ public class LyricsSerializerTest
     }
 
     @ParameterizedTest(name = "[{index}] input={0}")
+    @MethodSource("getStringNonNullValues")
+    public void testValidName(final StringInput input) {
+        this.assertBijection(new Lyrics(input.value(), "some comment", "me", OBL));
+    }
+
+    @ParameterizedTest(name = "[{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidComment(final StringInput input) {
-        this.assertBijection(new Lyrics(input.value(), "me", OBL));
+        this.assertBijection(new Lyrics("Name", input.value(), "me", OBL));
     }
 
     @ParameterizedTest(name = "[{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidAuthor(final StringInput input) {
-        this.assertBijection(new Lyrics("some comment", input.value(), OBL));
+        this.assertBijection(new Lyrics("Name", "some comment", input.value(), OBL));
     }
 }

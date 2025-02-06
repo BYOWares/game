@@ -18,9 +18,11 @@
  * @since XXX
  */
 module fr.byowares.game.miq.jfx {
+    requires fr.byowares.game.miq.core;
     requires fr.byowares.game.utils.jfx;
+    requires javafx.controls;
     requires javafx.fxml;
-    requires javafx.graphics;
+    requires fr.byowares.game.utils;
 
     exports fr.byowares.game.miq.jfx;
     exports fr.byowares.game.miq.jfx.fxml;
