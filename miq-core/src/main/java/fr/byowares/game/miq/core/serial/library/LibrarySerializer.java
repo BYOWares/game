@@ -44,6 +44,7 @@ public class LibrarySerializer
     ) {
         map.put(Constants.TYPE, Constants.TYPE_LIBRARY);
         map.put(Constants.TITLE, library.getName());
+        map.put(Constants.COMMENT, library.getComment());
     }
 
     @Override

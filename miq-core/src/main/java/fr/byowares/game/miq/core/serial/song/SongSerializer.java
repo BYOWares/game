@@ -43,11 +43,11 @@ public class SongSerializer
             final Map<String, Object> map
     ) {
         map.put(Constants.TYPE, Constants.TYPE_SONG);
-        map.put(Constants.COPYRIGHT, song.getCopyright());
         map.put(Constants.TITLE, song.getName());
+        map.put(Constants.COMMENT, song.getComment());
+        map.put(Constants.COPYRIGHT, song.getCopyright());
         map.put(Constants.ARTIST, song.getArtist());
         map.put(Constants.ALBUM, song.getAlbumName());
-        map.put(Constants.COMMENT, song.getComment());
         if (song.getDuoSource() != null) {
             map.put(Constants.VOICE, song.getDuoSource().voiceSource().getName());
             map.put(Constants.MUSIC, song.getDuoSource().musicSource().getName());

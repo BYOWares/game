@@ -37,55 +37,25 @@ public final class Lyrics
 
     private final List<TimeCodedVerse> verses;
     private CharSequence author;
-    private CharSequence comment;
-
-    /**
-     * @param name    The name used to identify those lyrics.
-     * @param comment The comment about those lyrics.
-     * @param author  The author of those lyrics.
-     * @param verses  The verses (text + time codes) making those lyrics.
-     *
-     * @throws java.lang.NullPointerException If the {@code verse} is {@code null}.
-     */
-    public Lyrics(
-            final CharSequence name,
-            final CharSequence comment,
-            final CharSequence author,
-            final List<TimeCodedVerse> verses
-    ) {
-        super(name);
-        this.comment = comment;
-        this.author = author;
-        this.verses = Objects.requireNonNull(verses);
-    }
 
     /**
      * A default Lyrics (comment is empty, author is null, and verses are also empty).
      *
-     * @param name The name used to identify those lyrics.
+     * @param name   The name used to identify those lyrics.
+     * @param verses The verses (text + time codes) making those lyrics.
      */
-    public Lyrics(final CharSequence name) {
-        this(name, "", null, new ArrayList<>());
+    public Lyrics(
+            final CharSequence name,
+            final List<TimeCodedVerse> verses
+    ) {
+        super(name);
+        this.verses = Objects.requireNonNull(verses);
     }
 
     private static List<LineElement> todoLineElements() {
         final List<LineElement> elements = new ArrayList<>();
         elements.add(new Word("TODO"));
         return elements;
-    }
-
-    /**
-     * @return The comment describing those lyrics.
-     */
-    public CharSequence getComment() {
-        return this.comment;
-    }
-
-    /**
-     * @param comment Update the comment of those lyrics.
-     */
-    public void setComment(final CharSequence comment) {
-        this.comment = comment;
     }
 
     /**
@@ -242,7 +212,7 @@ public final class Lyrics
 
     @Override
     public int hashCode() {
-        return HashCodes.hash(this.verses, this.author, this.comment);
+        return HashCodes.hash(this.verses, this.author, this.getComment());
     }
 
     @Override
@@ -250,11 +220,11 @@ public final class Lyrics
         if (!(o instanceof final Lyrics lyrics)) return false;
         return Objects.equals(this.verses, lyrics.verses) //
                 && Objects.equals(this.author, lyrics.author) //
-                && Objects.equals(this.comment, lyrics.comment);
+                && Objects.equals(this.getComment(), lyrics.getComment());
     }
 
     @Override
     public String toString() {
-        return "Lyrics{" + "author=" + this.author + ", comment=" + this.comment + '}';
+        return "Lyrics{" + "name=" + this.getName() + "author=" + this.author + ", comment=" + this.getComment() + '}';
     }
 }

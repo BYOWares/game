@@ -39,7 +39,9 @@ public class LibraryDeserializerV1
 
     @Override
     protected Library doDeserialize(final Map<String, Object> map) {
-        return new Library(removeAsString(map, Constants.TITLE));
+        final Library library = new Library(removeAsString(map, Constants.TITLE));
+        library.setComment(removeAsString(map, Constants.COMMENT));
+        return library;
     }
 
     @Override

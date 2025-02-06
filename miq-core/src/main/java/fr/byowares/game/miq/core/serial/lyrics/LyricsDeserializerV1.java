@@ -85,7 +85,10 @@ public class LyricsDeserializerV1
             lyrics.add(parseAsVerse(unparsedLyric, csv));
         }
 
-        return new Lyrics(name, comment, author, lyrics);
+        final Lyrics res = new Lyrics(name, lyrics);
+        res.setAuthor(author);
+        res.setComment(comment);
+        return res;
     }
 
     @Override

@@ -72,7 +72,7 @@ public class SongSerializerTest
     @ParameterizedTest(name = "[{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidComment(final StringInput input) {
-        this.assertBijection(getGenericSong(), Song::setComment, input.value());
+        this.assertBijection(getGenericSong(), NamedSourcedObject::setComment, input.value());
     }
 
     @ParameterizedTest(name = "[{index}] input={0}")

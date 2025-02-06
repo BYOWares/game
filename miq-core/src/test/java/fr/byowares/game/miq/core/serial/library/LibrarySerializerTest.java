@@ -20,6 +20,7 @@ import fr.byowares.game.miq.core.serial.AbstractSerializerTest;
 import fr.byowares.game.miq.core.serial.album.AlbumDeserializerV1Test;
 import fr.byowares.game.utils.serial.Deserializers;
 import fr.byowares.game.utils.serial.Serializer;
+import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -52,6 +53,12 @@ public class LibrarySerializerTest
     @MethodSource("getStringNonNullValues")
     public void testValidTitle(final StringInput input) {
         this.assertBijection(new Library("Who cares ?"), Library::setName, input.value());
+    }
+
+    @ParameterizedTest(name = "[{index}] input={0}")
+    @MethodSource("getStringValues")
+    public void testValidComment(final StringInput input) {
+        this.assertBijection(new Library("Who cares ?"), NamedSourcedObject::setComment, input.value());
     }
 
     @Test

@@ -19,6 +19,7 @@ import fr.byowares.game.miq.core.model.song.Album;
 import fr.byowares.game.miq.core.serial.AbstractDesSerTest;
 import fr.byowares.game.miq.core.serial.Constants;
 import fr.byowares.game.utils.serial.Deserializers;
+import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,6 +33,7 @@ public class AlbumDeserializerV1Test
             version: 1
             title: Some fancy title
             artist: Super cool artist
+            comment: Any comment
             copyright: |-
               A complicated
               Multi lines
@@ -41,14 +43,17 @@ public class AlbumDeserializerV1Test
             version: 1
             title: Some fancy title
             artist: Super cool artist
+            comment: Any comment
             copyright: No copyright
             """;
     static final String VERSION_V1 = "version: 1";
     private static final String TITLE = "title: Some fancy title";
-    private static final String ARTIST = "artist: Super cool artist";
+    private static final String COMMENT = "comment: Any comment";
     private static final String COPYRIGHT = "copyright: No copyright";
+    private static final String ARTIST = "artist: Super cool artist";
 
     static {
+        ALBUM_V1.setComment("Any comment");
         ALBUM_V1.setArtist("Super cool artist");
         ALBUM_V1.setCopyright("A complicated\nMulti lines\nCopyright with @");
 
@@ -69,6 +74,11 @@ public class AlbumDeserializerV1Test
     @Test
     public void testInvalidTitleMissing() {
         this.assertInvalidWhenMissing(INPUT_V1_NO_ML, TITLE, Constants.TITLE);
+    }
+
+    @Test
+    public void testValidCommentMissing() {
+        this.assertValidWhenMissing(INPUT_V1_NO_ML, COMMENT, Constants.COMMENT, NamedSourcedObject::getComment);
     }
 
     @Test

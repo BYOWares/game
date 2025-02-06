@@ -19,6 +19,7 @@ import fr.byowares.game.miq.core.model.song.Song;
 import fr.byowares.game.miq.core.serial.AbstractDesSerTest;
 import fr.byowares.game.miq.core.serial.Constants;
 import fr.byowares.game.utils.serial.Deserializers;
+import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -78,7 +79,7 @@ public class SongDeserializerV1Test
 
     @Test
     public void testValidCommentMissing() {
-        this.assertValidWhenMissing(INPUT_V1, COMMENT, Constants.COMMENT, Song::getComment);
+        this.assertValidWhenMissing(INPUT_V1, COMMENT, Constants.COMMENT, NamedSourcedObject::getComment);
     }
 
     @Test

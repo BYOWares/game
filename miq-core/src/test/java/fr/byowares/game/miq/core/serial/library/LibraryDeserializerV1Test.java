@@ -19,6 +19,7 @@ import fr.byowares.game.miq.core.model.song.Library;
 import fr.byowares.game.miq.core.serial.AbstractDesSerTest;
 import fr.byowares.game.miq.core.serial.Constants;
 import fr.byowares.game.utils.serial.Deserializers;
+import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,10 +29,12 @@ public class LibraryDeserializerV1Test
 
     static final Library LIBRARY_V1 = new Library("Library 1");
     static final String VERSION_V1 = "version: 1";
+    static final String COMMENT_V1 = "comment: Comment 1";
     static final String NAME = "title: Library 1";
     static final String INPUT_V1 = """
             version: 1
             title: Library 1
+            comment: Comment 1
             """;
 
     @Test
@@ -42,6 +45,11 @@ public class LibraryDeserializerV1Test
     @Test
     public void testInvalidNameMissing() {
         this.assertInvalidWhenMissing(INPUT_V1, NAME, Constants.TITLE);
+    }
+
+    @Test
+    public void testValidCommentMissing() {
+        this.assertValidWhenMissing(INPUT_V1, COMMENT_V1, Constants.COMMENT, NamedSourcedObject::getComment);
     }
 
     @Override

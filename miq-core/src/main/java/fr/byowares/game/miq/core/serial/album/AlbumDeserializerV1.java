@@ -42,6 +42,7 @@ public class AlbumDeserializerV1
     protected Album doDeserialize(final Map<String, Object> map) {
         final String title = Objects.requireNonNull(removeAsString(map, Constants.TITLE));
         final Album album = new Album(title);
+        album.setComment(removeAsString(map, Constants.COMMENT));
         album.setArtist(removeAsString(map, Constants.ARTIST));
         album.setCopyright(removeAsString(map, Constants.COPYRIGHT));
         return album;

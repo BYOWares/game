@@ -39,7 +39,6 @@ public class Song
     private CharSequence copyright;
     private CharSequence artist;
     private CharSequence albumName;
-    private CharSequence comment;
 
     private DuoSource duoSource;
     private SingleSource singleSource;
@@ -108,20 +107,6 @@ public class Song
     }
 
     /**
-     * @return Some text describing this song.
-     */
-    public CharSequence getComment() {
-        return this.comment;
-    }
-
-    /**
-     * @param comment Some text describing this song.
-     */
-    public void setComment(final CharSequence comment) {
-        this.comment = comment;
-    }
-
-    /**
      * @return The {@link fr.byowares.game.miq.core.model.audio.DuoSource} used for this song.
      */
     public DuoSource getDuoSource() {
@@ -157,7 +142,7 @@ public class Song
                               this.getName(), //
                               this.artist, //
                               this.albumName, //
-                              this.comment, //
+                              this.getComment(), //
                               this.duoSource, //
                               this.singleSource //
         );
@@ -172,7 +157,7 @@ public class Song
                 && Objects.equals(this.getName(), song.getName()) //
                 && Objects.equals(this.artist, song.artist) //
                 && Objects.equals(this.albumName, song.albumName) //
-                && Objects.equals(this.comment, song.comment) //
+                && Objects.equals(this.getComment(), song.getComment()) //
                 && Objects.equals(this.duoSource, song.duoSource) //
                 && Objects.equals(this.singleSource, song.singleSource) //
                 ;
@@ -180,7 +165,7 @@ public class Song
 
     @Override
     public String toString() {
-        return "{Song=" + this.getName() + ", source=" + this.getSource() + ", comment=" + this.comment //
+        return "{Song=" + this.getName() + ", source=" + this.getSource() + ", comment=" + this.getComment() //
                 + ", albumName=" + this.albumName + ", artist=" + this.artist + '}';
     }
 }

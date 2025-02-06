@@ -26,6 +26,7 @@ public abstract class NamedSourcedObject {
 
     private Source source;
     private CharSequence name;
+    private CharSequence comment;
 
     /**
      * @param name   The name of this object.
@@ -80,5 +81,19 @@ public abstract class NamedSourcedObject {
      */
     public void setSource(final Source source) {
         this.source = Objects.requireNonNull(source);
+    }
+
+    /**
+     * @return Some text describing this object.
+     */
+    public CharSequence getComment() {
+        return this.comment;
+    }
+
+    /**
+     * @param comment Some text describing this object.
+     */
+    public void setComment(final CharSequence comment) {
+        this.comment = comment;
     }
 }

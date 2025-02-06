@@ -38,7 +38,7 @@ public class LyricsDeserializerV1Test
         extends AbstractDesSerTest<Lyrics> {
 
     static final TimeCodedVerse VERSE = new TimeCodedVerse(new Range(0L, 1L), Line.EMPTY_LIST);
-    public static final Lyrics LYRICS_V1 = new Lyrics("Name", "null", "Eubehi", List.of(VERSE));
+    public static final Lyrics LYRICS_V1 = new Lyrics("Name", List.of(VERSE));
     static final String INPUT_V1 = """
             title: Name
             version: 1
@@ -115,7 +115,12 @@ public class LyricsDeserializerV1Test
         verses.add(new TimeCodedVerse(new Range(ts6, ts7), List.of(l1ft, l1tt)));
         verses.add(new TimeCodedVerse(new Range(ts7, ts8), List.of(l3ft, l3tt)));
         verses.add(new TimeCodedVerse(new Range(ts8, ts9), Line.EMPTY_LIST));
-        COMPLEX_V1 = new Lyrics("Complex lyrics", "No comment", "Eubehi", verses);
+        COMPLEX_V1 = new Lyrics("Complex lyrics", verses);
+        COMPLEX_V1.setAuthor("Eubehi");
+        COMPLEX_V1.setComment("No comment");
+
+        LYRICS_V1.setAuthor("Eubehi");
+        LYRICS_V1.setComment("null");
     }
 
     private static Line buildLine(
@@ -137,7 +142,7 @@ public class LyricsDeserializerV1Test
         assertEquals(COMPLEX_V1, this.getDeserializers().deserialize(inputStream(COMPLEX_V1_AS_STRING)));
     }
 
-    /******************************************************************************************************************
+    /* ****************************************************************************************************************
      *                                               SEPARATOR TESTS                                                  *
      ******************************************************************************************************************/
     @Test

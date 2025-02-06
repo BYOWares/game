@@ -44,6 +44,7 @@ public class AlbumSerializer
     ) {
         map.put(Constants.TYPE, Constants.TYPE_ALBUM);
         map.put(Constants.TITLE, album.getName());
+        map.put(Constants.COMMENT, album.getComment());
         map.put(Constants.ARTIST, album.getArtist());
         map.put(Constants.COPYRIGHT, album.getCopyright());
     }
