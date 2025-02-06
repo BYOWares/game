@@ -68,19 +68,19 @@ public class LyricsSerializerTest
         this.assertBijection(LyricsDeserializerV1Test.COMPLEX_V1);
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidName [{index}] input={0}")
     @MethodSource("getStringNonNullValues")
     public void testValidName(final StringInput input) {
         this.assertBijection(getGenericLyrics(), NamedSourcedObject::setName, input.value());
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidComment [{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidComment(final StringInput input) {
         this.assertBijection(getGenericLyrics(), NamedSourcedObject::setComment, input.value());
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidAuthor [{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidAuthor(final StringInput input) {
         this.assertBijection(getGenericLyrics(), Lyrics::setAuthor, input.value());

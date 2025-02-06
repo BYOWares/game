@@ -58,25 +58,25 @@ public class AlbumSerializerTest
         this.assertBijection(AlbumDeserializerV1Test.ALBUM_V1_NO_ML);
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidTitle [{index}] input={0}")
     @MethodSource("getStringNonNullValues")
     public void testValidTitle(final StringInput input) {
         this.assertBijection(getGenericAlbum(), NamedSourcedObject::setName, input.value());
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidComment [{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidComment(final StringInput input) {
         this.assertBijection(getGenericAlbum(), NamedSourcedObject::setComment, input.value());
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidArtist [{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidArtist(final StringInput input) {
         this.assertBijection(getGenericAlbum(), Album::setArtist, input.value());
     }
 
-    @ParameterizedTest(name = "[{index}] input={0}")
+    @ParameterizedTest(name = "testValidCopyright [{index}] input={0}")
     @MethodSource("getStringValues")
     public void testValidCopyright(final StringInput input) {
         this.assertBijection(getGenericAlbum(), Album::setCopyright, input.value());

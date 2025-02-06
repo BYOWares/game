@@ -57,6 +57,7 @@ public class AlbumDeserializerV1Test
         ALBUM_V1.setArtist("Super cool artist");
         ALBUM_V1.setCopyright("A complicated\nMulti lines\nCopyright with @");
 
+        ALBUM_V1_NO_ML.setComment(ALBUM_V1.getComment());
         ALBUM_V1_NO_ML.setArtist(ALBUM_V1.getArtist());
         ALBUM_V1_NO_ML.setCopyright("No copyright");
     }

@@ -20,9 +20,11 @@ import java.util.Objects;
 /**
  * A generic object associated with a source. The source can be updated.
  *
+ * @param <N> Itself.
+ *
  * @since XXX
  */
-public abstract class NamedSourcedObject {
+public abstract class NamedSourcedObject<N extends NamedSourcedObject<N>> {
 
     private Source source;
     private CharSequence name;
@@ -96,4 +98,9 @@ public abstract class NamedSourcedObject {
     public void setComment(final CharSequence comment) {
         this.comment = comment;
     }
+
+    /**
+     * @return A copy of this object whose source is {@link fr.byowares.game.utils.serial.source.SourceInMemory}.
+     */
+    public abstract N copyInMemory();
 }

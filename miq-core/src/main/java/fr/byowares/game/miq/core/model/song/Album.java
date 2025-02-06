@@ -29,7 +29,7 @@ import java.util.Objects;
  * @since XXX
  */
 public class Album
-        extends NamedSourcedObject {
+        extends NamedSourcedObject<Album> {
 
     private final List<Song> songs;
     private CharSequence copyright;
@@ -84,7 +84,7 @@ public class Album
 
     @Override
     public int hashCode() {
-        return HashCodes.hash(this.copyright, this.getName(), this.artist);
+        return HashCodes.hash(this.copyright, this.getName(), this.getComment(), this.artist);
     }
 
     @Override
@@ -92,11 +92,22 @@ public class Album
         if (!(o instanceof final Album album)) return false;
         return Objects.equals(this.copyright, album.copyright) //
                 && Objects.equals(this.getName(), album.getName()) //
+                && Objects.equals(this.getComment(), album.getComment()) //
                 && Objects.equals(this.artist, album.artist);
     }
 
     @Override
     public String toString() {
-        return "{Album=" + this.getName() + ", source=" + this.getSource() + ", artist=" + this.artist + ", songs=" + this.songs.size() + '}';
+        return "{Album=" + this.getName() + ", source=" + this.getSource() + ", comment=" + this.getComment() + //
+                ", artist=" + this.artist + ", songs=" + this.songs.size() + '}';
+    }
+
+    @Override
+    public Album copyInMemory() {
+        final Album album = new Album(this.getName());
+        album.setArtist(this.getArtist());
+        album.setComment(this.getComment());
+        album.setCopyright(this.getCopyright());
+        return album;
     }
 }

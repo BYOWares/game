@@ -16,6 +16,7 @@
 package fr.byowares.game.miq.core.serial;
 
 import fr.byowares.game.utils.serial.Serializer;
+import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class AbstractSerializerTest<T>
+public abstract class AbstractSerializerTest<T extends NamedSourcedObject<T>>
         extends AbstractDesSerTest<T> {
 
     private static final List<StringInput> STRING_NON_NULL_VALUES = //
@@ -74,7 +75,10 @@ public abstract class AbstractSerializerTest<T>
             final BiConsumer<T, V> updater,
             final V update
     ) {
+        final T copy = input.copyInMemory();
+        assertEquals(input, copy);
         updater.accept(input, update);
+        assertNotEquals(input, copy); // We make sure the updated actually changed something
         this.assertBijection(input);
     }
 
