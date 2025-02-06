@@ -15,6 +15,7 @@
  */
 package fr.byowares.game.app.fxml;
 
+import fr.byowares.game.app.App;
 import fr.byowares.game.app.ResourcesApp;
 import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
@@ -26,12 +27,14 @@ import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.lang.management.ManagementFactory;
@@ -111,12 +114,21 @@ public class About
     }
 
     /**
-     * Load a new instance of the About.
+     * Open a new window to show this app information.
      *
-     * @return The pair (Controller, BorderPane) in charge of the About.
+     * @param stage The stage used to open this new about dialog
      */
-    public static Pair<About, BorderPane> load() {
-        return FXMLLoader.load(new About(), About.class, "About");
+    public static void open(final Stage stage) {
+        final Pair<About, BorderPane> about = FXMLLoader.load(new About(), About.class, "About");
+        final Scene scene = new Scene(about.root());
+        final Stage newStage = new Stage();
+        I18NApp.get().bind(newStage.titleProperty(), "homepage.about");
+        newStage.setScene(scene);
+        newStage.setResizable(false);
+        newStage.initModality(Modality.WINDOW_MODAL);
+        newStage.initOwner(stage);
+        App.addIcons(newStage);
+        newStage.show();
     }
 
     /** FXML handle for initialization. */
