@@ -22,12 +22,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <HBox alignment="CENTER" spacing="25.0">
             <children>
             <Label fx:id="icon" alignment="CENTER" contentDisplay="CENTER" minHeight="250.0" minWidth="250.0" prefHeight="250.0" prefWidth="250.0" style="-fx-shape: &quot;M 100 250 L 200 200 L 300 250 L 300 350 L 200 400 L 100 350 L 100 250&quot;;" styleClass="game-button" />
-                <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: BareCast; -fx-font-size: 4em; -fx-font-weight: bolder;" text="Dummy title" />
+                <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: BareCast; -fx-font-size: 4em; -fx-font-weight: bold;" text="Dummy title" />
             </children>
             <padding>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
