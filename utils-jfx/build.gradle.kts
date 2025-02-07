@@ -23,6 +23,7 @@ dependencies {
     implementation(project(":utils"))
 
     implementation(libs.agrona)
+    implementation(libs.bundles.atlantafx)
     implementation(libs.bundles.log4jImpl)
     implementation(libs.bundles.yamlImpl)
     runtimeOnly(libs.bundles.log4jRun)

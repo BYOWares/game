@@ -19,8 +19,10 @@
 
 [versions]
 agrona = "2.0.0"
+atlantafx = "2.0.1"
 disruptor = "4.0.0"
 guardian = "1.1.2"
+ikonli = "12.3.1"
 jPlatform = "1.11.4"
 jackson = "2.18.2"
 junit = "5.11.4"
@@ -32,9 +34,15 @@ snake = "2.3"
 
 [libraries]
 agrona = { group = "org.agrona", name = "agrona", version.ref = "agrona" }
+atlantafx-base = { group = "io.github.mkpaz", name = "atlantafx-base", version.ref = "atlantafx" }
 disruptor = { group = "com.lmax", name = "disruptor", version.ref = "disruptor" }
 
 guardian = { group = "org.apiguardian", name = "apiguardian-api", version.ref = "guardian" }
+
+ikonli-core = { group = "org.kordamp.ikonli", name = "ikonli-core", version.ref = "ikonli" }
+ikonli-feather = { group = "org.kordamp.ikonli", name = "ikonli-feather-pack", version.ref = "ikonli" }
+ikonli-javafx = { group = "org.kordamp.ikonli", name = "ikonli-javafx", version.ref = "ikonli" }
+ikonli-material2 = { group = "org.kordamp.ikonli", name = "ikonli-material2-pack", version.ref = "ikonli" }
 
 jackson-anno = { group = "com.fasterxml.jackson.core", name = "jackson-annotations", version.ref = "jackson" }
 jackson-bind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
@@ -63,8 +71,9 @@ slf4J-log = { group = "org.slf4j", name = "log4j-over-slf4j", version.ref = "slf
 
 snakeYaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snake" }
 
-
 [bundles]
+atlantafx = ["atlantafx-base", "ikonli-core", "ikonli-javafx", "ikonli-feather", "ikonli-material2"]
+
 junitImpl = ["junit", "junit-api", "junit-params", "guardian"]
 junitRun = ["junit-engine", "opentest4J", "junitP-launcher", "junitP-commons", "junitP-engine"]
 

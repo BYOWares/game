@@ -15,6 +15,7 @@
  */
 package fr.byowares.game.utils.jfx.theme;
 
+import atlantafx.base.theme.Theme;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -40,9 +41,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class ThemeManager {
 
     private static final ThemeManager INSTANCE = new ThemeManager();
-
     private static final PseudoClass DARK = PseudoClass.getPseudoClass("dark");
-    private static final double ANIMATION_DURATION = 750.0;
+    private static final Duration DURATION = Duration.millis(750.0);
+    private static final Interpolator EASE = Interpolator.SPLINE(0.25, 0.1, 0.25, 1.0);
 
     private final Set<Scene> scenes;
     private final Set<Node> nodes;
@@ -63,11 +64,9 @@ public class ThemeManager {
         if (theme == INSTANCE.currentTheme) return;
 
         if (INSTANCE.currentTheme != null) {
-            for (final Scene scene : INSTANCE.scenes)
-                animateThemeChange(scene, Duration.millis(ANIMATION_DURATION));
-
+            fadingAnimation();
         }
-        Application.setUserAgentStylesheet(theme.styleSheets());
+        Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
 
         for (final Scene scene : INSTANCE.scenes)
             updateThemeForScene(scene, theme, INSTANCE.currentTheme);
@@ -76,6 +75,12 @@ public class ThemeManager {
             node.pseudoClassStateChanged(DARK, theme.isDarkMode());
 
         INSTANCE.currentTheme = theme;
+    }
+
+    /** Smooth animation for all scenes subscribed to the unique {@link fr.byowares.game.utils.jfx.theme.ThemeManager} */
+    public static void fadingAnimation() {
+        for (final Scene scene : INSTANCE.scenes)
+            animateThemeChange(scene);
     }
 
     /**
@@ -122,8 +127,8 @@ public class ThemeManager {
             final Theme oldTheme
     ) {
         if (newTheme == null) return;
-        if (oldTheme != null) scene.getStylesheets().removeAll(oldTheme.styleSheets());
-        scene.getStylesheets().setAll(newTheme.styleSheets());
+        if (oldTheme != null) scene.getStylesheets().removeAll(oldTheme.getUserAgentStylesheet());
+        scene.getStylesheets().setAll(newTheme.getUserAgentStylesheet());
         scene.getRoot().pseudoClassStateChanged(DARK, newTheme.isDarkMode());
     }
 
@@ -136,19 +141,16 @@ public class ThemeManager {
     }
 
     /* In order to make the animation pretty, all scene root element shall be StackPane. */
-    private static void animateThemeChange(
-            final Scene scene,
-            final Duration duration
-    ) {
+    private static void animateThemeChange(final Scene scene) {
         final Image snapshot = scene.snapshot(null);
         final Pane root = (Pane) scene.getRoot();
 
         final ImageView imageView = new ImageView(snapshot);
-        root.getChildren().addFirst(imageView);
+        root.getChildren().add(imageView);
 
         final var transition = new Timeline(
-                new KeyFrame(Duration.ZERO, new KeyValue(imageView.opacityProperty(), 1, Interpolator.EASE_OUT)),
-                new KeyFrame(duration, new KeyValue(imageView.opacityProperty(), 0, Interpolator.EASE_OUT)));
+                new KeyFrame(Duration.ZERO, new KeyValue(imageView.opacityProperty(), 1, EASE)),
+                new KeyFrame(ThemeManager.DURATION, new KeyValue(imageView.opacityProperty(), 0, EASE)));
         transition.setOnFinished(e -> root.getChildren().remove(imageView));
         transition.play();
     }

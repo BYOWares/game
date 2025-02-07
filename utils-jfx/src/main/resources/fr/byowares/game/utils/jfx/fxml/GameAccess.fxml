@@ -35,7 +35,7 @@
         <VBox spacing="25.0">
             <children>
                 <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: BareCast; -fx-font-size: 4em; -fx-font-weight: bolder;" text="Dummy title" />
-                <Text fx:id="desc" layoutX="10.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: monospace;" styleClass="title-4" text="Dummy presentation" />
+                <Text fx:id="desc" layoutX="10.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: JetBrains Mono Medium;" styleClass="title-4" text="Dummy presentation" />
             </children>
             <opaqueInsets>
                 <Insets />

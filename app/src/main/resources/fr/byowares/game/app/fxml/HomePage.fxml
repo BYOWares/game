@@ -16,6 +16,7 @@
   ~ limitations under the License.
   -->
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -34,7 +35,11 @@
                 <ToggleButton fx:id="darkTheme" mnemonicParsing="false" />
                 <ToggleButton fx:id="lightTheme" layoutX="354.0" layoutY="19.0" mnemonicParsing="false" />
                 <HBox layoutX="422.0" layoutY="10.0" prefHeight="53.0" prefWidth="30.0" />
-                <Button fx:id="about" mnemonicParsing="false" onAction="#openAboutDialog" prefHeight="48.0" prefWidth="48.0" styleClass="about-button" stylesheets="@../css/About.css" />
+                <Button fx:id="about" mnemonicParsing="false" onAction="#openAboutDialog" prefHeight="48.0" prefWidth="48.0" stylesheets="@../css/About.css">
+               <styleClass>
+                  <String fx:value="about-button" />
+                  <String fx:value="button-circle" />
+               </styleClass></Button>
             </children>
             <opaqueInsets>
                 <Insets />

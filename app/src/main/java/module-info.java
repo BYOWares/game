@@ -18,13 +18,13 @@
  * @since XXX
  */
 module fr.byowares.game.app {
+    requires atlantafx.base;
     requires fr.byowares.game.miq.jfx;
     requires fr.byowares.game.utils.jfx;
     requires fr.byowares.game.utils;
     requires java.desktop;
     requires java.management;
     requires java.xml;
-    requires javafx.controls;
     requires javafx.fxml;
     requires org.agrona.core;
     requires org.slf4j;

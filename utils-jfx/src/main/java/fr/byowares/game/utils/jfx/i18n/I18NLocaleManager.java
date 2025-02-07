@@ -15,6 +15,7 @@
  */
 package fr.byowares.game.utils.jfx.i18n;
 
+import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.slf4j.Logger;
@@ -47,9 +48,13 @@ public final class I18NLocaleManager {
      * @see #getSupportedLocales()
      */
     public static void updateLocale(final Locale locale) {
-        if (INSTANCE.supportedLocales.contains(locale)) INSTANCE.locale.set(locale);
-        else log.warn("Could not configure locale to {} as it is not supported (supported={})", locale,
-                      INSTANCE.supportedLocales);
+        if (INSTANCE.supportedLocales.contains(locale)) {
+            ThemeManager.fadingAnimation();
+            INSTANCE.locale.set(locale);
+        } else {
+            log.warn("Could not configure locale to {} as it is not supported (supported={})", locale,
+                     INSTANCE.supportedLocales);
+        }
     }
 
     /**

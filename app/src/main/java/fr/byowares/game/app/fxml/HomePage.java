@@ -15,17 +15,19 @@
  */
 package fr.byowares.game.app.fxml;
 
+import atlantafx.base.theme.PrimerDark;
+import atlantafx.base.theme.PrimerLight;
+import atlantafx.base.theme.Styles;
+import atlantafx.base.theme.Tweaks;
 import fr.byowares.game.app.ResourcesApp;
 import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
 import fr.byowares.game.miq.jfx.fxml.GameAccessMIQ;
 import fr.byowares.game.utils.jfx.Pair;
 import fr.byowares.game.utils.jfx.SceneUniqueActor;
-import fr.byowares.game.utils.jfx.Styles;
 import fr.byowares.game.utils.jfx.fxml.FXMLLoader;
 import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
 import fr.byowares.game.utils.jfx.i18n.Lang;
-import fr.byowares.game.utils.jfx.theme.Theme;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -114,7 +116,7 @@ public class HomePage
         I18NApp.get().bind(this.lightTheme.getTooltip().textProperty(), "theme.light");
 
         /* Language initialization */
-        this.language.getStyleClass().add(Styles.ALT_ICON);
+        this.language.getStyleClass().add(Tweaks.ALT_ICON);
         this.language.getItems().addAll(Lang.LANG_FR, Lang.LANG_UK);
         this.language.setButtonCell(Lang.listCell(false));
         this.language.setCellFactory(c -> Lang.listCell(true));
@@ -134,14 +136,14 @@ public class HomePage
     }
 
     private void selectDarkTheme() {
-        ThemeManager.updateTheme(Theme.DARK_THEME);
+        ThemeManager.updateTheme(new PrimerDark());
         this.darkTheme.setSelected(true);
         this.darkTheme.setGraphic(new ImageView(ResourcesApp.ICO_MOON_ON));
         this.lightTheme.setGraphic(new ImageView(ResourcesApp.ICO_SUN_OFF));
     }
 
     private void selectLightTheme() {
-        ThemeManager.updateTheme(Theme.LIGHT_THEME);
+        ThemeManager.updateTheme(new PrimerLight());
         this.lightTheme.setSelected(true);
         this.darkTheme.setGraphic(new ImageView(ResourcesApp.ICO_MOON_OFF));
         this.lightTheme.setGraphic(new ImageView(ResourcesApp.ICO_SUN_ON));

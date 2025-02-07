@@ -18,6 +18,7 @@ package fr.byowares.game.app;
 import fr.byowares.game.app.fxml.HomePage;
 import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
+import fr.byowares.game.utils.jfx.Resources;
 import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.application.Application;
@@ -27,10 +28,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -42,6 +45,7 @@ public class App
         extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(App.class);
+    private static final double DEFAULT_SIZE = 12.0;
 
     /**
      * @param args Args used to start the application.
@@ -64,11 +68,27 @@ public class App
         icons.add(ResourcesApp.GAME_1024);
     }
 
+    private static void loadFonts() {
+        loadFont(Resources.FONT_BARECAST);
+        loadFont(Resources.FONT_JETBRAINS_MEDIUM);
+    }
+
+    private static void loadFont(final String url) {
+        log.info("Loading font {} ...", url);
+        final Font[] fonts = Font.loadFonts(url, DEFAULT_SIZE);
+        if (fonts == null) {
+            log.error("Failed to load {}", url);
+            throw new RuntimeException("Failed to load " + url);
+        }
+        log.info("{} successfully loaded", Arrays.toString(fonts));
+    }
+
     @Override
     public void start(final Stage stage)
             throws Exception {
         log.info("Starting {}", AppInfo.TO_STRING);
         addIcons(stage);
+        loadFonts();
 
         I18NLocaleManager.updateLocale(Locale.ENGLISH);
         I18NApp.get().bind(stage.titleProperty(), "title", AppInfo.VERSION);

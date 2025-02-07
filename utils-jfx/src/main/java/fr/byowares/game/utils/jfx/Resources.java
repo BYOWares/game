@@ -33,11 +33,8 @@ public final class Resources {
 
     /** Barecast font. */
     public static final String FONT_BARECAST = getFont("Barecast-Regular.otf");
-
-    /** The CSS for the Dark theme. */
-    public static final String CSS_DARK_THEME = getCSS("primer-dark");
-    /** The CSS for the Light theme. */
-    public static final String CSS_LIGHT_THEME = getCSS("primer-light");
+    /** Jet Brains Mono - Medium font. */
+    public static final String FONT_JETBRAINS_MEDIUM = getFont("JetBrainsMono-Medium.ttf");
 
     private Resources() {
         // Utility class
@@ -50,10 +47,6 @@ public final class Resources {
 
     private static String getFont(final String fileName) {
         return get("font", fileName);
-    }
-
-    private static String getCSS(final String fileName) {
-        return get("css", fileName + ".css");
     }
 
     private static String get(
