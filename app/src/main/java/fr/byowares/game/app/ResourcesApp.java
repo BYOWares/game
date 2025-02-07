@@ -58,10 +58,6 @@ public final class ResourcesApp {
         return new Image(get("icon", fileName + ".png"));
     }
 
-    private static String getCSS(final String fileName) {
-        return get("css", fileName + ".css");
-    }
-
     private static String get(
             final String dir,
             final String filename

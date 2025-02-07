@@ -16,6 +16,7 @@
 package fr.byowares.game.utils.jfx.theme;
 
 import atlantafx.base.theme.Theme;
+import fr.byowares.game.utils.jfx.Resources;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -34,13 +35,14 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * A manager to help refresh when Theme is updated.
+ * A manager to help refresh when Theme is updated. Handle default font as well.
  *
  * @since XXX
  */
 public class ThemeManager {
 
     private static final ThemeManager INSTANCE = new ThemeManager();
+
     private static final PseudoClass DARK = PseudoClass.getPseudoClass("dark");
     private static final Duration DURATION = Duration.millis(750.0);
     private static final Interpolator EASE = Interpolator.SPLINE(0.25, 0.1, 0.25, 1.0);
@@ -69,7 +71,7 @@ public class ThemeManager {
         Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
 
         for (final Scene scene : INSTANCE.scenes)
-            updateThemeForScene(scene, theme, INSTANCE.currentTheme);
+            updateThemeForScene(scene, theme);
 
         for (final Node node : INSTANCE.nodes)
             node.pseudoClassStateChanged(DARK, theme.isDarkMode());
@@ -84,13 +86,14 @@ public class ThemeManager {
     }
 
     /**
-     * Subscribe the {@code scene} from Theme update.
+     * Subscribe the {@code scene} from Theme update. Set the default font for this scene as well.
      *
      * @param scene The scene that needs to be updated when the theme is modified.
      */
     public static synchronized void subscribe(final Scene scene) {
+        scene.getStylesheets().add(Resources.CSS_DEFAULT_FONT);
         INSTANCE.scenes.add(scene);
-        updateThemeForScene(scene, INSTANCE.currentTheme, null);
+        updateThemeForScene(scene, INSTANCE.currentTheme);
     }
 
     /**
@@ -123,12 +126,9 @@ public class ThemeManager {
 
     private static void updateThemeForScene(
             final Scene scene,
-            final Theme newTheme,
-            final Theme oldTheme
+            final Theme newTheme
     ) {
         if (newTheme == null) return;
-        if (oldTheme != null) scene.getStylesheets().removeAll(oldTheme.getUserAgentStylesheet());
-        scene.getStylesheets().setAll(newTheme.getUserAgentStylesheet());
         scene.getRoot().pseudoClassStateChanged(DARK, newTheme.isDarkMode());
     }
 

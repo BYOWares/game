@@ -70,6 +70,7 @@ public class App
 
     private static void loadFonts() {
         loadFont(Resources.FONT_BARECAST);
+        loadFont(Resources.FONT_JETBRAINS_LIGHT);
         loadFont(Resources.FONT_JETBRAINS_MEDIUM);
     }
 

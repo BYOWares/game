@@ -21,6 +21,6 @@
 
 <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Button fx:id="button" alignment="CENTER" mnemonicParsing="false" onAction="#onAction" style="-fx-font-family: monospace; -fx-font-size: 2em; -fx-font-weight: bolder;" styleClass="flat" text="Dummy text" />
+        <Button fx:id="button" alignment="CENTER" mnemonicParsing="false" onAction="#onAction" style="-fx-font-family: JetBrains Mono Medium; -fx-font-size: 3em;" styleClass="flat" text="Dummy text" />
     </children>
 </HBox>

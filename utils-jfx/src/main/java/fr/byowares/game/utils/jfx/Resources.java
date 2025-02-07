@@ -31,8 +31,13 @@ public final class Resources {
     /** The Flag for the English language. */
     public static final Image FLAG_UK = getFlag("united_kingdom");
 
+    /** The default font for the application. */
+    public static final String CSS_DEFAULT_FONT = get("css", "default-font.css");
+
     /** Barecast font. */
     public static final String FONT_BARECAST = getFont("Barecast-Regular.otf");
+    /** Jet Brains Mono - Light font. */
+    public static final String FONT_JETBRAINS_LIGHT = getFont("JetBrainsMono-Light.ttf");
     /** Jet Brains Mono - Medium font. */
     public static final String FONT_JETBRAINS_MEDIUM = getFont("JetBrainsMono-Medium.ttf");
 

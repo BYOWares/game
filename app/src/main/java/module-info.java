@@ -28,6 +28,9 @@ module fr.byowares.game.app {
     requires javafx.fxml;
     requires org.agrona.core;
     requires org.slf4j;
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.feather;
+    requires org.kordamp.ikonli.core;
 
     exports fr.byowares.game.app;
     exports fr.byowares.game.app.fxml;

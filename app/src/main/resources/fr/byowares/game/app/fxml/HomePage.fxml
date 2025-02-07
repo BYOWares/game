@@ -35,10 +35,10 @@
                 <ToggleButton fx:id="darkTheme" mnemonicParsing="false" />
                 <ToggleButton fx:id="lightTheme" layoutX="354.0" layoutY="19.0" mnemonicParsing="false" />
                 <HBox layoutX="422.0" layoutY="10.0" prefHeight="53.0" prefWidth="30.0" />
-                <Button fx:id="about" mnemonicParsing="false" onAction="#openAboutDialog" prefHeight="48.0" prefWidth="48.0" stylesheets="@../css/About.css">
+                <Button fx:id="about" mnemonicParsing="false" onAction="#openAboutDialog" prefHeight="48.0" prefWidth="48.0">
                <styleClass>
-                  <String fx:value="about-button" />
                   <String fx:value="button-circle" />
+                  <String fx:value="flat" />
                </styleClass></Button>
             </children>
             <opaqueInsets>
@@ -55,8 +55,11 @@
     <bottom>
         <HBox alignment="CENTER" BorderPane.alignment="CENTER">
             <children>
-                <Label fx:id="build" alignment="CENTER" style="-fx-font-family: BareCast; -fx-font-size: 12px;" text="Dummy text to ease selection" />
+                <Label fx:id="build" alignment="CENTER" text="Dummy text to ease selection" />
             </children>
+         <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </padding>
         </HBox>
     </bottom>
 </BorderPane>

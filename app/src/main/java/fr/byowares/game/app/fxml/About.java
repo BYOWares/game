@@ -121,6 +121,7 @@ public class About
     public static void open(final Stage stage) {
         final Pair<About, BorderPane> about = FXMLLoader.load(new About(), About.class, "About");
         final Scene scene = new Scene(about.root());
+        ThemeManager.subscribe(scene);
         final Stage newStage = new Stage();
         I18NApp.get().bind(newStage.titleProperty(), "homepage.about");
         newStage.setScene(scene);
@@ -151,7 +152,9 @@ public class About
     @FXML
     public void close(final ActionEvent event) {
         this.onHide();
-        ((Stage) this.close.getScene().getWindow()).close();
+        final Scene scene = this.close.getScene();
+        ((Stage) scene.getWindow()).close();
+        ThemeManager.unsubscribe(scene);
     }
 
     /**

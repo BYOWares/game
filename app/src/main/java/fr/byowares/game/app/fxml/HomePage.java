@@ -23,6 +23,7 @@ import fr.byowares.game.app.ResourcesApp;
 import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
 import fr.byowares.game.miq.jfx.fxml.GameAccessMIQ;
+import fr.byowares.game.utils.jfx.FontIconSizeEnforcer;
 import fr.byowares.game.utils.jfx.Pair;
 import fr.byowares.game.utils.jfx.SceneUniqueActor;
 import fr.byowares.game.utils.jfx.fxml.FXMLLoader;
@@ -41,6 +42,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.feather.Feather;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +58,8 @@ import java.util.Random;
 public class HomePage
         extends SceneUniqueActor {
 
+    public static final int SIZE_IN_PX = 52;
     private static final Logger log = LoggerFactory.getLogger(HomePage.class);
-
     @FXML private ToggleButton darkTheme;
     @FXML private ToggleButton lightTheme;
     @FXML private ComboBox<Lang> language;
@@ -126,6 +129,9 @@ public class HomePage
         });
 
         this.about.setTooltip(new Tooltip());
+        final FontIcon fontIcon = new FontIcon(Feather.INFO);
+        fontIcon.getStyleClass().add(FontIconSizeEnforcer.enforceIconSizeCSS(this.about, "about-icon", SIZE_IN_PX));
+        this.about.setGraphic(fontIcon);
         I18NApp.get().bind(this.about.getTooltip().textProperty(), "homepage.about");
 
         this.build.setText("Version: " + AppInfo.VERSION + "   Build: " + AppInfo.REVISION);
