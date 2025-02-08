@@ -18,11 +18,15 @@
  * @since XXX
  */
 module fr.byowares.game.miq.jfx {
+    requires atlantafx.base;
     requires fr.byowares.game.miq.core;
     requires fr.byowares.game.utils.jfx;
-    requires javafx.controls;
-    requires javafx.fxml;
     requires fr.byowares.game.utils;
+    requires javafx.fxml;
+    requires org.kordamp.ikonli.bootstrapicons;
+    requires org.kordamp.ikonli.core;
+    requires org.kordamp.ikonli.feather;
+    requires org.kordamp.ikonli.javafx;
 
     exports fr.byowares.game.miq.jfx;
     exports fr.byowares.game.miq.jfx.fxml;

@@ -1,0 +1,256 @@
+/*
+ * Copyright BYOWares
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package fr.byowares.game.miq.jfx.fxml;
+
+import atlantafx.base.theme.Styles;
+import atlantafx.base.theme.Tweaks;
+import fr.byowares.game.miq.core.model.lyrics.Lyrics;
+import fr.byowares.game.miq.core.model.song.Album;
+import fr.byowares.game.miq.core.model.song.Libraries;
+import fr.byowares.game.miq.core.model.song.Library;
+import fr.byowares.game.miq.core.model.song.Song;
+import fr.byowares.game.miq.jfx.editor.tree.ItemAlbum;
+import fr.byowares.game.miq.jfx.editor.tree.ItemLibraries;
+import fr.byowares.game.miq.jfx.editor.tree.ItemLibrary;
+import fr.byowares.game.miq.jfx.editor.tree.ItemLyrics;
+import fr.byowares.game.miq.jfx.editor.tree.ItemSong;
+import fr.byowares.game.miq.jfx.editor.tree.MIQItem;
+import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
+import fr.byowares.game.utils.jfx.FontIconSizeEnforcer;
+import fr.byowares.game.utils.jfx.SceneUniqueActor;
+import fr.byowares.game.utils.jfx.fxml.FXMLLoader;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.MultipleSelectionModel;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.text.Text;
+import javafx.stage.Screen;
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
+import org.kordamp.ikonli.feather.Feather;
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * The {@link fr.byowares.game.utils.jfx.SceneUniqueActor} controlling the global edit page.
+ *
+ * @since XXX
+ */
+public class EditView
+        extends SceneUniqueActor {
+
+    private static final double TREE_HEIGHT = // Needed to make the TreeView take the left space in BorderPane.
+            Screen.getScreens().stream().map(s -> s.getBounds().getHeight()).max(Double::compareTo).orElse(1080.0);
+
+    @FXML private Button bAdd;
+    @FXML private Button bBack;
+    @FXML private Button bCollapseAll;
+    @FXML private Button bDelete;
+    @FXML private Button bEdit;
+    @FXML private Button bExpandAll;
+    @FXML private Button bSelectCurrent;
+    @FXML private TabPane tabs;
+    @FXML private Text title;
+    @FXML private TreeView<MIQItem> tree;
+
+    /**
+     * @param previousActor The previous {@link fr.byowares.game.utils.jfx.SceneUniqueActor} (from which this one is
+     *                      invoked).
+     */
+    public EditView(final SceneUniqueActor previousActor) {
+        super(previousActor);
+    }
+
+    private static TreeItem<MIQItem> convert(final Libraries libraries) {
+        final var itemLibraries = new ItemLibraries(libraries).toTreeItem();
+
+        for (final Library library : libraries.getLibraries()) {
+            final var itemLibrary = new ItemLibrary(library).toTreeItem();
+            itemLibraries.getChildren().add(itemLibrary);
+
+            for (final Album album : library.getAlbums()) {
+                final var itemAlbum = new ItemAlbum(album).toTreeItem();
+                itemLibrary.getChildren().add(itemAlbum);
+
+                for (final Song song : album.getSongs()) {
+                    final var itemSong = new ItemSong(song).toTreeItem();
+                    itemAlbum.getChildren().add(itemSong);
+
+                    for (final Lyrics lyrics : song.getLyrics()) {
+                        final var itemLyrics = new ItemLyrics(lyrics).toTreeItem();
+                        itemSong.getChildren().add(itemLyrics);
+                    }
+                }
+            }
+        }
+        return itemLibraries;
+    }
+
+    public static EditView load(final EditView editView) {
+        return FXMLLoader.loadActor(editView, EditView.class, "EditView");
+    }
+
+    private static void expand(final TreeItem<MIQItem> item) {
+        item.setExpanded(true);
+        item.getChildren().forEach(EditView::expand);
+    }
+
+    private static void collapse(
+            final Set<TreeItem<MIQItem>> childrenOfSelected,
+            final TreeItem<MIQItem> item
+    ) {
+        childrenOfSelected.add(item);
+        item.setExpanded(false);
+        item.getChildren().forEach(child -> collapse(childrenOfSelected, child));
+    }
+
+    private static void setButtonIcon(
+            final Button button,
+            final Ikon icon,
+            final String i18nKey,
+            final String... cssClasses
+    ) {
+        button.getStyleClass().add(Styles.BUTTON_CIRCLE);
+        button.setText(null);
+        button.setGraphic(new FontIcon(icon));
+        button.setTooltip(new Tooltip());
+        I18NMIQ.get().bind(button.getTooltip().textProperty(), i18nKey);
+        button.getStyleClass().addAll(cssClasses);
+    }
+
+    private MultipleSelectionModel<TreeItem<MIQItem>> getTreeSelectionModel() {
+        return this.tree.getSelectionModel();
+    }
+
+    private ObservableList<TreeItem<MIQItem>> getTreeSelectedItems() {
+        return this.getTreeSelectionModel().getSelectedItems();
+    }
+
+    /** FXML handle for initialization. */
+    @FXML
+    public void initialize() {
+        // TODO make it in another thread
+        final Libraries libraries = Libraries.from(Path.of(System.getProperty("user.home"), "Desktop", "MIQ"));
+        this.tree.setRoot(convert(libraries));
+        this.tree.setPrefHeight(TREE_HEIGHT);
+        this.tree.getStyleClass().add(Tweaks.ALT_ICON);
+        final var treeSelectionModel = this.getTreeSelectionModel();
+        treeSelectionModel.getSelectedItems().addListener(new TreeSelectionListener());
+        treeSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);
+        treeSelectionModel.select(this.tree.getRoot());
+
+        setButtonIcon(this.bEdit, BootstrapIcons.PENCIL_SQUARE, "edit_view.edit", Styles.ACCENT);
+        setButtonIcon(this.bAdd, BootstrapIcons.FILE_EARMARK_PLUS, "edit_view.add", Styles.SUCCESS);
+        setButtonIcon(this.bDelete, BootstrapIcons.FILE_EARMARK_X, "edit_view.delete", Styles.DANGER);
+        setButtonIcon(this.bCollapseAll, BootstrapIcons.CHEVRON_CONTRACT, "edit_view.collapse");
+        setButtonIcon(this.bExpandAll, BootstrapIcons.CHEVRON_EXPAND, "edit_view.expand");
+        setButtonIcon(this.bSelectCurrent, Feather.CROSSHAIR, "edit_view.select");
+        setButtonIcon(this.bBack, BootstrapIcons.ARROW_LEFT_CIRCLE_FILL, "edit_view.back");
+        final var css = FontIconSizeEnforcer.enforceIconSizeCSS(this.bBack, "force-size", 36);
+        this.bBack.getGraphic().getStyleClass().add(css);
+    }
+
+    /** Back to previous menu. */
+    @FXML
+    void onBack() {
+        this.giveBackControlOfScene();
+    }
+
+    @FXML
+    void onEdit(final ActionEvent event) {
+
+    }
+
+    @FXML
+    void onAdd(final ActionEvent event) {
+
+    }
+
+    @FXML
+    void onDelete(final ActionEvent event) {
+
+    }
+
+    @FXML
+    void onSelectCurrent(final ActionEvent event) {
+
+    }
+
+    /** Expand all children nodes of selected ones. */
+    @FXML
+    void onExpandAll() {
+        final ObservableList<TreeItem<MIQItem>> selectedItems = this.getTreeSelectedItems();
+        if (selectedItems.isEmpty()) return;
+        selectedItems.forEach(EditView::expand);
+    }
+
+    /** Collapse all nodes up to the selected ones. Hidden items are removed from selected items. */
+    @FXML
+    void onCollapseAll() {
+        final ObservableList<TreeItem<MIQItem>> selectedItems = this.getTreeSelectedItems();
+        if (selectedItems.isEmpty()) return;
+
+        final List<TreeItem<MIQItem>> selected = new ArrayList<>(selectedItems);
+        // List of sub nodes visited while collapsing selected ones (shall not be selected after the action).
+        final Set<TreeItem<MIQItem>> childrenOfSelected = new HashSet<>();
+        for (final TreeItem<MIQItem> selectedItem : selected) {
+            if (childrenOfSelected.contains(selectedItem)) continue;
+            selectedItem.setExpanded(false);
+            selectedItem.getChildren().forEach(item -> collapse(childrenOfSelected, item));
+        }
+        selected.removeAll(childrenOfSelected);
+        selected.forEach(this.getTreeSelectionModel()::select);
+    }
+
+    @Override
+    public void onDisplay() {
+        // Nothing to do
+    }
+
+    @Override
+    public void onHide() {
+        // Nothing to do
+    }
+
+    /**
+     * Update the enable/disable buttons related tot the tree.
+     */
+    private class TreeSelectionListener
+            implements ListChangeListener<TreeItem<MIQItem>> {
+
+        @Override
+        public void onChanged(final Change<? extends TreeItem<MIQItem>> c) {
+            final var items = EditView.this.getTreeSelectedItems();
+            final boolean canEdit = items.stream().anyMatch(item -> item.getValue().canBeEdited());
+            final boolean canDelete = items.stream().anyMatch(item -> item.getValue().canBeDeleted());
+            EditView.this.bAdd.setDisable(items.size() != 1 || !items.getFirst().getValue().canHaveChildren());
+            EditView.this.bDelete.setDisable(!canDelete);
+            EditView.this.bEdit.setDisable(!canEdit);
+        }
+    }
+}

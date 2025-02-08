@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-plugins {
-    id("byogame.java-library")
-    id("byogame.java-fx")
-}
-
-dependencies {
-    implementation(project(":utils"))
-
-    implementation(libs.agrona)
-    implementation(libs.bundles.atlantafx)
-    implementation(libs.bundles.ikonli)
-    implementation(libs.bundles.log4jImpl)
-    implementation(libs.bundles.yamlImpl)
-    runtimeOnly(libs.bundles.log4jRun)
-
-    testImplementation(libs.bundles.junitImpl)
-    testRuntimeOnly(libs.bundles.junitRun)
-}
+/**
+ * Elements used to control the {@link javafx.scene.control.TreeView} of the MIQ Editor.
+ *
+ * @since XXX
+ */
+package fr.byowares.game.miq.jfx.editor.tree;

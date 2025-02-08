@@ -149,6 +149,27 @@ public class Libraries
         }
     }
 
+    /**
+     * @return The list of {@link fr.byowares.game.miq.core.model.song.Library} found in this collection.
+     */
+    public List<Library> getLibraries() {
+        return this.libraries;
+    }
+
+    /**
+     * @return The root path used to discover all elements.
+     */
+    public Path getRoot() {
+        return this.root;
+    }
+
+    /**
+     * @return The {@link fr.byowares.game.miq.core.model.song.Library} used for Albums & Songs without Library.
+     */
+    public Library getUndefined() {
+        return this.undefined;
+    }
+
     @Override
     public String toString() {
         return "{Libraries=" + this.libraries + ", root=" + this.root + '}';

@@ -26,6 +26,7 @@ dependencies {
     implementation(project(":miq-core"))
 
     implementation(libs.bundles.atlantafx)
+    implementation(libs.bundles.ikonli)
     implementation(libs.bundles.log4jImpl)
     implementation(libs.bundles.yamlImpl)
     runtimeOnly(libs.bundles.log4jRun)

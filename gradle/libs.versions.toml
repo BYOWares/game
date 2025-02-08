@@ -39,6 +39,7 @@ disruptor = { group = "com.lmax", name = "disruptor", version.ref = "disruptor" 
 
 guardian = { group = "org.apiguardian", name = "apiguardian-api", version.ref = "guardian" }
 
+ikonli-bootstrap = { group = "org.kordamp.ikonli", name = "ikonli-bootstrapicons-pack", version.ref = "ikonli" }
 ikonli-core = { group = "org.kordamp.ikonli", name = "ikonli-core", version.ref = "ikonli" }
 ikonli-feather = { group = "org.kordamp.ikonli", name = "ikonli-feather-pack", version.ref = "ikonli" }
 ikonli-javafx = { group = "org.kordamp.ikonli", name = "ikonli-javafx", version.ref = "ikonli" }
@@ -72,7 +73,8 @@ slf4J-log = { group = "org.slf4j", name = "log4j-over-slf4j", version.ref = "slf
 snakeYaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snake" }
 
 [bundles]
-atlantafx = ["atlantafx-base", "ikonli-core", "ikonli-javafx", "ikonli-feather", "ikonli-material2"]
+atlantafx = ["atlantafx-base"]
+ikonli = ["ikonli-bootstrap", "ikonli-core", "ikonli-javafx", "ikonli-feather", "ikonli-material2"]
 
 junitImpl = ["junit", "junit-api", "junit-params", "guardian"]
 junitRun = ["junit-engine", "opentest4J", "junitP-launcher", "junitP-commons", "junitP-engine"]

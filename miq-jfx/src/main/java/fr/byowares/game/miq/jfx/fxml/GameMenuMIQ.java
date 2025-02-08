@@ -59,6 +59,9 @@ public class GameMenuMIQ
     public void initialize() {
         super.initialize();
         this.addMenuButton(I18NUtils.get(), "menu.play", () -> {});
+        this.addMenuButton(I18NUtils.get(), "menu.configure", () -> {
+            EditView.load(new EditView(this)).takeControlOfScene();
+        });
         this.addMenuButton(I18NUtils.get(), "menu.options", () -> {});
     }
 }
