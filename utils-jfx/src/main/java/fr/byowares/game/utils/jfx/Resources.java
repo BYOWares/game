@@ -40,6 +40,8 @@ public final class Resources {
     public static final String FONT_JETBRAINS_LIGHT = getFont("JetBrainsMono-Light.ttf");
     /** Jet Brains Mono - Medium font. */
     public static final String FONT_JETBRAINS_MEDIUM = getFont("JetBrainsMono-Medium.ttf");
+    /** Jet Brains Mono - Regular font. */
+    public static final String FONT_JETBRAINS_REGULAR = getFont("JetBrainsMono-Regular.ttf");
 
     private Resources() {
         // Utility class
