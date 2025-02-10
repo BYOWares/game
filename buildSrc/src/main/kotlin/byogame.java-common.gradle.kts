@@ -15,6 +15,7 @@
  */
 
 import extension.BYOWaresExtension
+import org.gradle.internal.extensions.stdlib.uncheckedCast
 import task.CopyLog4JFileTask
 import task.GenerateJavaInfoFileTask
 import task.GeneratePackageInfoFileTask
@@ -86,3 +87,6 @@ tasks.named(JavaPlugin.COMPILE_JAVA_TASK_NAME) { dependsOn(genJavaInfoFile) }
 tasks.named(genJavaInfoFile) { dependsOn(genPkgInfoFile) }
 tasks.named(genJavaInfoFile) { dependsOn(rootProject.tasks.named(SanitizeVersionsFileTask.SANITIZE_VERSIONS_FILE_TASK_NAME)) }
 tasks.named(JavaPlugin.PROCESS_TEST_RESOURCES_TASK_NAME) { dependsOn(copyLog4J2Conf4Test) }
+
+tasks.findByName(JavaPlugin.COMPILE_JAVA_TASK_NAME)
+    ?.uncheckedCast<JavaCompile>()?.options?.compilerArgs?.add("-Xlint:unchecked")
