@@ -37,6 +37,11 @@ public class ItemLyrics
     }
 
     @Override
+    public boolean canHaveChildren() {
+        return false;
+    }
+
+    @Override
     public TreeItem<MIQItem> toTreeItem() {
         return new TreeItem<>(this, FONT_ICON);
     }

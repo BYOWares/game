@@ -34,6 +34,12 @@ public interface Source {
     InputStream load()
             throws IOException;
 
+
+    /**
+     * @return The parent of this source.
+     */
+    Source getParent();
+
     /**
      * @param childName The name of the child element.
      *

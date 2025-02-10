@@ -59,6 +59,11 @@ public record SourcePath(Path path)
     }
 
     @Override
+    public Source getParent() {
+        return new SourcePath(this.path.getParent());
+    }
+
+    @Override
     public Source resolve(final String childName) {
         return new SourcePath(this.path.resolve(childName));
     }

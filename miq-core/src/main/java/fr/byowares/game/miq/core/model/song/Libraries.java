@@ -46,10 +46,10 @@ import java.util.stream.Stream;
 public class Libraries
         extends NamedSourcedObject<Libraries> {
 
+    /** The file name storing object data. */
+    public static final String MIQ_FILE_NAME = "miq.yml";
+
     private static final Logger log = LoggerFactory.getLogger(Libraries.class);
-
-    private static final String MIQ_FILE_NAME = "miq.yml";
-
     private final Path root;
     private final Library undefined;
     private final List<Library> libraries;

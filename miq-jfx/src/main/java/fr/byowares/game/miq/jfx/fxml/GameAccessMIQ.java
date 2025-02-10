@@ -34,8 +34,8 @@ import java.util.function.Consumer;
 public class GameAccessMIQ
         extends GameAccess {
 
-    private static final Consumer<StringProperty> TITLE = I18NMIQ.binder(I18NMIQ.get(), "full_name");
-    private static final Consumer<StringProperty> DESC = I18NMIQ.binder(I18NMIQ.get(), "description");
+    private static final Consumer<StringProperty> TITLE = I18NMIQ.binder(I18NMIQ.get(), "root.full_name");
+    private static final Consumer<StringProperty> DESC = I18NMIQ.binder(I18NMIQ.get(), "root.description");
 
     private GameAccessMIQ(final SceneUniqueActor sceneUniqueActor) {
         super(sceneUniqueActor, TITLE, DESC, ResourcesMIQ.GA_MIQ_CSS);

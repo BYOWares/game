@@ -16,7 +16,12 @@
 package fr.byowares.game.miq.jfx.editor.tree;
 
 import fr.byowares.game.miq.core.model.song.Libraries;
+import fr.byowares.game.miq.core.model.song.Library;
+import fr.byowares.game.miq.jfx.fxml.wizard.WizardItem;
+import fr.byowares.game.miq.jfx.fxml.wizard.WizardLibrary;
+import fr.byowares.game.utils.serial.source.Source;
 import javafx.scene.control.TreeItem;
+import javafx.stage.Stage;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -35,6 +40,16 @@ public class ItemLibraries
      */
     public ItemLibraries(final Libraries libraries) {
         super(libraries);
+    }
+
+    @Override
+    public MIQItem createChild(
+            final Source parentSource,
+            final Stage stage
+    ) {
+        final Library library = WizardItem.open(new WizardLibrary(parentSource), stage);
+        if (library == null) return null;
+        return new ItemLibrary(library);
     }
 
     @Override

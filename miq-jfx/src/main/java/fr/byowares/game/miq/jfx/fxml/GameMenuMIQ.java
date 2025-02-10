@@ -34,7 +34,7 @@ import java.util.function.Consumer;
 public class GameMenuMIQ
         extends GameMenu {
 
-    private static final Consumer<StringProperty> TITLE_BINDER = I18NMIQ.binder(I18NMIQ.get(), "full_name");
+    private static final Consumer<StringProperty> TITLE_BINDER = I18NMIQ.binder(I18NMIQ.get(), "root.full_name");
 
     private GameMenuMIQ(final SceneUniqueActor sceneUniqueActor) {
         super(sceneUniqueActor, TITLE_BINDER, ResourcesMIQ.GA_MIQ_CSS);

@@ -16,6 +16,7 @@
 package fr.byowares.game.miq.jfx.editor.tree;
 
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
+import fr.byowares.game.utils.serial.source.Source;
 import fr.byowares.game.utils.serial.source.SourceInMemory;
 
 import java.util.Objects;
@@ -51,7 +52,12 @@ public abstract class ItemNamed<N extends NamedSourcedObject<N>>
     }
 
     @Override
+    public Source getSource() {
+        return this.namedSourcedObject.getSource();
+    }
+
+    @Override
     public String toString() {
-        return this.getName();
+        return "Item{" + this.namedSourcedObject + "}";
     }
 }

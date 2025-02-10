@@ -44,6 +44,11 @@ public class SourceInMemory
     }
 
     @Override
+    public Source getParent() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Source resolve(final String childName) {
         throw new UnsupportedOperationException();
     }

@@ -15,11 +15,13 @@
  */
 package fr.byowares.game.miq.jfx.editor.tree;
 
+import fr.byowares.game.utils.serial.source.Source;
 import javafx.scene.control.TreeItem;
+import javafx.stage.Stage;
 
 /**
  * Interface for all objects contained in a {@link javafx.scene.control.TreeView} (the value in the
- * {@link javafx.scene.control.TreeItem}.
+ * {@link javafx.scene.control.TreeItem}).
  *
  * @since XXX
  */
@@ -30,6 +32,13 @@ public interface MIQItem {
      */
     default boolean canHaveChildren() {
         return true;
+    }
+
+    default MIQItem createChild(
+            final Source parentSource,
+            final Stage stage
+    ) {
+        return null;
     }
 
     /**
@@ -53,4 +62,9 @@ public interface MIQItem {
      * @return A {@link javafx.scene.control.TreeItem} containing this object.
      */
     TreeItem<MIQItem> toTreeItem();
+
+    /**
+     * @return The {@link fr.byowares.game.utils.serial.source.Source} of the underlying object.
+     */
+    Source getSource();
 }

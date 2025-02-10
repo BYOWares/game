@@ -23,8 +23,11 @@
             <Button fx:id="close" mnemonicParsing="false" onAction="#close" text="Dummy Close" />
          </children>
          <BorderPane.margin>
-            <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+            <Insets />
          </BorderPane.margin>
+         <padding>
+            <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+         </padding>
       </HBox>
    </bottom>
    <center>

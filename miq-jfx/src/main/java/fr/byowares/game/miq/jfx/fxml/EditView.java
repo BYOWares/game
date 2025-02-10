@@ -111,6 +111,11 @@ public class EditView
         return itemLibraries;
     }
 
+    /**
+     * @param editView Load the {@link fr.byowares.game.utils.jfx.SceneUniqueActor} in charge of editing the libraries.
+     *
+     * @return {@code editView}
+     */
     public static EditView load(final EditView editView) {
         return FXMLLoader.loadActor(editView, EditView.class, "EditView");
     }
@@ -181,24 +186,41 @@ public class EditView
         this.giveBackControlOfScene();
     }
 
+    /** Open editor for selected items. */
     @FXML
     void onEdit(final ActionEvent event) {
-
+        // TODO
     }
 
+    /** Create a child item of the selected one. */
     @FXML
     void onAdd(final ActionEvent event) {
+        final var items = this.getTreeSelectedItems();
+        if (items.size() != 1) {
+            throw new IllegalStateException("More than one element selected: " + items);
+        }
+        final var item = items.getFirst();
+        final MIQItem miqItem = item.getValue();
+        if (!miqItem.canHaveChildren()) {
+            throw new IllegalStateException("Current element cannot have children: " + miqItem);
+        }
 
+        final MIQItem child = miqItem.createChild(miqItem.getSource(), this.getStage());
+        if (child == null) return;
+
+        final TreeItem<MIQItem> treeItem = child.toTreeItem();
     }
 
+    /** Delete selected items. */
     @FXML
     void onDelete(final ActionEvent event) {
-
+        // TODO
     }
 
+    /** Select the currently opened item. */
     @FXML
     void onSelectCurrent(final ActionEvent event) {
-
+        // TODO
     }
 
     /** Expand all children nodes of selected ones. */
@@ -248,7 +270,7 @@ public class EditView
             final var items = EditView.this.getTreeSelectedItems();
             final boolean canEdit = items.stream().anyMatch(item -> item.getValue().canBeEdited());
             final boolean canDelete = items.stream().anyMatch(item -> item.getValue().canBeDeleted());
-            EditView.this.bAdd.setDisable(items.size() != 1 || !items.getFirst().getValue().canHaveChildren());
+            EditView.this.bAdd.setDisable(!(items.size() == 1 && items.getFirst().getValue().canHaveChildren()));
             EditView.this.bDelete.setDisable(!canDelete);
             EditView.this.bEdit.setDisable(!canEdit);
         }

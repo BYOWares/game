@@ -105,4 +105,17 @@ public abstract class I18NResourceBundle {
     ) {
         bind(prop, () -> this.get(key, args));
     }
+
+    /**
+     * @param key  The key to look for in this {@link java.util.ResourceBundle}.
+     * @param args The arguments used to build the text.
+     *
+     * @return The Callable that will be updated automatically on locale update.
+     */
+    public final Callable<String> buildCallable(
+            final String key,
+            final Object... args
+    ) {
+        return () -> this.get(key, args);
+    }
 }

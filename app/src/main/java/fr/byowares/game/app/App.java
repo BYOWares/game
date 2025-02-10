@@ -85,8 +85,7 @@ public class App
     }
 
     @Override
-    public void start(final Stage stage)
-            throws Exception {
+    public void start(final Stage stage) {
         log.info("Starting {}", AppInfo.TO_STRING);
         addIcons(stage);
         loadFonts();
