@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * @since XXX
  */
 public class Libraries
-        extends NamedSourcedObject<Libraries> {
+        extends NamedSourcedObject {
 
     /** The file name storing object data. */
     public static final String MIQ_FILE_NAME = "miq.yml";
@@ -176,7 +176,7 @@ public class Libraries
     }
 
     @Override
-    public Libraries copyInMemory() {
+    public Libraries buildCopy(final CharSequence name) {
         throw new UnsupportedOperationException("This method makes no sense on this object");
     }
 }

@@ -15,9 +15,10 @@
  */
 package fr.byowares.game.miq.jfx.editor.tree;
 
-import fr.byowares.game.utils.serial.source.Source;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * Interface for all objects contained in a {@link javafx.scene.control.TreeView} (the value in the
@@ -34,12 +35,22 @@ public interface MIQItem {
         return true;
     }
 
-    default MIQItem createChild(
-            final Source parentSource,
-            final Stage stage
-    ) {
+    /**
+     * @param stage The stage in which the createChild action takes place.
+     *
+     * @return The child item created, {@code null} if it could not be created.
+     */
+    default MIQItem createChild(final Stage stage) {
         return null;
     }
+
+    /**
+     * Persist this object.
+     *
+     * @throws IOException If this object could not be persisted.
+     */
+    void persist()
+            throws IOException;
 
     /**
      * @return {@code true} whether this item can be edited, {@code false} otherwise.
@@ -64,7 +75,7 @@ public interface MIQItem {
     TreeItem<MIQItem> toTreeItem();
 
     /**
-     * @return The {@link fr.byowares.game.utils.serial.source.Source} of the underlying object.
+     * @return {@code true} If this element have a default child, {@code false} otherwise.
      */
-    Source getSource();
+    boolean hasDefaultChild();
 }

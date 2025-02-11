@@ -20,11 +20,9 @@ import java.util.Objects;
 /**
  * A generic object associated with a source. The source can be updated.
  *
- * @param <N> Itself.
- *
  * @since XXX
  */
-public abstract class NamedSourcedObject<N extends NamedSourcedObject<N>> {
+public abstract class NamedSourcedObject {
 
     private Source source;
     private CharSequence name;
@@ -53,6 +51,17 @@ public abstract class NamedSourcedObject<N extends NamedSourcedObject<N>> {
      */
     public NamedSourcedObject(final CharSequence name) {
         this(name, SourceInMemory.INSTANCE);
+    }
+
+    public static <N extends NamedSourcedObject> N copy(final N object) {
+        final NamedSourcedObject copy = object.buildCopy(object.getName());
+        if (Objects.equals(object.getClass(), copy.getClass())) {
+            @SuppressWarnings("unchecked") final N n = (N) copy;
+            n.setSource(object.getSource());
+            n.setComment(object.getComment());
+            return n;
+        }
+        throw new IllegalArgumentException("Unable to copy object: " + object + " (bad copy: " + copy + ")");
     }
 
     /**
@@ -100,7 +109,9 @@ public abstract class NamedSourcedObject<N extends NamedSourcedObject<N>> {
     }
 
     /**
+     * @param name The not nullable name of this object.
+     *
      * @return A copy of this object whose source is {@link fr.byowares.game.utils.serial.source.SourceInMemory}.
      */
-    public abstract N copyInMemory();
+    protected abstract NamedSourcedObject buildCopy(final CharSequence name);
 }

@@ -48,7 +48,7 @@ import java.util.function.Consumer;
  *
  * @since XXX
  */
-public abstract class FormField<N extends NamedSourcedObject<N>, T, FFT> {
+public abstract class FormField<N extends NamedSourcedObject, T, FFT> {
 
     /** Very unlikely init value for field. This help trigger validation upon init. */
     protected static final String IMPROBABLE_INIT_VALUE = "PLEASE, INITIALIZE ME WITH A DIFFERENT VALUE";

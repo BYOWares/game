@@ -87,28 +87,72 @@ public class EditView
     }
 
     private static TreeItem<MIQItem> convert(final Libraries libraries) {
-        final var itemLibraries = new ItemLibraries(libraries).toTreeItem();
+        final Library uLib = libraries.getUndefined();
+        final var itemLibs = new ItemLibraries(libraries).toTreeItem();
+        final var itemULib = addLibrary(itemLibs, uLib);
 
         for (final Library library : libraries.getLibraries()) {
-            final var itemLibrary = new ItemLibrary(library).toTreeItem();
-            itemLibraries.getChildren().add(itemLibrary);
+            final Album uAlb = library.getUndefined();
+            final var itemLib = (library == uLib) ? itemULib : addLibrary(itemLibs, library);
+            final var itemUAlb = addAlbum(itemLib, uAlb);
 
             for (final Album album : library.getAlbums()) {
-                final var itemAlbum = new ItemAlbum(album).toTreeItem();
-                itemLibrary.getChildren().add(itemAlbum);
+                final var itemAlb = (album == uAlb) ? itemUAlb : addAlbum(itemLib, album);
 
                 for (final Song song : album.getSongs()) {
-                    final var itemSong = new ItemSong(song).toTreeItem();
-                    itemAlbum.getChildren().add(itemSong);
-
+                    final var itemSong = addSong(itemAlb, song);
                     for (final Lyrics lyrics : song.getLyrics()) {
-                        final var itemLyrics = new ItemLyrics(lyrics).toTreeItem();
-                        itemSong.getChildren().add(itemLyrics);
+                        addLyrics(itemSong, lyrics);
                     }
                 }
             }
         }
-        return itemLibraries;
+        return itemLibs;
+    }
+
+    private static TreeItem<MIQItem> addLibrary(
+            final TreeItem<MIQItem> parent,
+            final Library library
+    ) {
+        return addItem(parent, new ItemLibrary(library));
+    }
+
+    private static TreeItem<MIQItem> addAlbum(
+            final TreeItem<MIQItem> parent,
+            final Album album
+    ) {
+        return addItem(parent, new ItemAlbum(album));
+    }
+
+    private static TreeItem<MIQItem> addSong(
+            final TreeItem<MIQItem> parent,
+            final Song song
+    ) {
+        return addItem(parent, new ItemSong(song));
+    }
+
+    private static void addLyrics(
+            final TreeItem<MIQItem> parent,
+            final Lyrics lyrics
+    ) {
+        addItem(parent, new ItemLyrics(lyrics));
+    }
+
+    private static TreeItem<MIQItem> addItem(
+            final TreeItem<MIQItem> parent,
+            final MIQItem childMiqItem
+    ) {
+        final TreeItem<MIQItem> childTreeItem = childMiqItem.toTreeItem();
+        final var children = parent.getChildren();
+        if (children.isEmpty()) children.add(childTreeItem);
+        else {
+            int index = parent.getValue().hasDefaultChild() ? 1 : 0;
+            for (; index < children.size(); index++) {
+                if (childMiqItem.getName().compareTo(children.get(index).getValue().getName()) < 0) break;
+            }
+            children.add(index, childTreeItem);
+        }
+        return childTreeItem;
     }
 
     /**
@@ -194,21 +238,20 @@ public class EditView
 
     /** Create a child item of the selected one. */
     @FXML
-    void onAdd(final ActionEvent event) {
+    void onAdd() {
         final var items = this.getTreeSelectedItems();
         if (items.size() != 1) {
             throw new IllegalStateException("More than one element selected: " + items);
         }
-        final var item = items.getFirst();
-        final MIQItem miqItem = item.getValue();
+        final var treeItem = items.getFirst();
+        final MIQItem miqItem = treeItem.getValue();
         if (!miqItem.canHaveChildren()) {
             throw new IllegalStateException("Current element cannot have children: " + miqItem);
         }
 
-        final MIQItem child = miqItem.createChild(miqItem.getSource(), this.getStage());
+        final MIQItem child = miqItem.createChild(this.getStage());
         if (child == null) return;
-
-        final TreeItem<MIQItem> treeItem = child.toTreeItem();
+        addItem(treeItem, child);
     }
 
     /** Delete selected items. */

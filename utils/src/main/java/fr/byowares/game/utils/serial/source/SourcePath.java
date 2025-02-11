@@ -20,6 +20,7 @@ import org.agrona.LangUtil;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -56,6 +57,13 @@ public record SourcePath(Path path)
     public InputStream load()
             throws IOException {
         return new BufferedInputStream(Files.newInputStream(this.path));
+    }
+
+    @Override
+    public Writer newWriter()
+            throws IOException {
+        Files.createDirectories(this.path.getParent());
+        return Files.newBufferedWriter(this.path);
     }
 
     @Override

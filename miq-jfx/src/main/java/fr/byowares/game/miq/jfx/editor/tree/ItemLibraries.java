@@ -19,11 +19,14 @@ import fr.byowares.game.miq.core.model.song.Libraries;
 import fr.byowares.game.miq.core.model.song.Library;
 import fr.byowares.game.miq.jfx.fxml.wizard.WizardItem;
 import fr.byowares.game.miq.jfx.fxml.wizard.WizardLibrary;
-import fr.byowares.game.utils.serial.source.Source;
+import fr.byowares.game.utils.serial.Serializer;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
 import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.io.IOException;
+import java.util.function.Supplier;
 
 /**
  * An {@link fr.byowares.game.miq.core.model.song.Libraries} {@link fr.byowares.game.miq.jfx.editor.tree.MIQItem} wrapper.
@@ -33,7 +36,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 public class ItemLibraries
         extends ItemNamed<Libraries> {
 
-    private static final FontIcon FONT_ICON = new FontIcon(BootstrapIcons.HDD);
+    private static final Supplier<FontIcon> FONT_ICON = () -> new FontIcon(BootstrapIcons.HDD);
 
     /**
      * @param libraries The {@link fr.byowares.game.miq.core.model.song.Libraries} to wrap.
@@ -43,13 +46,16 @@ public class ItemLibraries
     }
 
     @Override
-    public MIQItem createChild(
-            final Source parentSource,
-            final Stage stage
-    ) {
-        final Library library = WizardItem.open(new WizardLibrary(parentSource), stage);
+    public MIQItem createChild(final Stage stage) {
+        final Library library = WizardItem.open(new WizardLibrary(this.getSource()), stage);
         if (library == null) return null;
-        return new ItemLibrary(library);
+        final ItemLibrary item = new ItemLibrary(library);
+        try {
+            item.persist();
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+        return item;
     }
 
     @Override
@@ -59,11 +65,21 @@ public class ItemLibraries
 
     @Override
     public TreeItem<MIQItem> toTreeItem() {
-        return new TreeItem<>(this, FONT_ICON);
+        return new TreeItem<>(this, FONT_ICON.get());
+    }
+
+    @Override
+    public boolean hasDefaultChild() {
+        return true;
     }
 
     @Override
     public boolean canBeEdited() {
         return false;
+    }
+
+    @Override
+    Serializer<Libraries> getSerializer() {
+        return null;
     }
 }

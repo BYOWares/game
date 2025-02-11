@@ -28,7 +28,7 @@ import java.util.Objects;
  * @since XXX
  */
 public class Library
-        extends NamedSourcedObject<Library> {
+        extends NamedSourcedObject {
 
     private final Album undefined;
     private final List<Album> albums;
@@ -79,9 +79,7 @@ public class Library
     }
 
     @Override
-    public Library copyInMemory() {
-        final Library library = new Library(this.getName());
-        library.setComment(this.getComment());
-        return library;
+    public Library buildCopy(final CharSequence name) {
+        return new Library(name);
     }
 }

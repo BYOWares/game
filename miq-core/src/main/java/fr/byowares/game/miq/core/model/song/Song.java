@@ -31,7 +31,7 @@ import java.util.Objects;
  * @since XXX
  */
 public class Song
-        extends NamedSourcedObject<Song> {
+        extends NamedSourcedObject {
 
     private final List<CharSequence> rawLyrics = new ArrayList<>();
     private final List<Lyrics> lyrics = new ArrayList<>();
@@ -170,13 +170,12 @@ public class Song
     }
 
     @Override
-    public Song copyInMemory() {
-        final Song song = new Song(this.getName());
-        song.getLyrics().addAll(this.getLyrics());
-        song.getRawLyrics().addAll(this.getRawLyrics());
+    public Song buildCopy(final CharSequence name) {
+        final Song song = new Song(name);
+        song.getLyrics().addAll(new ArrayList<>(this.getLyrics()));
+        song.getRawLyrics().addAll(new ArrayList<>(this.getRawLyrics()));
         song.setAlbumName(this.getAlbumName());
         song.setArtist(this.getArtist());
-        song.setComment(this.getComment());
         song.setCopyright(this.getCopyright());
         song.setDuoSource(this.duoSource);
         song.setSingleSource(this.singleSource);

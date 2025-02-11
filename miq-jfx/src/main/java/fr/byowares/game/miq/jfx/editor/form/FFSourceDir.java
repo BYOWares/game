@@ -40,7 +40,7 @@ import java.util.function.Consumer;
  *
  * @since XXX
  */
-public class FFSourceDir<N extends NamedSourcedObject<N>>
+public class FFSourceDir<N extends NamedSourcedObject>
         extends FormField<N, Source, String> {
 
     private static final int MAX_DIR_LENGTH = 255;

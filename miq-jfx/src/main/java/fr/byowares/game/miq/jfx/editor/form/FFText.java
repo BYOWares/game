@@ -31,7 +31,7 @@ import java.util.function.Consumer;
  *
  * @since XXX
  */
-public class FFText<N extends NamedSourcedObject<N>>
+public class FFText<N extends NamedSourcedObject>
         extends FormField<N, CharSequence, String> {
 
     private final TextField field;

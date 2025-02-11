@@ -16,6 +16,7 @@
 package fr.byowares.game.utils.serial.source;
 
 import java.io.InputStream;
+import java.io.Writer;
 import java.util.List;
 
 /**
@@ -40,6 +41,11 @@ public class SourceInMemory
 
     @Override
     public InputStream load() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Writer newWriter() {
         throw new UnsupportedOperationException();
     }
 

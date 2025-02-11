@@ -29,7 +29,7 @@ import java.util.Objects;
  * @since XXX
  */
 public class Album
-        extends NamedSourcedObject<Album> {
+        extends NamedSourcedObject {
 
     private final List<Song> songs;
     private CharSequence copyright;
@@ -45,6 +45,15 @@ public class Album
     public Album(final CharSequence title) {
         super(title);
         this.songs = new ArrayList<>();
+    }
+
+
+    @Override
+    public NamedSourcedObject buildCopy(final CharSequence name) {
+        final Album album = new Album(name);
+        album.setArtist(this.getArtist());
+        album.setCopyright(this.getCopyright());
+        return album;
     }
 
     /**
@@ -100,14 +109,5 @@ public class Album
     public String toString() {
         return "{Album=" + this.getName() + ", source=" + this.getSource() + ", comment=" + this.getComment() + //
                 ", artist=" + this.artist + ", songs=" + this.songs.size() + '}';
-    }
-
-    @Override
-    public Album copyInMemory() {
-        final Album album = new Album(this.getName());
-        album.setArtist(this.getArtist());
-        album.setComment(this.getComment());
-        album.setCopyright(this.getCopyright());
-        return album;
     }
 }

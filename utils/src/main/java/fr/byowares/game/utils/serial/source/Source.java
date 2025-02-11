@@ -17,6 +17,7 @@ package fr.byowares.game.utils.serial.source;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.util.List;
 
 /**
@@ -34,6 +35,13 @@ public interface Source {
     InputStream load()
             throws IOException;
 
+    /**
+     * @return A new writer to this source.
+     *
+     * @throws IOException If the writer could not be created.
+     */
+    Writer newWriter()
+            throws IOException;
 
     /**
      * @return The parent of this source.

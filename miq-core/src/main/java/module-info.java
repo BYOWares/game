@@ -25,6 +25,10 @@ module fr.byowares.game.miq.core {
     exports fr.byowares.game.miq.core.model.song;
     exports fr.byowares.game.miq.core.model.volume;
     exports fr.byowares.game.miq.core.option;
+    exports fr.byowares.game.miq.core.serial.album;
+    exports fr.byowares.game.miq.core.serial.library;
+    exports fr.byowares.game.miq.core.serial.lyrics;
+    exports fr.byowares.game.miq.core.serial.song;
 
     requires fr.byowares.game.utils;
     requires java.desktop;

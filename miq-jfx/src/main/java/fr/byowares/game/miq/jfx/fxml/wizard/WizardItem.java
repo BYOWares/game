@@ -45,7 +45,7 @@ import java.util.function.Consumer;
  *
  * @since XXX
  */
-public abstract class WizardItem<N extends NamedSourcedObject<N>>
+public abstract class WizardItem<N extends NamedSourcedObject>
         implements Controller {
 
     private static final double VBOX_PADDING = 30.0;
@@ -79,7 +79,7 @@ public abstract class WizardItem<N extends NamedSourcedObject<N>>
      *
      * @return The object created, {@code null} if creation is cancelled.
      */
-    public static <T extends NamedSourcedObject<T>> T open(
+    public static <T extends NamedSourcedObject> T open(
             final WizardItem<T> wizard,
             final Stage stage
     ) {

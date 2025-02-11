@@ -15,10 +15,13 @@
  */
 package fr.byowares.game.miq.jfx.editor.tree;
 
+import fr.byowares.game.utils.serial.Serializer;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import fr.byowares.game.utils.serial.source.Source;
 import fr.byowares.game.utils.serial.source.SourceInMemory;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Objects;
 
 /**
@@ -29,7 +32,7 @@ import java.util.Objects;
  *
  * @since XXX
  */
-public abstract class ItemNamed<N extends NamedSourcedObject<N>>
+public abstract class ItemNamed<N extends NamedSourcedObject>
         implements MIQItem {
 
     private final N namedSourcedObject;
@@ -42,6 +45,15 @@ public abstract class ItemNamed<N extends NamedSourcedObject<N>>
     }
 
     @Override
+    public final void persist()
+            throws IOException {
+        final Source source = this.namedSourcedObject.getSource();
+        try (final Writer writer = source.newWriter()) {
+            this.getSerializer().serialize(this.namedSourcedObject, writer);
+        }
+    }
+
+    @Override
     public boolean canBeEdited() {
         return !(this.namedSourcedObject.getSource() instanceof SourceInMemory);
     }
@@ -51,13 +63,20 @@ public abstract class ItemNamed<N extends NamedSourcedObject<N>>
         return this.namedSourcedObject.getName().toString();
     }
 
-    @Override
-    public Source getSource() {
-        return this.namedSourcedObject.getSource();
-    }
+    /**
+     * @return A serializer of {@code N} to serialize the underlying object.
+     */
+    abstract Serializer<N> getSerializer();
 
     @Override
     public String toString() {
         return "Item{" + this.namedSourcedObject + "}";
+    }
+
+    /**
+     * @return The source of this {@link fr.byowares.game.utils.serial.source.NamedSourcedObject}.
+     */
+    Source getSource() {
+        return this.namedSourcedObject.getSource();
     }
 }

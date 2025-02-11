@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class AbstractSerializerTest<T extends NamedSourcedObject<T>>
+public abstract class AbstractSerializerTest<T extends NamedSourcedObject>
         extends AbstractDesSerTest<T> {
 
     private static final List<StringInput> STRING_NON_NULL_VALUES = //
@@ -75,7 +75,7 @@ public abstract class AbstractSerializerTest<T extends NamedSourcedObject<T>>
             final BiConsumer<T, V> updater,
             final V update
     ) {
-        final T copy = input.copyInMemory();
+        final T copy = NamedSourcedObject.copy(input);
         assertEquals(input, copy);
         updater.accept(input, update);
         assertNotEquals(input, copy); // We make sure the updated actually changed something

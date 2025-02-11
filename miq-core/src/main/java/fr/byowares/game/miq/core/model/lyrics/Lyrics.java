@@ -31,7 +31,7 @@ import java.util.Set;
  * @since XXX
  */
 public final class Lyrics
-        extends NamedSourcedObject<Lyrics> {
+        extends NamedSourcedObject {
 
     private static final Range NO_RANGE = Range.fromRelativeValues(Long.MAX_VALUE, 0L);
 
@@ -230,10 +230,9 @@ public final class Lyrics
     }
 
     @Override
-    public Lyrics copyInMemory() {
-        final Lyrics lyrics = new Lyrics(this.getName(), new ArrayList<>(this.getVerses()));
+    public Lyrics buildCopy(final CharSequence name) {
+        final Lyrics lyrics = new Lyrics(name, new ArrayList<>(this.getVerses()));
         lyrics.setAuthor(this.getAuthor());
-        lyrics.setComment(this.getComment());
         return lyrics;
     }
 }
