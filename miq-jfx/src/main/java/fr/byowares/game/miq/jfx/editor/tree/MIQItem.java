@@ -17,6 +17,7 @@ package fr.byowares.game.miq.jfx.editor.tree;
 
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 
@@ -27,6 +28,29 @@ import java.io.IOException;
  * @since XXX
  */
 public interface MIQItem {
+
+    /**
+     * @return The name of this object.
+     */
+    String getName();
+
+    /**
+     * @return A new {@link org.kordamp.ikonli.javafx.FontIcon} used to describe this item.
+     */
+    FontIcon newFontIcon();
+
+    /**
+     * @return A {@link javafx.scene.control.TreeItem} containing this object.
+     */
+    TreeItem<MIQItem> toTreeItem();
+
+    /**
+     * Persist this object.
+     *
+     * @throws IOException If this object could not be persisted.
+     */
+    void persist()
+            throws IOException;
 
     /**
      * @return {@code true} whether this item accept children items, {@code false} otherwise.
@@ -45,14 +69,6 @@ public interface MIQItem {
     }
 
     /**
-     * Persist this object.
-     *
-     * @throws IOException If this object could not be persisted.
-     */
-    void persist()
-            throws IOException;
-
-    /**
      * @return {@code true} whether this item can be edited, {@code false} otherwise.
      */
     boolean canBeEdited();
@@ -63,16 +79,6 @@ public interface MIQItem {
     default boolean canBeDeleted() {
         return this.canBeEdited();
     }
-
-    /**
-     * @return The name of this object.
-     */
-    String getName();
-
-    /**
-     * @return A {@link javafx.scene.control.TreeItem} containing this object.
-     */
-    TreeItem<MIQItem> toTreeItem();
 
     /**
      * @return {@code true} If this element have a default child, {@code false} otherwise.

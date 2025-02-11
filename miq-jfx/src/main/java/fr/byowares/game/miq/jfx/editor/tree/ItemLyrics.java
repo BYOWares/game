@@ -18,11 +18,8 @@ package fr.byowares.game.miq.jfx.editor.tree;
 import fr.byowares.game.miq.core.model.lyrics.Lyrics;
 import fr.byowares.game.miq.core.serial.lyrics.LyricsSerializer;
 import fr.byowares.game.utils.serial.Serializer;
-import javafx.scene.control.TreeItem;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
 import org.kordamp.ikonli.javafx.FontIcon;
-
-import java.util.function.Supplier;
 
 /**
  * An {@link fr.byowares.game.miq.core.model.lyrics.Lyrics} {@link fr.byowares.game.miq.jfx.editor.tree.MIQItem} wrapper.
@@ -31,8 +28,6 @@ import java.util.function.Supplier;
  */
 public class ItemLyrics
         extends ItemNamed<Lyrics> {
-
-    private static final Supplier<FontIcon> FONT_ICON = () -> new FontIcon(BootstrapIcons.MUSIC_NOTE_LIST);
 
     /**
      * @param lyrics The {@link fr.byowares.game.miq.core.model.lyrics.Lyrics} to wrap.
@@ -47,13 +42,13 @@ public class ItemLyrics
     }
 
     @Override
-    public boolean canHaveChildren() {
-        return false;
+    public FontIcon newFontIcon() {
+        return new FontIcon(BootstrapIcons.MUSIC_NOTE_LIST);
     }
 
     @Override
-    public TreeItem<MIQItem> toTreeItem() {
-        return new TreeItem<>(this, FONT_ICON.get());
+    public boolean canHaveChildren() {
+        return false;
     }
 
     @Override

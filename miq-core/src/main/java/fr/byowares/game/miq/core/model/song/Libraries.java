@@ -50,13 +50,11 @@ public class Libraries
     public static final String MIQ_FILE_NAME = "miq.yml";
 
     private static final Logger log = LoggerFactory.getLogger(Libraries.class);
-    private final Path root;
     private final Library undefined;
     private final List<Library> libraries;
 
     private Libraries(final Path root) {
         super(Objects.requireNonNull(root).getFileName().toString(), new SourcePath(root));
-        this.root = root;
         this.undefined = new Library("__UNDEFINED__");
         this.libraries = new ArrayList<>();
         this.libraries.add(this.undefined);
@@ -157,13 +155,6 @@ public class Libraries
     }
 
     /**
-     * @return The root path used to discover all elements.
-     */
-    public Path getRoot() {
-        return this.root;
-    }
-
-    /**
      * @return The {@link fr.byowares.game.miq.core.model.song.Library} used for Albums & Songs without Library.
      */
     public Library getUndefined() {
@@ -172,7 +163,7 @@ public class Libraries
 
     @Override
     public String toString() {
-        return "{Libraries=" + this.libraries + ", root=" + this.root + '}';
+        return "{Libraries=" + this.getName() + ", source=" + this.getSource() + '}';
     }
 
     @Override

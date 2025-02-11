@@ -19,6 +19,7 @@ import fr.byowares.game.utils.serial.Serializer;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import fr.byowares.game.utils.serial.source.Source;
 import fr.byowares.game.utils.serial.source.SourceInMemory;
+import javafx.scene.control.TreeItem;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -44,6 +45,28 @@ public abstract class ItemNamed<N extends NamedSourcedObject>
         this.namedSourcedObject = Objects.requireNonNull(namedSourcedObject);
     }
 
+    /**
+     * @return The source of this {@link fr.byowares.game.utils.serial.source.NamedSourcedObject}.
+     */
+    final Source getSource() {
+        return this.namedSourcedObject.getSource();
+    }
+
+    /**
+     * @return A serializer of {@code N} to serialize the underlying object.
+     */
+    abstract Serializer<N> getSerializer();
+
+    @Override
+    public final String getName() {
+        return this.namedSourcedObject.getName().toString();
+    }
+
+    @Override
+    public final TreeItem<MIQItem> toTreeItem() {
+        return new TreeItem<>(this, this.newFontIcon());
+    }
+
     @Override
     public final void persist()
             throws IOException {
@@ -59,24 +82,7 @@ public abstract class ItemNamed<N extends NamedSourcedObject>
     }
 
     @Override
-    public final String getName() {
-        return this.namedSourcedObject.getName().toString();
-    }
-
-    /**
-     * @return A serializer of {@code N} to serialize the underlying object.
-     */
-    abstract Serializer<N> getSerializer();
-
-    @Override
     public String toString() {
         return "Item{" + this.namedSourcedObject + "}";
-    }
-
-    /**
-     * @return The source of this {@link fr.byowares.game.utils.serial.source.NamedSourcedObject}.
-     */
-    Source getSource() {
-        return this.namedSourcedObject.getSource();
     }
 }

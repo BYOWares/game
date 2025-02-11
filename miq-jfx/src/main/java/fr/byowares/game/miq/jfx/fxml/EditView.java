@@ -28,6 +28,7 @@ import fr.byowares.game.miq.jfx.editor.tree.ItemLibrary;
 import fr.byowares.game.miq.jfx.editor.tree.ItemLyrics;
 import fr.byowares.game.miq.jfx.editor.tree.ItemSong;
 import fr.byowares.game.miq.jfx.editor.tree.MIQItem;
+import fr.byowares.game.miq.jfx.editor.tree.MIQItemCell;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.jfx.FontIconSizeEnforcer;
 import fr.byowares.game.utils.jfx.SceneUniqueActor;
@@ -212,6 +213,7 @@ public class EditView
         treeSelectionModel.getSelectedItems().addListener(new TreeSelectionListener());
         treeSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);
         treeSelectionModel.select(this.tree.getRoot());
+        this.tree.setCellFactory(p -> new MIQItemCell());
 
         setButtonIcon(this.bEdit, BootstrapIcons.PENCIL_SQUARE, "edit_view.edit", Styles.ACCENT);
         setButtonIcon(this.bAdd, BootstrapIcons.FILE_EARMARK_PLUS, "edit_view.add", Styles.SUCCESS);
