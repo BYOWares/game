@@ -70,7 +70,7 @@ public class Libraries
      */
     public static Libraries from(final Path root) {
         final Libraries libraries = new Libraries(root);
-        if (Files.isDirectory(root)) return libraries;
+        if (!Files.isDirectory(root)) return libraries;
         from(libraries, libraries.undefined, libraries.undefined.getUndefined(), root);
         return libraries;
     }
