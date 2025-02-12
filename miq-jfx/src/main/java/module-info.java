@@ -27,6 +27,7 @@ module fr.byowares.game.miq.jfx {
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.feather;
     requires org.kordamp.ikonli.javafx;
+    requires org.slf4j;
 
     exports fr.byowares.game.miq.jfx;
     exports fr.byowares.game.miq.jfx.fxml;

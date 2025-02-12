@@ -53,6 +53,7 @@ public class ItemSong
     @Override
     MIQItem wizardChild(
             final Stage stage,
+            final CachedData cachedData,
             final Source parentSource
     ) {
         throw new UnsupportedOperationException("Not implemented yet"); // TODO

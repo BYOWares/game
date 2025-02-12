@@ -60,6 +60,7 @@ public class ItemLibraries
     @Override
     public MIQItem wizardChild(
             final Stage stage,
+            final CachedData cachedData,
             final Source parentSource
     ) {
         /*

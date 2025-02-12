@@ -53,6 +53,7 @@ public class ItemLyrics
     @Override
     MIQItem wizardChild(
             final Stage stage,
+            final CachedData cachedData,
             final Source parentSource
     ) {
         throw new UnsupportedOperationException("Lyrics cannot have children");

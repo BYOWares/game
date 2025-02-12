@@ -67,6 +67,7 @@ public interface MIQItem {
 
     /**
      * @param stage        The stage in which the createChild action takes place.
+     * @param cachedData   The data cached (to be used in Combo Box to help filling some fields).
      * @param parentSource The first {@link fr.byowares.game.utils.serial.source.Source} in the child to create
      *                     ancestry which is not {@link fr.byowares.game.utils.serial.source.SourceInMemory}.
      *
@@ -74,6 +75,7 @@ public interface MIQItem {
      */
     MIQItem createChild(
             final Stage stage,
+            final CachedData cachedData,
             final Source parentSource
     );
 

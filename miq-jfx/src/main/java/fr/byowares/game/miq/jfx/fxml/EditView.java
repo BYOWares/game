@@ -22,6 +22,7 @@ import fr.byowares.game.miq.core.model.song.Album;
 import fr.byowares.game.miq.core.model.song.Libraries;
 import fr.byowares.game.miq.core.model.song.Library;
 import fr.byowares.game.miq.core.model.song.Song;
+import fr.byowares.game.miq.jfx.editor.tree.CachedData;
 import fr.byowares.game.miq.jfx.editor.tree.ItemAlbum;
 import fr.byowares.game.miq.jfx.editor.tree.ItemLibraries;
 import fr.byowares.game.miq.jfx.editor.tree.ItemLibrary;
@@ -71,6 +72,8 @@ public class EditView
     private static final double TREE_HEIGHT = // Needed to make the TreeView take the left space in BorderPane.
             Screen.getScreens().stream().map(s -> s.getBounds().getHeight()).max(Double::compareTo).orElse(1080.0);
 
+    private final CachedData cache = new CachedData();
+
     @FXML private Button bAdd;
     @FXML private Button bBack;
     @FXML private Button bCollapseAll;
@@ -88,30 +91,6 @@ public class EditView
      */
     public EditView(final SceneUniqueActor previousActor) {
         super(previousActor);
-    }
-
-    private static TreeItem<MIQItem> convert(final Libraries libraries) {
-        final Library uLib = libraries.getUndefined();
-        final var itemLibs = new ItemLibraries(libraries).toTreeItem();
-        final var itemULib = addLibrary(itemLibs, uLib);
-
-        for (final Library library : libraries.getLibraries()) {
-            final Album uAlb = library.getUndefined();
-            final var itemLib = (library == uLib) ? itemULib : addLibrary(itemLibs, library);
-            final var itemUAlb = addAlbum(itemLib, uAlb);
-
-            for (final Album album : library.getAlbums()) {
-                final var itemAlb = (album == uAlb) ? itemUAlb : addAlbum(itemLib, album);
-
-                for (final Song song : album.getSongs()) {
-                    final var itemSong = addSong(itemAlb, song);
-                    for (final Lyrics lyrics : song.getLyrics()) {
-                        addLyrics(itemSong, lyrics);
-                    }
-                }
-            }
-        }
-        return itemLibs;
     }
 
     private static TreeItem<MIQItem> addLibrary(
@@ -209,6 +188,32 @@ public class EditView
         return source;
     }
 
+    private TreeItem<MIQItem> convert(final Libraries libraries) {
+        final Library uLib = libraries.getUndefined();
+        final var itemLibs = new ItemLibraries(libraries).toTreeItem();
+        final var itemULib = addLibrary(itemLibs, uLib);
+
+        for (final Library library : libraries.getLibraries()) {
+            final Album uAlb = library.getUndefined();
+            final var itemLib = (library == uLib) ? itemULib : addLibrary(itemLibs, library);
+            final var itemUAlb = addAlbum(itemLib, uAlb);
+
+            for (final Album album : library.getAlbums()) {
+                this.cache.cacheAlbum(null, album);
+                final var itemAlb = (album == uAlb) ? itemUAlb : addAlbum(itemLib, album);
+
+                for (final Song song : album.getSongs()) {
+                    this.cache.cacheSong(null, song);
+                    final var itemSong = addSong(itemAlb, song);
+                    for (final Lyrics lyrics : song.getLyrics()) {
+                        addLyrics(itemSong, lyrics);
+                    }
+                }
+            }
+        }
+        return itemLibs;
+    }
+
     private MultipleSelectionModel<TreeItem<MIQItem>> getTreeSelectionModel() {
         return this.tree.getSelectionModel();
     }
@@ -222,7 +227,7 @@ public class EditView
     public void initialize() {
         // TODO make it in another thread
         final Libraries libraries = Libraries.from(Path.of(System.getProperty("user.home"), "Desktop", "MIQ"));
-        this.tree.setRoot(convert(libraries));
+        this.tree.setRoot(this.convert(libraries));
         this.tree.setPrefHeight(TREE_HEIGHT);
         this.tree.getStyleClass().add(Tweaks.ALT_ICON);
         final var treeSelectionModel = this.getTreeSelectionModel();
@@ -268,7 +273,7 @@ public class EditView
         }
 
         final Source parentSource = Objects.requireNonNull(getParentSource(treeItem));
-        final MIQItem child = miqItem.createChild(this.getStage(), parentSource);
+        final MIQItem child = miqItem.createChild(this.getStage(), this.cache, parentSource);
         if (child == null) return;
         addItem(treeItem, child);
     }

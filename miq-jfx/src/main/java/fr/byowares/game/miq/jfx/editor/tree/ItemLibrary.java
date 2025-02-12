@@ -56,6 +56,7 @@ public class ItemLibrary
     @Override
     public MIQItem wizardChild(
             final Stage stage,
+            final CachedData cachedData,
             final Source parentSource
     ) {
         /*
@@ -67,7 +68,8 @@ public class ItemLibrary
          * case, we must use the parent source of the provided one (which is the miq.yml file containing the data).
          */
         final Source parentDirectory = this.getSource() == parentSource ? parentSource.getParent() : parentSource;
-        final Album album = WizardItem.open(new WizardAlbum(parentDirectory), stage);
+        final Album album = WizardItem.open(new WizardAlbum(parentDirectory, cachedData), stage);
+        cachedData.cacheAlbum(null, album);
         return album == null ? null : new ItemAlbum(album);
     }
 

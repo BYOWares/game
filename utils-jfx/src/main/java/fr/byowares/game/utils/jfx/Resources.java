@@ -33,6 +33,8 @@ public final class Resources {
 
     /** The default font for the application. */
     public static final String CSS_DEFAULT_FONT = get("css", "default-font.css");
+    /** BUGFIX for ComboBox danger not correctly applied when editable. */
+    public static final String CSS_BUGFIX_4ADB8FF = get("css", "bugfix-4adb8ff.css");
 
     /** Barecast font. */
     public static final String FONT_BARECAST = getFont("Barecast-Regular.otf");

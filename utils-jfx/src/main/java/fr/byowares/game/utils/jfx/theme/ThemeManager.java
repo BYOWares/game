@@ -92,6 +92,7 @@ public class ThemeManager {
      */
     public static synchronized void subscribe(final Scene scene) {
         scene.getStylesheets().add(Resources.CSS_DEFAULT_FONT);
+        scene.getStylesheets().add(Resources.CSS_BUGFIX_4ADB8FF);
         INSTANCE.scenes.add(scene);
         updateThemeForScene(scene, INSTANCE.currentTheme);
     }

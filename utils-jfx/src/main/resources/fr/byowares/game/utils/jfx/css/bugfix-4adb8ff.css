@@ -1,0 +1,16 @@
+// https://github.com/mkpaz/atlantafx/issues/98
+// Fixed in commit 4adb8ff0761b1f2095bfcc61047dc69ba1ff0d74
+
+.combo-box-base:success > .text-field {
+  -color-input-bg: -color-bg-default;
+  -color-input-fg: -color-success-fg;
+  -color-input-border: -color-success-emphasis;
+  -color-input-border-focused: -color-success-emphasis;
+}
+
+.combo-box-base:danger > .text-field {
+  -color-input-bg: -color-bg-default;
+  -color-input-fg: -color-danger-fg;
+  -color-input-border: -color-danger-emphasis;
+  -color-input-border-focused: -color-danger-emphasis;
+}

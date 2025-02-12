@@ -16,12 +16,14 @@
 package fr.byowares.game.miq.jfx.fxml.wizard;
 
 import fr.byowares.game.miq.core.model.song.Album;
+import fr.byowares.game.miq.jfx.editor.form.FFCombo;
 import fr.byowares.game.miq.jfx.editor.form.FFMLText;
 import fr.byowares.game.miq.jfx.editor.form.FFSourceDir;
 import fr.byowares.game.miq.jfx.editor.form.FFText;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorLength;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorNotNull;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorSource;
+import fr.byowares.game.miq.jfx.editor.tree.CachedData;
 import fr.byowares.game.miq.jfx.editor.tree.ItemAlbum;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.Source;
@@ -31,6 +33,8 @@ import static fr.byowares.game.miq.core.model.Constraints.ALBUM_CMT_MAX_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.ALBUM_CMT_MIN_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.ALBUM_TITLE_MAX_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.ALBUM_TITLE_MIN_LENGTH;
+import static fr.byowares.game.miq.core.model.Constraints.ARTIST_MAX_LENGTH;
+import static fr.byowares.game.miq.core.model.Constraints.ARTIST_MIN_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.COPYRIGHT_MAX_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.COPYRIGHT_MIN_LENGTH;
 
@@ -49,12 +53,17 @@ public class WizardAlbum
     private final FFSourceDir<Album> ffSourceDir;
     private final FFText<Album> ffName;
     private final FFText<Album> ffComment;
+    private final FFCombo<Album> ffArtist;
     private final FFMLText<Album> ffCopyright;
 
     /**
      * @param parentDirectory The directory to contain the Album to create.
+     * @param cachedData      The data cached (to be used in Combo Box to help filling some fields).
      */
-    public WizardAlbum(final Source parentDirectory) {
+    public WizardAlbum(
+            final Source parentDirectory,
+            final CachedData cachedData
+    ) {
         super(I18NMIQ.binder(I18NMIQ.get(), "wizard.album"), ItemAlbum.getFontIcon());
         this.ffSourceDir = new FFSourceDir<>(parentDirectory, Album::setSource, //
                                              I18NMIQ.binder(I18NMIQ.get(), "wizard.location"),
@@ -68,6 +77,10 @@ public class WizardAlbum
 
         this.ffComment = new FFText<>(Album::setComment, I18NMIQ.binder(I18NMIQ.get(), "wizard.comment"));
         this.ffComment.addValidator(new ValidatorLength(ALBUM_CMT_MIN_LENGTH, ALBUM_CMT_MAX_LENGTH));
+
+        this.ffArtist = new FFCombo<>(Album::setArtist, I18NMIQ.binder(I18NMIQ.get(), "wizard.artist"),
+                                      cachedData.getArtistNames());
+        this.ffArtist.addValidator(new ValidatorLength(ARTIST_MIN_LENGTH, ARTIST_MAX_LENGTH));
 
         this.ffCopyright = new FFMLText<>(400.0, Album::setCopyright,
                                           I18NMIQ.binder(I18NMIQ.get(), "wizard" + ".copyright"));
@@ -87,6 +100,7 @@ public class WizardAlbum
         final String newText = this.label.getText();
         this.addFormFieldToSplitPane(this.ffName, newText);
         this.addFormFieldToSplitPane(this.ffComment, "");
+        this.addFormFieldToSplitPane(this.ffArtist, "");
         this.addFormFieldToSplitPane(this.ffSourceDir.getFFDir(), newText);
         this.addFormFieldToSplitPane(this.ffSourceDir, null);
         this.addFormFieldToSplitPane(1, this.ffCopyright, "");
