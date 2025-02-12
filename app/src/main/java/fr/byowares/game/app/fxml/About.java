@@ -15,7 +15,6 @@
  */
 package fr.byowares.game.app.fxml;
 
-import fr.byowares.game.app.App;
 import fr.byowares.game.app.ResourcesApp;
 import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
@@ -123,12 +122,13 @@ public class About
         final Scene scene = new Scene(about.root());
         ThemeManager.subscribe(scene);
         final Stage newStage = new Stage();
+        newStage.setOnCloseRequest(e -> ThemeManager.unsubscribe(scene));
         I18NApp.get().bind(newStage.titleProperty(), "homepage.about");
         newStage.setScene(scene);
         newStage.setResizable(false);
         newStage.initModality(Modality.WINDOW_MODAL);
         newStage.initOwner(stage);
-        App.addIcons(newStage);
+        newStage.getIcons().addAll(stage.getIcons());
         newStage.show();
     }
 

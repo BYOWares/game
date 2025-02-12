@@ -18,6 +18,8 @@ package fr.byowares.game.miq.jfx.editor.tree;
 import fr.byowares.game.miq.core.model.song.Song;
 import fr.byowares.game.miq.core.serial.song.SongSerializer;
 import fr.byowares.game.utils.serial.Serializer;
+import fr.byowares.game.utils.serial.source.Source;
+import javafx.stage.Stage;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -39,6 +41,14 @@ public class ItemSong
     @Override
     Serializer<Song> getSerializer() {
         return SongSerializer.INSTANCE;
+    }
+
+    @Override
+    MIQItem wizardChild(
+            final Stage stage,
+            final Source parentSource
+    ) {
+        throw new UnsupportedOperationException("Not implemented yet"); // TODO
     }
 
     @Override

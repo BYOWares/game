@@ -57,7 +57,7 @@ public class App
     /**
      * @param stage The stage to which icons must be added.
      */
-    public static void addIcons(final Stage stage) {
+    private static void addIcons(final Stage stage) {
         final ObservableList<Image> icons = stage.getIcons();
         icons.add(ResourcesApp.GAME_16);
         icons.add(ResourcesApp.GAME_32);

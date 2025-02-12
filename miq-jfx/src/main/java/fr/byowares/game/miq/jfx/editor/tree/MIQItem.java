@@ -15,6 +15,7 @@
  */
 package fr.byowares.game.miq.jfx.editor.tree;
 
+import fr.byowares.game.utils.serial.source.Source;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -33,6 +34,11 @@ public interface MIQItem {
      * @return The name of this object.
      */
     String getName();
+
+    /**
+     * @return The source of this object.
+     */
+    Source getSource();
 
     /**
      * @return A new {@link org.kordamp.ikonli.javafx.FontIcon} used to describe this item.
@@ -60,13 +66,16 @@ public interface MIQItem {
     }
 
     /**
-     * @param stage The stage in which the createChild action takes place.
+     * @param stage        The stage in which the createChild action takes place.
+     * @param parentSource The first {@link fr.byowares.game.utils.serial.source.Source} in the child to create
+     *                     ancestry which is not {@link fr.byowares.game.utils.serial.source.SourceInMemory}.
      *
      * @return The child item created, {@code null} if it could not be created.
      */
-    default MIQItem createChild(final Stage stage) {
-        return null;
-    }
+    MIQItem createChild(
+            final Stage stage,
+            final Source parentSource
+    );
 
     /**
      * @return {@code true} whether this item can be edited, {@code false} otherwise.

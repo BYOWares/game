@@ -33,6 +33,8 @@ import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.jfx.FontIconSizeEnforcer;
 import fr.byowares.game.utils.jfx.SceneUniqueActor;
 import fr.byowares.game.utils.jfx.fxml.FXMLLoader;
+import fr.byowares.game.utils.serial.source.Source;
+import fr.byowares.game.utils.serial.source.SourceInMemory;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -55,6 +57,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -193,6 +196,19 @@ public class EditView
         button.getStyleClass().addAll(cssClasses);
     }
 
+    /**
+     * @param item The tree item from which the source must be searched.
+     *
+     * @return The first {@link fr.byowares.game.utils.serial.source.Source} in its ancestry (including itself) which is
+     * not {@link fr.byowares.game.utils.serial.source.SourceInMemory}.
+     */
+    private static Source getParentSource(final TreeItem<MIQItem> item) {
+        if (item == null) return null;
+        final Source source = item.getValue().getSource();
+        if (source == SourceInMemory.INSTANCE) return getParentSource(item.getParent());
+        return source;
+    }
+
     private MultipleSelectionModel<TreeItem<MIQItem>> getTreeSelectionModel() {
         return this.tree.getSelectionModel();
     }
@@ -251,7 +267,8 @@ public class EditView
             throw new IllegalStateException("Current element cannot have children: " + miqItem);
         }
 
-        final MIQItem child = miqItem.createChild(this.getStage());
+        final Source parentSource = Objects.requireNonNull(getParentSource(treeItem));
+        final MIQItem child = miqItem.createChild(this.getStage(), parentSource);
         if (child == null) return;
         addItem(treeItem, child);
     }

@@ -25,7 +25,6 @@ import javafx.scene.control.TextField;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -72,7 +71,8 @@ public class FFSourceDir<N extends NamedSourcedObject>
         this.ffDirName.addFieldTextChangeListener((obs, ov, nv) -> {
             this.field.setText(root.toString() + File.separator + nv + File.separator + Libraries.MIQ_FILE_NAME);
         });
-        this.ffDirName.addValidators(List.of(new ValidatorLength(1, MAX_DIR_LENGTH), new ValidatorPath()));
+        this.ffDirName.addValidator(new ValidatorLength(1, MAX_DIR_LENGTH));
+        this.ffDirName.addValidator(new ValidatorPath());
     }
 
     /**

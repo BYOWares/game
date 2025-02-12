@@ -20,6 +20,7 @@ import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import fr.byowares.game.utils.serial.source.Source;
 import fr.byowares.game.utils.serial.source.SourceInMemory;
 import javafx.scene.control.TreeItem;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -46,13 +47,6 @@ public abstract class ItemNamed<N extends NamedSourcedObject>
     }
 
     /**
-     * @return The source of this {@link fr.byowares.game.utils.serial.source.NamedSourcedObject}.
-     */
-    final Source getSource() {
-        return this.namedSourcedObject.getSource();
-    }
-
-    /**
      * @return A serializer of {@code N} to serialize the underlying object.
      */
     abstract Serializer<N> getSerializer();
@@ -60,6 +54,11 @@ public abstract class ItemNamed<N extends NamedSourcedObject>
     @Override
     public final String getName() {
         return this.namedSourcedObject.getName().toString();
+    }
+
+    @Override
+    public final Source getSource() {
+        return this.namedSourcedObject.getSource();
     }
 
     @Override
@@ -77,9 +76,37 @@ public abstract class ItemNamed<N extends NamedSourcedObject>
     }
 
     @Override
+    public final MIQItem createChild(
+            final Stage stage,
+            final Source parentSource
+    ) {
+        final MIQItem miqItem = this.wizardChild(stage, parentSource);
+        if (miqItem == null) return null;
+        try {
+            miqItem.persist();
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+        return miqItem;
+    }
+
+    @Override
     public boolean canBeEdited() {
         return !(this.namedSourcedObject.getSource() instanceof SourceInMemory);
     }
+
+    /**
+     * @param stage        The stage in which the createChild action takes place.
+     * @param parentSource The first {@link fr.byowares.game.utils.serial.source.Source} in the child to create
+     *                     ancestry which is not {@link fr.byowares.game.utils.serial.source.SourceInMemory}.
+     *
+     * @return A child of this object.
+     */
+    abstract MIQItem wizardChild(
+            final Stage stage,
+            final Source parentSource
+    );
+
 
     @Override
     public String toString() {

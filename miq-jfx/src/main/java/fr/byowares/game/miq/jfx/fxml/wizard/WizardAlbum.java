@@ -15,7 +15,8 @@
  */
 package fr.byowares.game.miq.jfx.fxml.wizard;
 
-import fr.byowares.game.miq.core.model.song.Library;
+import fr.byowares.game.miq.core.model.song.Album;
+import fr.byowares.game.miq.jfx.editor.form.FFMLText;
 import fr.byowares.game.miq.jfx.editor.form.FFSourceDir;
 import fr.byowares.game.miq.jfx.editor.form.FFText;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorLength;
@@ -29,40 +30,48 @@ import static fr.byowares.game.miq.core.model.Constraints.ALBUM_CMT_MAX_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.ALBUM_CMT_MIN_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.ALBUM_TITLE_MAX_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.ALBUM_TITLE_MIN_LENGTH;
+import static fr.byowares.game.miq.core.model.Constraints.COPYRIGHT_MAX_LENGTH;
+import static fr.byowares.game.miq.core.model.Constraints.COPYRIGHT_MIN_LENGTH;
 
 /**
- * A Library creation wizard.
+ * An Album creation wizard.
  *
  * @since XXX
  */
-public class WizardLibrary
-        extends WizardItem<Library> {
+public class WizardAlbum
+        extends WizardItem<Album> {
 
-    private static final double WINDOW_MIN_WIDTH = 700.0;
+    private static final double WINDOW_MIN_WIDTH = 700.0 * 2.0;
     private static final double WINDOW_MIN_HEIGHT = 650.0;
 
 
-    private final FFSourceDir<Library> ffSourceDir;
-    private final FFText<Library> ffName;
-    private final FFText<Library> ffComment;
+    private final FFSourceDir<Album> ffSourceDir;
+    private final FFText<Album> ffName;
+    private final FFText<Album> ffComment;
+    private final FFMLText<Album> ffCopyright;
 
     /**
-     * @param parentDirectory The parent source.
+     * @param parentDirectory The directory to contain the Album to create.
      */
-    public WizardLibrary(final Source parentDirectory) {
-        super(I18NMIQ.binder(I18NMIQ.get(), "wizard.library"));
-        this.ffSourceDir = new FFSourceDir<>(parentDirectory, Library::setSource, //
+    public WizardAlbum(final Source parentDirectory) {
+        super(I18NMIQ.binder(I18NMIQ.get(), "wizard.album"));
+        this.ffSourceDir = new FFSourceDir<>(parentDirectory, Album::setSource, //
                                              I18NMIQ.binder(I18NMIQ.get(), "wizard.location"),
                                              I18NMIQ.binder(I18NMIQ.get(), "wizard.directory_name"));
         this.ffSourceDir.addValidator(ValidatorNotNull.INSTANCE);
         this.ffSourceDir.addValidator(ValidatorSource.INSTANCE);
 
-        this.ffName = new FFText<>(Library::setName, I18NMIQ.binder(I18NMIQ.get(), "wizard.name"));
+        this.ffName = new FFText<>(Album::setName, I18NMIQ.binder(I18NMIQ.get(), "wizard.name"));
         this.ffName.addValidator(ValidatorNotNull.INSTANCE);
         this.ffName.addValidator(new ValidatorLength(ALBUM_TITLE_MIN_LENGTH, ALBUM_TITLE_MAX_LENGTH));
 
-        this.ffComment = new FFText<>(Library::setComment, I18NMIQ.binder(I18NMIQ.get(), "wizard.comment"));
+        this.ffComment = new FFText<>(Album::setComment, I18NMIQ.binder(I18NMIQ.get(), "wizard.comment"));
         this.ffComment.addValidator(new ValidatorLength(ALBUM_CMT_MIN_LENGTH, ALBUM_CMT_MAX_LENGTH));
+
+        this.ffCopyright = new FFMLText<>(400.0, Album::setCopyright,
+                                          I18NMIQ.binder(I18NMIQ.get(), "wizard" + ".copyright"));
+        this.ffCopyright.addValidator(ValidatorNotNull.INSTANCE);
+        this.ffCopyright.addValidator(new ValidatorLength(COPYRIGHT_MIN_LENGTH, COPYRIGHT_MAX_LENGTH));
     }
 
     @Override
@@ -79,11 +88,12 @@ public class WizardLibrary
         this.addFormFieldToSplitPane(this.ffComment, "");
         this.addFormFieldToSplitPane(this.ffSourceDir.getFFDir(), newText);
         this.addFormFieldToSplitPane(this.ffSourceDir, null);
+        this.addFormFieldToSplitPane(1, this.ffCopyright, "");
     }
 
     @Override
-    Library newEmptyObject() {
-        return new Library("");
+    Album newEmptyObject() {
+        return new Album("");
     }
 
     @Override

@@ -30,6 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -70,6 +71,7 @@ public abstract class FormField<N extends NamedSourcedObject, T, FFT> {
     ) {
         /* Graphical elements */
         this.ffContainer = new VBox(5.0);
+        this.ffContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
 
         this.label = new Label();
         i18nBinder.accept(this.label.textProperty());
@@ -112,12 +114,10 @@ public abstract class FormField<N extends NamedSourcedObject, T, FFT> {
     }
 
     /**
-     * Add validators and then re-run them all.
-     *
-     * @param validators The list of validators to add to this Form Field.
+     * @param validator The validator to add to this Form Field.
      */
-    public void addValidators(final List<FormFieldValidator<FFT>> validators) {
-        this.validators.addAll(validators);
+    public void addValidator(final FormFieldValidator<FFT> validator) {
+        this.validators.add(validator);
     }
 
     /**

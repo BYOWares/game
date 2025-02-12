@@ -20,11 +20,10 @@ import fr.byowares.game.miq.core.model.song.Library;
 import fr.byowares.game.miq.jfx.fxml.wizard.WizardItem;
 import fr.byowares.game.miq.jfx.fxml.wizard.WizardLibrary;
 import fr.byowares.game.utils.serial.Serializer;
+import fr.byowares.game.utils.serial.source.Source;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
 import org.kordamp.ikonli.javafx.FontIcon;
-
-import java.io.IOException;
 
 /**
  * An {@link fr.byowares.game.miq.core.model.song.Libraries} {@link fr.byowares.game.miq.jfx.editor.tree.MIQItem} wrapper.
@@ -52,21 +51,22 @@ public class ItemLibraries
     }
 
     @Override
-    public FontIcon newFontIcon() {
-        return new FontIcon(BootstrapIcons.HDD);
+    public MIQItem wizardChild(
+            final Stage stage,
+            final Source parentSource
+    ) {
+        /*
+         * parentSource can only have one origin: Librairies.getSource().
+         * The parentSource can be used as is (the given directory is where the Library must be added).
+         */
+        final Source parentDirectory = this.getSource();
+        final Library library = WizardItem.open(new WizardLibrary(parentDirectory), stage);
+        return library == null ? null : new ItemLibrary(library);
     }
 
     @Override
-    public MIQItem createChild(final Stage stage) {
-        final Library library = WizardItem.open(new WizardLibrary(this.getSource()), stage);
-        if (library == null) return null;
-        final ItemLibrary item = new ItemLibrary(library);
-        try {
-            item.persist();
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-        return item;
+    public FontIcon newFontIcon() {
+        return new FontIcon(BootstrapIcons.HDD);
     }
 
     @Override

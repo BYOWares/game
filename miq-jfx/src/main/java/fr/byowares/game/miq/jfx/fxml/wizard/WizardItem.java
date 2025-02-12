@@ -29,7 +29,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -83,10 +84,11 @@ public abstract class WizardItem<N extends NamedSourcedObject>
             final WizardItem<T> wizard,
             final Stage stage
     ) {
-        final Pair<WizardItem<T>, BorderPane> pair = FXMLLoader.load(wizard, WizardItem.class, "WizardItem");
+        final Pair<WizardItem<T>, StackPane> pair = FXMLLoader.load(wizard, WizardItem.class, "WizardItem");
         final Scene scene = new Scene(pair.root());
         ThemeManager.subscribe(scene);
         final Stage newStage = new Stage();
+        newStage.setOnCloseRequest(e -> ThemeManager.unsubscribe(scene));
         wizard.i18nTitleBinder.accept(newStage.titleProperty());
         newStage.setScene(scene);
         newStage.setResizable(true);
@@ -168,8 +170,10 @@ public abstract class WizardItem<N extends NamedSourcedObject>
         if (paneIndex < 0) throw new IllegalArgumentException("pane index must be strictly positive");
         while (paneIndex >= this.splitPane.getItems().size()) {
             final VBox vBox = new VBox(10.0);
+            vBox.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
             vBox.setPadding(new Insets(VBOX_PADDING));
             this.splitPane.getItems().add(vBox);
+            vBox.maxHeightProperty().bind(this.splitPane.heightProperty());
         }
 
         ((VBox) this.splitPane.getItems().get(paneIndex)).getChildren().add(ff.getFFContainer());
