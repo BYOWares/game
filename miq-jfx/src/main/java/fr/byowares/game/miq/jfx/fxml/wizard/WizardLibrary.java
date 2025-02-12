@@ -21,6 +21,7 @@ import fr.byowares.game.miq.jfx.editor.form.FFText;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorLength;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorNotNull;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorSource;
+import fr.byowares.game.miq.jfx.editor.tree.ItemLibrary;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.Source;
 import javafx.stage.Stage;
@@ -50,7 +51,7 @@ public class WizardLibrary
      * @param parentDirectory The parent source.
      */
     public WizardLibrary(final Source parentDirectory) {
-        super(I18NMIQ.binder(I18NMIQ.get(), "wizard.library"));
+        super(I18NMIQ.binder(I18NMIQ.get(), "wizard.library"), ItemLibrary.getFontIcon());
         this.ffSourceDir = new FFSourceDir<>(parentDirectory, Library::setSource, //
                                              I18NMIQ.binder(I18NMIQ.get(), "wizard.location"),
                                              I18NMIQ.binder(I18NMIQ.get(), "wizard.directory_name"));

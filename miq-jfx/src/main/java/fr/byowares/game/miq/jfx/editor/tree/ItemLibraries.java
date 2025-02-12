@@ -40,6 +40,13 @@ public class ItemLibraries
         super(libraries);
     }
 
+    /**
+     * @return The {@link org.kordamp.ikonli.javafx.FontIcon} that describe this object.
+     */
+    public static FontIcon getFontIcon() {
+        return new FontIcon(BootstrapIcons.HDD);
+    }
+
     @Override
     Serializer<Libraries> getSerializer() {
         return null;
@@ -66,7 +73,7 @@ public class ItemLibraries
 
     @Override
     public FontIcon newFontIcon() {
-        return new FontIcon(BootstrapIcons.HDD);
+        return getFontIcon();
     }
 
     @Override

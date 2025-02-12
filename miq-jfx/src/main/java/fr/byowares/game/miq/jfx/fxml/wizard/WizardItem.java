@@ -17,6 +17,7 @@ package fr.byowares.game.miq.jfx.fxml.wizard;
 
 import fr.byowares.game.miq.jfx.editor.form.FormField;
 import fr.byowares.game.utils.jfx.Controller;
+import fr.byowares.game.utils.jfx.FontIconSizeEnforcer;
 import fr.byowares.game.utils.jfx.Pair;
 import fr.byowares.game.utils.jfx.fxml.FXMLLoader;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
@@ -29,11 +30,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,19 +56,25 @@ public abstract class WizardItem<N extends NamedSourcedObject>
 
     private final Consumer<StringProperty> i18nTitleBinder;
     private final List<FormField<N, ?, ?>> formFields;
+    private final FontIcon fontIcon;
 
     /** The Label to indicate which kind of object is being created. */
     @FXML protected Label label;
+    @FXML private HBox hbox;
     @FXML private Button bCancel;
     @FXML private Button bCreate;
     @FXML private SplitPane splitPane;
-
     private N returnedObject;
 
     /**
      * @param i18nTitleBinder The binder for the new window title.
+     * @param fontIcon        The {@link org.kordamp.ikonli.javafx.FontIcon} to decorate the title.
      */
-    WizardItem(final Consumer<StringProperty> i18nTitleBinder) {
+    WizardItem(
+            final Consumer<StringProperty> i18nTitleBinder,
+            final FontIcon fontIcon
+    ) {
+        this.fontIcon = fontIcon;
         this.i18nTitleBinder = i18nTitleBinder;
         this.formFields = new ArrayList<>();
         this.returnedObject = null;
@@ -109,6 +118,9 @@ public abstract class WizardItem<N extends NamedSourcedObject>
     /** FXML handle for initialization. */
     @FXML
     public final void initialize() {
+        final var css = FontIconSizeEnforcer.enforceIconSizeCSS(this.hbox, "size-enforcer", 32);
+        this.fontIcon.getStyleClass().add(css);
+        this.hbox.getChildren().addFirst(this.fontIcon);
         this.i18nTitleBinder.accept(this.label.textProperty());
         this.doInitialize();
         this.onDisplay();

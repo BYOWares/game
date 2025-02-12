@@ -38,6 +38,13 @@ public class ItemAlbum
         super(album);
     }
 
+    /**
+     * @return The {@link org.kordamp.ikonli.javafx.FontIcon} that describe this object.
+     */
+    public static FontIcon getFontIcon() {
+        return new FontIcon(BootstrapIcons.DISC);
+    }
+
     @Override
     Serializer<Album> getSerializer() {
         return AlbumSerializer.INSTANCE;
@@ -53,7 +60,7 @@ public class ItemAlbum
 
     @Override
     public FontIcon newFontIcon() {
-        return new FontIcon(BootstrapIcons.DISC);
+        return getFontIcon();
     }
 
     @Override

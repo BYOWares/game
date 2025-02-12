@@ -38,6 +38,13 @@ public class ItemLyrics
         super(lyrics);
     }
 
+    /**
+     * @return The {@link org.kordamp.ikonli.javafx.FontIcon} that describe this object.
+     */
+    public static FontIcon getFontIcon() {
+        return new FontIcon(BootstrapIcons.MUSIC_NOTE_LIST);
+    }
+
     @Override
     Serializer<Lyrics> getSerializer() {
         return LyricsSerializer.INSTANCE;
@@ -53,7 +60,7 @@ public class ItemLyrics
 
     @Override
     public FontIcon newFontIcon() {
-        return new FontIcon(BootstrapIcons.MUSIC_NOTE_LIST);
+        return getFontIcon();
     }
 
     @Override

@@ -18,36 +18,48 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-    <children>
-        <HBox alignment="CENTER" spacing="25.0">
-            <children>
-            <Label fx:id="icon" alignment="CENTER" contentDisplay="CENTER" minHeight="250.0" minWidth="250.0" prefHeight="250.0" prefWidth="250.0" style="-fx-shape: &quot;M 100 250 L 200 200 L 300 250 L 300 350 L 200 400 L 100 350 L 100 250&quot;;" styleClass="game-button" />
-                <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: BareCast; -fx-font-size: 4em; -fx-font-weight: bolder;" text="Dummy title" />
-            </children>
-            <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-            </padding>
-        </HBox>
-        <HBox alignment="CENTER" layoutX="10.0" layoutY="60.0" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" />
-        <VBox fx:id="holderMenus" alignment="CENTER" spacing="10.0">
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding></VBox>
-        <HBox alignment="CENTER" layoutX="10.0" layoutY="60.0" maxHeight="100.0" minHeight="100.0" prefHeight="100.0" />
-        <HBox fx:id="holderBackMenu" alignment="CENTER" layoutX="10.0" layoutY="43.0">
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding></HBox>
-    </children>
-   <padding>
-      <Insets top="20.0" />
-   </padding>
-</VBox>
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ScrollPane fitToHeight="true" fitToWidth="true">
+         <content>
+            <VBox alignment="TOP_CENTER">
+                <children>
+                    <HBox alignment="CENTER" spacing="25.0">
+                        <children>
+                        <Label fx:id="icon" alignment="CENTER" contentDisplay="CENTER" minHeight="250.0" minWidth="250.0" prefHeight="250.0" prefWidth="250.0" style="-fx-shape: &quot;M 100 250 L 200 200 L 300 250 L 300 350 L 200 400 L 100 350 L 100 250&quot;;" styleClass="game-button" />
+                            <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: BareCast; -fx-font-size: 4em; -fx-font-weight: bolder;" text="Dummy title" />
+                        </children>
+                        <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </padding>
+                    </HBox>
+                    <HBox alignment="CENTER" layoutX="10.0" layoutY="60.0" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" />
+                    <VBox fx:id="holderMenus" alignment="CENTER" spacing="10.0">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+                    <HBox alignment="CENTER" layoutX="10.0" layoutY="60.0" maxHeight="100.0" minHeight="100.0" prefHeight="100.0" />
+                    <HBox fx:id="holderBackMenu" alignment="CENTER" layoutX="10.0" layoutY="43.0">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                </children>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</StackPane>

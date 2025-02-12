@@ -38,6 +38,13 @@ public class ItemSong
         super(song);
     }
 
+    /**
+     * @return The {@link org.kordamp.ikonli.javafx.FontIcon} that describe this object.
+     */
+    public static FontIcon getFontIcon() {
+        return new FontIcon(BootstrapIcons.MUSIC_NOTE_BEAMED);
+    }
+
     @Override
     Serializer<Song> getSerializer() {
         return SongSerializer.INSTANCE;
@@ -53,7 +60,7 @@ public class ItemSong
 
     @Override
     public FontIcon newFontIcon() {
-        return new FontIcon(BootstrapIcons.MUSIC_NOTE_BEAMED);
+        return getFontIcon();
     }
 
     @Override

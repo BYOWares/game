@@ -22,6 +22,7 @@ import fr.byowares.game.miq.jfx.editor.form.FFText;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorLength;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorNotNull;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorSource;
+import fr.byowares.game.miq.jfx.editor.tree.ItemAlbum;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.Source;
 import javafx.stage.Stage;
@@ -54,7 +55,7 @@ public class WizardAlbum
      * @param parentDirectory The directory to contain the Album to create.
      */
     public WizardAlbum(final Source parentDirectory) {
-        super(I18NMIQ.binder(I18NMIQ.get(), "wizard.album"));
+        super(I18NMIQ.binder(I18NMIQ.get(), "wizard.album"), ItemAlbum.getFontIcon());
         this.ffSourceDir = new FFSourceDir<>(parentDirectory, Album::setSource, //
                                              I18NMIQ.binder(I18NMIQ.get(), "wizard.location"),
                                              I18NMIQ.binder(I18NMIQ.get(), "wizard.directory_name"));
