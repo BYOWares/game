@@ -32,7 +32,7 @@ public final class Constraints {
     /** Raw lyrics maximal length. */
     public static final int RAW_LYRICS_MAX_LENGTH = 256 * 1024;
 
-    private static final int NAME_MIN_LENGTH = 8;
+    private static final int NAME_MIN_LENGTH = 1;
     /** Artist's name minimal length. */
     public static final int ARTIST_MIN_LENGTH = NAME_MIN_LENGTH;
     /** Library's name minimal length. */
