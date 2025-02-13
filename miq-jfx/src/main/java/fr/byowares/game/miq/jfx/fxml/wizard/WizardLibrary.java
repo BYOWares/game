@@ -40,7 +40,7 @@ public class WizardLibrary
         extends WizardItem<Library> {
 
     private static final double WINDOW_MIN_WIDTH = 700.0;
-    private static final double WINDOW_MIN_HEIGHT = 650.0;
+    private static final double WINDOW_MIN_HEIGHT = 450.0;
 
 
     private final FFSourceDir<Library> ffSourceDir;
