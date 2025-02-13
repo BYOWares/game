@@ -60,6 +60,11 @@ public class ItemSong
     }
 
     @Override
+    public String getKindAsI18N() {
+        return "edit_view.cell.song";
+    }
+
+    @Override
     public FontIcon newFontIcon() {
         return getFontIcon();
     }

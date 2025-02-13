@@ -60,6 +60,11 @@ public class ItemAlbum
     }
 
     @Override
+    public String getKindAsI18N() {
+        return "edit_view.cell.album";
+    }
+
+    @Override
     public FontIcon newFontIcon() {
         return getFontIcon();
     }

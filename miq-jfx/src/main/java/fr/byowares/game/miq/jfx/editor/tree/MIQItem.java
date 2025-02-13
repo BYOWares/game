@@ -31,6 +31,11 @@ import java.io.IOException;
 public interface MIQItem {
 
     /**
+     * @return I18N key to describe this kind of object.
+     */
+    String getKindAsI18N();
+
+    /**
      * @return The name of this object.
      */
     String getName();

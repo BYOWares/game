@@ -15,8 +15,11 @@
  */
 package fr.byowares.game.miq.jfx.editor.tree;
 
+import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
+
+import java.util.concurrent.Callable;
 
 /**
  * The cell factory to handle the TreeItem display.
@@ -40,7 +43,14 @@ public class MIQItemCell
             this.setText(item.getName());
             this.setGraphic(item.newFontIcon());
             this.setTooltip(new Tooltip());
-            this.getTooltip().setText(item.toString());
+
+            final Callable<String> tooltipDesc = () -> {
+                final I18NMIQ i18n = I18NMIQ.get();
+                final String type = i18n.buildCallable(item.getKindAsI18N()).call();
+                return i18n.buildCallable("edit_view.cell.desc", type, item.getName(), item.getSource()).call();
+            };
+
+            I18NMIQ.bind(this.getTooltip().textProperty(), tooltipDesc);
         }
     }
 }

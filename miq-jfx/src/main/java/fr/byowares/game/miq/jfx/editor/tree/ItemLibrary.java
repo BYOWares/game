@@ -77,6 +77,11 @@ public class ItemLibrary
     }
 
     @Override
+    public String getKindAsI18N() {
+        return "edit_view.cell.library";
+    }
+
+    @Override
     public FontIcon newFontIcon() {
         return getFontIcon();
     }
