@@ -69,8 +69,11 @@ public class ItemLibrary
          */
         final Source parentDirectory = this.getSource() == parentSource ? parentSource.getParent() : parentSource;
         final Album album = WizardItem.open(new WizardAlbum(parentDirectory, cachedData), stage);
+        if (album == null) return null;
+
+        this.getNamedSourcedObject().getAlbums().add(album);
         cachedData.cacheAlbum(null, album);
-        return album == null ? null : new ItemAlbum(album);
+        return new ItemAlbum(album);
     }
 
     @Override

@@ -47,6 +47,13 @@ public abstract class ItemNamed<N extends NamedSourcedObject>
     }
 
     /**
+     * @return The {@link fr.byowares.game.utils.serial.source.NamedSourcedObject} wrapped.
+     */
+    N getNamedSourcedObject() {
+        return this.namedSourcedObject;
+    }
+
+    /**
      * @return A serializer of {@code N} to serialize the underlying object.
      */
     abstract Serializer<N> getSerializer();

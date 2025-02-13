@@ -69,7 +69,10 @@ public class ItemLibraries
          */
         final Source parentDirectory = this.getSource();
         final Library library = WizardItem.open(new WizardLibrary(parentDirectory), stage);
-        return library == null ? null : new ItemLibrary(library);
+        if (library == null) return null;
+
+        this.getNamedSourcedObject().getLibraries().add(library);
+        return new ItemLibrary(library);
     }
 
     @Override
