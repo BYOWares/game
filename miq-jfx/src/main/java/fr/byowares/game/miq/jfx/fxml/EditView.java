@@ -238,7 +238,7 @@ public class EditView
 
         setButtonIcon(this.bEdit, BootstrapIcons.PENCIL_SQUARE, "edit_view.edit", Styles.ACCENT);
         setButtonIcon(this.bAdd, BootstrapIcons.FILE_EARMARK_PLUS, "edit_view.add", Styles.SUCCESS);
-        setButtonIcon(this.bDelete, BootstrapIcons.FILE_EARMARK_X, "edit_view.delete", Styles.DANGER);
+        setButtonIcon(this.bDelete, BootstrapIcons.FILE_EARMARK_X, "not_implemented", Styles.DANGER);
         setButtonIcon(this.bCollapseAll, BootstrapIcons.CHEVRON_CONTRACT, "edit_view.collapse");
         setButtonIcon(this.bExpandAll, BootstrapIcons.CHEVRON_EXPAND, "edit_view.expand");
         setButtonIcon(this.bSelectCurrent, Feather.CROSSHAIR, "edit_view.select");
@@ -340,6 +340,8 @@ public class EditView
             EditView.this.bAdd.setDisable(!(items.size() == 1 && items.getFirst().getValue().canHaveChildren()));
             EditView.this.bDelete.setDisable(!canDelete);
             EditView.this.bEdit.setDisable(!canEdit);
+
+            EditView.this.bDelete.setDisable(true);
         }
     }
 }
