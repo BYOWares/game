@@ -63,12 +63,7 @@ public class ItemLibraries
             final CachedData cachedData,
             final Source parentSource
     ) {
-        /*
-         * parentSource can only have one origin: Librairies.getSource().
-         * The parentSource can be used as is (the given directory is where the Library must be added).
-         */
-        final Source parentDirectory = this.getSource();
-        final Library library = WizardItem.open(new WizardLibrary(parentDirectory), stage);
+        final Library library = WizardItem.open(new WizardLibrary(parentSource), stage);
         if (library == null) return null;
 
         this.getNamedSourcedObject().getLibraries().add(library);

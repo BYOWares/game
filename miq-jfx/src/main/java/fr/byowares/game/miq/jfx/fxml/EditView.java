@@ -176,16 +176,21 @@ public class EditView
     }
 
     /**
-     * @param item The tree item from which the source must be searched.
+     * @param item       The tree item from which the source must be searched.
+     * @param rootSource The source of the root of the {@code TreeView}.
      *
-     * @return The first {@link fr.byowares.game.utils.serial.source.Source} in its ancestry (including itself) which is
-     * not {@link fr.byowares.game.utils.serial.source.SourceInMemory}.
+     * @return The parent directory {@link fr.byowares.game.utils.serial.source.Source} of the current given item.
+     *
+     * @throws java.lang.IllegalStateException If no parent source could be found.
      */
-    private static Source getParentSource(final TreeItem<MIQItem> item) {
-        if (item == null) return null;
+    private static Source getParentSource(
+            final Source rootSource,
+            final TreeItem<MIQItem> item
+    ) {
+        if (item == null) throw new IllegalStateException("");
         final Source source = item.getValue().getSource();
-        if (source == SourceInMemory.INSTANCE) return getParentSource(item.getParent());
-        return source;
+        if (source == SourceInMemory.INSTANCE) return getParentSource(rootSource, item.getParent());
+        return source == rootSource ? source : source.getParent(); // Only the root's source is already a directory.
     }
 
     private TreeItem<MIQItem> convert(final Libraries libraries) {
@@ -199,12 +204,17 @@ public class EditView
             final var itemUAlb = addAlbum(itemLib, uAlb);
 
             for (final Album album : library.getAlbums()) {
-                this.cache.cacheAlbum(null, album);
-                final var itemAlb = (album == uAlb) ? itemUAlb : addAlbum(itemLib, album);
+                final TreeItem<MIQItem> itemAlb;
+                if (album == uAlb) itemAlb = itemUAlb; // Do not cache undefined album
+                else {
+                    this.cache.cacheAlbum(null, album);
+                    itemAlb = addAlbum(itemLib, album);
+                }
 
                 for (final Song song : album.getSongs()) {
                     this.cache.cacheSong(null, song);
                     final var itemSong = addSong(itemAlb, song);
+
                     for (final Lyrics lyrics : song.getLyrics()) {
                         addLyrics(itemSong, lyrics);
                     }
@@ -272,7 +282,8 @@ public class EditView
             throw new IllegalStateException("Current element cannot have children: " + miqItem);
         }
 
-        final Source parentSource = Objects.requireNonNull(getParentSource(treeItem));
+        final Source parentSource = Objects.requireNonNull(
+                getParentSource(this.tree.getRoot().getValue().getSource(), treeItem));
         final MIQItem child = miqItem.createChild(this.getStage(), this.cache, parentSource);
         if (child == null) return;
         addItem(treeItem, child);

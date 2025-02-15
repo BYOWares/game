@@ -16,7 +16,10 @@
 package fr.byowares.game.miq.jfx.editor.tree;
 
 import fr.byowares.game.miq.core.model.song.Album;
+import fr.byowares.game.miq.core.model.song.Song;
 import fr.byowares.game.miq.core.serial.album.AlbumSerializer;
+import fr.byowares.game.miq.jfx.fxml.wizard.WizardItem;
+import fr.byowares.game.miq.jfx.fxml.wizard.WizardSong;
 import fr.byowares.game.utils.serial.Serializer;
 import fr.byowares.game.utils.serial.source.Source;
 import javafx.stage.Stage;
@@ -56,7 +59,14 @@ public class ItemAlbum
             final CachedData cachedData,
             final Source parentSource
     ) {
-        throw new UnsupportedOperationException("Not implemented yet"); // TODO
+        final Source parentDirectory = this.getSource() == parentSource ? parentSource.getParent() : parentSource;
+        final Song song = WizardItem.open(new WizardSong(this.getNamedSourcedObject(), parentSource, cachedData),
+                                          stage);
+        if (song == null) return null;
+
+        this.getNamedSourcedObject().getSongs().add(song);
+        cachedData.cacheSong(null, song);
+        return new ItemSong(song);
     }
 
     @Override

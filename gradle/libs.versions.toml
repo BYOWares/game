@@ -80,9 +80,6 @@ junitImpl = ["junit", "junit-api", "junit-params", "guardian"]
 junitRun = ["junit-engine", "opentest4J", "junitP-launcher", "junitP-commons", "junitP-engine"]
 
 log4jImpl = ["slf4J-api"]
-log4jRun = [
-    "slf4J-jcl", "slf4J-log", "slf4J-jul",
-    "log4J-impl", "log4J-core", "log4J-api"
-]
+log4jRun = ["slf4J-jcl", "slf4J-log", "slf4J-jul", "log4J-impl", "log4J-core", "log4J-api"]
 
 yamlImpl = ["snakeYaml"]

@@ -59,16 +59,7 @@ public class ItemLibrary
             final CachedData cachedData,
             final Source parentSource
     ) {
-        /*
-         * parentSource can have two origins:
-         *  - Librairies.getSource() (this.getSource() == IN_MEMORY), when we want to add an Album to its __UNDEFINED__
-         * library. In this scenario, the parentSource can be used as is (the given directory is where the Album must
-         *  be added).
-         *  - Library.getSource() (== this.getSource()) when we want to add an Album to an existing Library. In this
-         * case, we must use the parent source of the provided one (which is the miq.yml file containing the data).
-         */
-        final Source parentDirectory = this.getSource() == parentSource ? parentSource.getParent() : parentSource;
-        final Album album = WizardItem.open(new WizardAlbum(parentDirectory, cachedData), stage);
+        final Album album = WizardItem.open(new WizardAlbum(parentSource, cachedData), stage);
         if (album == null) return null;
 
         this.getNamedSourcedObject().getAlbums().add(album);
