@@ -17,6 +17,7 @@ package fr.byowares.game.miq.core.model.audio;
 
 import fr.byowares.game.utils.serial.source.Source;
 
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -34,13 +35,40 @@ import java.io.IOException;
 public record SingleSource(Source audioSource)
         implements AudioSource {
 
+    private static final float SAMPLE_RATE = 44100.0f;
+    private static final int SAMPLE_SIZE_IN_BITS = 16;
+
+    private static AudioFormat getCDQualityFormat(final AudioFormat origin) {
+        return new AudioFormat(SAMPLE_RATE, SAMPLE_SIZE_IN_BITS, origin.getChannels(), true, origin.isBigEndian());
+    }
+
+    /**
+     * @param source The source of the data.
+     *
+     * @return The clip containing the audio data contained in the {@code source}, in a readable format.
+     *
+     * @throws IOException                   If an I/ O exception occurs.
+     * @throws LineUnavailableException      If the line cannot be opened due to resource restrictions.
+     * @throws UnsupportedAudioFileException If the stream does not point to valid audio file data recognized by the
+     *                                       system.
+     */
+    static Clip getClip(final Source source)
+            throws IOException, LineUnavailableException, UnsupportedAudioFileException {
+        final AudioInputStream ais = AudioSystem.getAudioInputStream(source.load());
+        final AudioFormat format = ais.getFormat();
+        final AudioFormat.Encoding encoding = format.getEncoding();
+
+        final Clip clip = AudioSystem.getClip();
+        if (encoding == AudioFormat.Encoding.PCM_SIGNED || encoding == AudioFormat.Encoding.PCM_UNSIGNED)
+            clip.open(ais);
+        else clip.open(AudioSystem.getAudioInputStream(getCDQualityFormat(format), ais));
+        return clip;
+    }
+
     @Override
     public AudioPlayer load() {
         try {
-            final AudioInputStream ais = AudioSystem.getAudioInputStream(this.audioSource.load());
-            final Clip clip = AudioSystem.getClip();
-            clip.open(ais);
-            return new SinglePlayer(clip);
+            return new SinglePlayer(getClip(this.audioSource));
 
         } catch (final IOException |
                        UnsupportedAudioFileException |

@@ -28,6 +28,10 @@ plugins {
 
 repositories {
     mavenCentral()
+    // For mp3 libraries
+    maven { url = uri("https://jitpack.io") }
+    // For vavi:vavi-sound-nda:1.0.14 (if ever needed)
+    // maven { url = uri("https://gitlab.com/api/v4/projects/30804899/packages/maven") }
 }
 
 configurations.configureEach { isTransitive = false }

@@ -59,6 +59,14 @@ junitP-commons = { group = "org.junit.platform", name = "junit-platform-commons"
 junitP-engine = { group = "org.junit.platform", name = "junit-platform-engine", version.ref = "jPlatform" }
 junitP-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "jPlatform" }
 
+mp3-jlayer = { group = "com.github.umjammer", name = "jlayer", version = "1.0.3" }
+mp3-spi = { group = "com.github.umjammer", name = "mp3spi", version = "1.9.17" }
+mp3-titr = { group = "com.github.umjammer.tritonus", name = "tritonus-remaining", version = "0.3.13" }
+mp3-tits = { group = "com.github.umjammer.tritonus", name = "tritonus-share", version = "0.3.13" }
+mp3-uni-char = { group = "com.github.albfernandez", name = "juniversalchardet", version = "2.5.0" }
+mp3-vavi-commons = { group = "com.github.umjammer.vavi-commons", name = "vavi-commons", version = "1.1.13" }
+mp3-vavi-sound = { group = "com.github.umjammer", name = "vavi-sound", version = "1.0.19" }
+
 log4J-api = { group = "org.apache.logging.log4j", name = "log4j-api", version.ref = "log4j" }
 log4J-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
 log4J-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j" }
@@ -72,6 +80,7 @@ slf4J-log = { group = "org.slf4j", name = "log4j-over-slf4j", version.ref = "slf
 
 snakeYaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snake" }
 
+
 [bundles]
 atlantafx = ["atlantafx-base"]
 ikonli = ["ikonli-bootstrap", "ikonli-core", "ikonli-javafx", "ikonli-feather", "ikonli-material2"]
@@ -81,5 +90,7 @@ junitRun = ["junit-engine", "opentest4J", "junitP-launcher", "junitP-commons", "
 
 log4jImpl = ["slf4J-api"]
 log4jRun = ["slf4J-jcl", "slf4J-log", "slf4J-jul", "log4J-impl", "log4J-core", "log4J-api"]
+
+mp3 = ["mp3-spi", "mp3-jlayer", "mp3-tits", "mp3-titr", "mp3-vavi-sound", "mp3-vavi-commons", "mp3-uni-char"]
 
 yamlImpl = ["snakeYaml"]

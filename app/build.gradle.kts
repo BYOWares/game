@@ -32,6 +32,7 @@ dependencies {
     implementation(libs.bundles.log4jImpl)
     implementation(libs.bundles.yamlImpl)
     runtimeOnly(libs.bundles.log4jRun)
+    runtimeOnly(libs.bundles.mp3)
 
     testImplementation(libs.bundles.junitImpl)
     testRuntimeOnly(libs.bundles.junitRun)

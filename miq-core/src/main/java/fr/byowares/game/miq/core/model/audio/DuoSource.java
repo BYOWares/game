@@ -17,9 +17,6 @@ package fr.byowares.game.miq.core.model.audio;
 
 import fr.byowares.game.utils.serial.source.Source;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
@@ -41,13 +38,7 @@ public record DuoSource(
     @Override
     public AudioPlayer load() {
         try {
-            final AudioInputStream voice = AudioSystem.getAudioInputStream(this.voiceSource.load());
-            final Clip voiceClip = AudioSystem.getClip();
-            voiceClip.open(voice);
-            final AudioInputStream music = AudioSystem.getAudioInputStream(this.musicSource.load());
-            final Clip musicClip = AudioSystem.getClip();
-            musicClip.open(music);
-            return new DuoPlayer(voiceClip, musicClip);
+            return new DuoPlayer(SingleSource.getClip(this.voiceSource), SingleSource.getClip(this.musicSource));
 
         } catch (final IOException |
                        UnsupportedAudioFileException |

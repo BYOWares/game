@@ -58,8 +58,9 @@ import java.util.Random;
 public class HomePage
         extends SceneUniqueActor {
 
-    public static final int SIZE_IN_PX = 52;
     private static final Logger log = LoggerFactory.getLogger(HomePage.class);
+    private static final int SIZE_IN_PX = 52;
+
     @FXML private ToggleButton darkTheme;
     @FXML private ToggleButton lightTheme;
     @FXML private ComboBox<Lang> language;
