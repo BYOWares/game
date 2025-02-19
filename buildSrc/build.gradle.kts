@@ -25,7 +25,6 @@ repositories {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/org.yaml/snakeyaml
-    implementation("org.yaml:snakeyaml:2.3")
+    implementation(libs.snakeYaml)
     implementation("org.openjfx.javafxplugin:org.openjfx.javafxplugin.gradle.plugin:0.1.0")
 }

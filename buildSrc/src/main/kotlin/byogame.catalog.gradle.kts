@@ -1,3 +1,5 @@
+import gradle.kotlin.dsl.accessors._b43a41b3a2c24e7f863347686afebb31.ext
+
 /*
  * Copyright BYOWares
  *
@@ -14,23 +16,24 @@
  * limitations under the License.
  */
 
-plugins {
-    id("byogame.java-library")
-    id("byogame.java-fx")
-    id("byogame.java-application")
+fun set(
+    k: String,
+    v: String
+) {
+    project.ext.set(k, v)
 }
 
-dependencies {
-    implementation(project(":utils"))
-    implementation(project(":utils-jfx"))
-    implementation(project(":miq-core"))
-    implementation(project(":miq-jfx"))
-
-    implementation(libs.bundles.yamlImpl)
-    runtimeOnly(libs.bundles.mp3)
-}
-
-application {
-    mainClass = "fr.byowares.game.app.App"
-    mainModule = "fr.byowares.game.app"
-}
+/* Common place to define all versions used in convetion plugins. */
+set("agrona", "2.0.0")
+set("atlantafx", "2.0.1")
+set("controlsfx", "11.2.1")
+set("disruptor", "4.0.0")
+set("guardian", "1.1.2")
+set("ikonli", "12.3.1")
+set("jPlatform", "1.11.4")
+set("jackson", "2.18.2")
+set("junit", "5.11.4")
+set("log4j", "2.24.3")
+set("opentest4j", "1.3.0")
+set("slf4j", "2.0.16")
+set("snake", "2.3")

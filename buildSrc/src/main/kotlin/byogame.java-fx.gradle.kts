@@ -22,7 +22,18 @@ plugins {
 }
 
 javafx {
-    var javaPluginExtension = project.extensions.findByName("java")!!.uncheckedCast<JavaPluginExtension>()
+    val javaPluginExtension = project.extensions.findByName("java")!!.uncheckedCast<JavaPluginExtension>()
     version = javaPluginExtension.toolchain.languageVersion.get().toString()
     modules = listOf("javafx.base", "javafx.graphics", "javafx.controls", "javafx.fxml")
+}
+
+dependencies {
+    implementation("io.github.mkpaz:atlantafx-base:${project.ext.get("atlantafx")}")
+
+    val ikonli = project.ext.get("ikonli")
+    implementation("org.kordamp.ikonli:ikonli-bootstrapicons-pack:$ikonli")
+    implementation("org.kordamp.ikonli:ikonli-core:$ikonli")
+    implementation("org.kordamp.ikonli:ikonli-feather-pack:$ikonli")
+    implementation("org.kordamp.ikonli:ikonli-javafx:$ikonli")
+    implementation("org.kordamp.ikonli:ikonli-material2-pack:$ikonli")
 }

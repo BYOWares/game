@@ -19,11 +19,5 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.agrona)
-    implementation(libs.bundles.log4jImpl)
     implementation(libs.bundles.yamlImpl)
-    runtimeOnly(libs.bundles.log4jRun)
-
-    testImplementation(libs.bundles.junitImpl)
-    testRuntimeOnly(libs.bundles.junitRun)
 }

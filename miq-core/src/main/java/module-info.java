@@ -33,7 +33,7 @@ module fr.byowares.game.miq.core {
     requires fr.byowares.game.utils;
     requires java.desktop;
     requires java.xml;
+    requires org.agrona.core;
     requires org.slf4j;
     requires org.yaml.snakeyaml;
-    requires org.agrona.core;
 }
