@@ -30,6 +30,8 @@ javafx {
 dependencies {
     implementation("io.github.mkpaz:atlantafx-base:${project.ext.get("atlantafx")}")
 
+    implementation("org.controlsfx:controlsfx:${project.ext.get("controlsfx")}")
+
     val ikonli = project.ext.get("ikonli")
     implementation("org.kordamp.ikonli:ikonli-bootstrapicons-pack:$ikonli")
     implementation("org.kordamp.ikonli:ikonli-core:$ikonli")

@@ -31,6 +31,8 @@ dependencies {
 }
 
 application {
+    applicationName = "BYOWares Game"
     mainClass = "fr.byowares.game.app.App"
     mainModule = "fr.byowares.game.app"
+    applicationDefaultJvmArgs = listOf("--add-exports=javafx.base/com.sun.javafx.event=org.controlsfx.controls")
 }

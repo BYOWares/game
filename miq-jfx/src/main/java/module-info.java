@@ -23,6 +23,7 @@ module fr.byowares.game.miq.jfx {
     requires fr.byowares.game.utils.jfx;
     requires fr.byowares.game.utils;
     requires javafx.fxml;
+    requires org.controlsfx.controls;
     requires org.kordamp.ikonli.bootstrapicons;
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.feather;

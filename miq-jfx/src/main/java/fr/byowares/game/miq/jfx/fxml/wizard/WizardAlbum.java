@@ -16,10 +16,10 @@
 package fr.byowares.game.miq.jfx.fxml.wizard;
 
 import fr.byowares.game.miq.core.model.song.Album;
-import fr.byowares.game.miq.jfx.editor.form.FFCombo;
 import fr.byowares.game.miq.jfx.editor.form.FFMLText;
 import fr.byowares.game.miq.jfx.editor.form.FFSourceDir;
 import fr.byowares.game.miq.jfx.editor.form.FFText;
+import fr.byowares.game.miq.jfx.editor.form.FFTextSuggestion;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorLength;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorNotNull;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorSource;
@@ -53,7 +53,7 @@ public class WizardAlbum
     private final FFSourceDir<Album> ffSourceDir;
     private final FFText<Album> ffName;
     private final FFText<Album> ffComment;
-    private final FFCombo<Album> ffArtist;
+    private final FFTextSuggestion<Album> ffArtist;
     private final FFMLText<Album> ffCopyright;
 
     /**
@@ -78,8 +78,8 @@ public class WizardAlbum
         this.ffComment = new FFText<>(Album::setComment, I18NMIQ.binder(I18NMIQ.get(), "wizard.comment"));
         this.ffComment.addValidator(new ValidatorLength(ALBUM_CMT_MIN_LENGTH, ALBUM_CMT_MAX_LENGTH));
 
-        this.ffArtist = new FFCombo<>(Album::setArtist, I18NMIQ.binder(I18NMIQ.get(), "wizard.artist"),
-                                      cachedData.getArtistNames());
+        this.ffArtist = new FFTextSuggestion<>(Album::setArtist, I18NMIQ.binder(I18NMIQ.get(), "wizard.artist"),
+                                               cachedData.getArtistNames());
         this.ffArtist.addValidator(new ValidatorLength(ARTIST_MIN_LENGTH, ARTIST_MAX_LENGTH));
 
         this.ffCopyright = new FFMLText<>(400.0, Album::setCopyright,

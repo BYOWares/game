@@ -17,10 +17,10 @@ package fr.byowares.game.miq.jfx.fxml.wizard;
 
 import fr.byowares.game.miq.core.model.song.Album;
 import fr.byowares.game.miq.core.model.song.Song;
-import fr.byowares.game.miq.jfx.editor.form.FFCombo;
 import fr.byowares.game.miq.jfx.editor.form.FFMLText;
 import fr.byowares.game.miq.jfx.editor.form.FFSourceDir;
 import fr.byowares.game.miq.jfx.editor.form.FFText;
+import fr.byowares.game.miq.jfx.editor.form.FFTextSuggestion;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorLength;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorNotNull;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorSource;
@@ -61,8 +61,8 @@ public class WizardSong
     private final FFSourceDir<Song> ffSourceDir;
     private final FFText<Song> ffName;
     private final FFText<Song> ffComment;
-    private final FFCombo<Song> ffAlbum;
-    private final FFCombo<Song> ffArtist;
+    private final FFTextSuggestion<Song> ffAlbum;
+    private final FFTextSuggestion<Song> ffArtist;
     private final FFMLText<Song> ffCopyright;
     private final FFMLText<Song> ffLyrics;
 
@@ -92,11 +92,13 @@ public class WizardSong
         this.ffComment = new FFText<>(Song::setComment, binder(i18n, "wizard.comment"));
         this.ffComment.addValidator(new ValidatorLength(ALBUM_CMT_MIN_LENGTH, ALBUM_CMT_MAX_LENGTH));
 
-        this.ffAlbum = new FFCombo<>(Song::setAlbumName, binder(i18n, "wizard.album"), cachedData.getAlbumNames());
+        this.ffAlbum = new FFTextSuggestion<>(Song::setAlbumName, binder(i18n, "wizard.album"),
+                                              cachedData.getAlbumNames());
         this.ffAlbum.addValidator(ValidatorNotNull.INSTANCE);
         this.ffAlbum.addValidator(new ValidatorLength(ALBUM_TITLE_MIN_LENGTH, ALBUM_TITLE_MAX_LENGTH));
 
-        this.ffArtist = new FFCombo<>(Song::setArtist, binder(i18n, "wizard.artist"), cachedData.getArtistNames());
+        this.ffArtist = new FFTextSuggestion<>(Song::setArtist, binder(i18n, "wizard.artist"),
+                                               cachedData.getArtistNames());
         this.ffArtist.addValidator(ValidatorNotNull.INSTANCE);
         this.ffArtist.addValidator(new ValidatorLength(ARTIST_MIN_LENGTH, ARTIST_MAX_LENGTH));
 

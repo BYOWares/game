@@ -37,6 +37,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +54,7 @@ import java.util.function.Consumer;
 public abstract class WizardItem<N extends NamedSourcedObject>
         implements Controller {
 
+    private static final Logger log = LoggerFactory.getLogger(WizardItem.class);
     private static final double VBOX_PADDING = 30.0;
 
     private final Consumer<StringProperty> i18nTitleBinder;
@@ -142,9 +145,14 @@ public abstract class WizardItem<N extends NamedSourcedObject>
     /** Called when the button Create is activated. */
     @FXML
     final void onCreate() {
-        this.returnedObject = this.newEmptyObject();
-        for (final var ff : this.formFields) {
-            ff.set(this.returnedObject);
+        try {
+            this.returnedObject = this.newEmptyObject();
+            for (final var ff : this.formFields) {
+                ff.set(this.returnedObject);
+            }
+        } catch (final Exception e) {
+            log.warn("Failed to create the object: {}", this.returnedObject, e);
+            this.returnedObject = null;
         }
         this.onCancel();
     }
