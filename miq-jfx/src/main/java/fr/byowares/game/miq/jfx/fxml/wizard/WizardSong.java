@@ -17,21 +17,22 @@ package fr.byowares.game.miq.jfx.fxml.wizard;
 
 import fr.byowares.game.miq.core.model.song.Album;
 import fr.byowares.game.miq.core.model.song.Song;
+import fr.byowares.game.miq.jfx.editor.form.FFFileSelector;
 import fr.byowares.game.miq.jfx.editor.form.FFMLText;
 import fr.byowares.game.miq.jfx.editor.form.FFSourceDir;
 import fr.byowares.game.miq.jfx.editor.form.FFText;
 import fr.byowares.game.miq.jfx.editor.form.FFTextSuggestion;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorLength;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorNotNull;
-import fr.byowares.game.miq.jfx.editor.form.ValidatorSource;
 import fr.byowares.game.miq.jfx.editor.tree.CachedData;
 import fr.byowares.game.miq.jfx.editor.tree.ItemAlbum;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.Source;
+import fr.byowares.game.utils.serial.source.SourcePath;
 import javafx.stage.Stage;
 
-import static fr.byowares.game.miq.core.model.Constraints.ALBUM_CMT_MAX_LENGTH;
-import static fr.byowares.game.miq.core.model.Constraints.ALBUM_CMT_MIN_LENGTH;
+import java.nio.file.Paths;
+
 import static fr.byowares.game.miq.core.model.Constraints.ALBUM_TITLE_MAX_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.ALBUM_TITLE_MIN_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.ARTIST_MAX_LENGTH;
@@ -40,6 +41,8 @@ import static fr.byowares.game.miq.core.model.Constraints.COPYRIGHT_MAX_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.COPYRIGHT_MIN_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.RAW_LYRICS_MAX_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.RAW_LYRICS_MIN_LENGTH;
+import static fr.byowares.game.miq.core.model.Constraints.SONG_CMT_MAX_LENGTH;
+import static fr.byowares.game.miq.core.model.Constraints.SONG_CMT_MIN_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.SONG_TITLE_MAX_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.SONG_TITLE_MIN_LENGTH;
 import static fr.byowares.game.utils.jfx.i18n.I18NResourceBundle.binder;
@@ -76,43 +79,38 @@ public class WizardSong
             final Source parentDirectory,
             final CachedData cachedData
     ) {
-        super(binder(I18NMIQ.get(), "wizard.song"), ItemAlbum.getFontIcon());
+        super(binder(I18NMIQ.get(), "wizard.new.song"), ItemAlbum.getFontIcon());
         final I18NMIQ i18n = I18NMIQ.get();
         this.album = album;
 
         this.ffSourceDir = new FFSourceDir<>(parentDirectory, Song::setSource, //
-                                             binder(i18n, "wizard.location"), binder(i18n, "wizard.directory_name"));
-        this.ffSourceDir.addValidator(ValidatorNotNull.INSTANCE);
-        this.ffSourceDir.addValidator(ValidatorSource.INSTANCE);
+                                             binder(i18n, "wizard.ff.location"),
+                                             binder(i18n, "wizard.ff.directory_name"));
 
-        this.ffName = new FFText<>(Song::setName, binder(i18n, "wizard.title"));
+        this.ffName = new FFText<>(Song::setName, binder(i18n, "wizard.ff.title"));
         this.ffName.addValidator(ValidatorNotNull.INSTANCE);
         this.ffName.addValidator(new ValidatorLength(SONG_TITLE_MIN_LENGTH, SONG_TITLE_MAX_LENGTH));
 
-        this.ffComment = new FFText<>(Song::setComment, binder(i18n, "wizard.comment"));
-        this.ffComment.addValidator(new ValidatorLength(ALBUM_CMT_MIN_LENGTH, ALBUM_CMT_MAX_LENGTH));
+        this.ffComment = new FFText<>(Song::setComment, binder(i18n, "wizard.ff.comment"));
+        this.ffComment.addValidator(new ValidatorLength(SONG_CMT_MIN_LENGTH, SONG_CMT_MAX_LENGTH));
 
-        this.ffAlbum = new FFTextSuggestion<>(Song::setAlbumName, binder(i18n, "wizard.album"),
+        this.ffAlbum = new FFTextSuggestion<>(Song::setAlbumName, binder(i18n, "wizard.ff.album"),
                                               cachedData.getAlbumNames());
         this.ffAlbum.addValidator(ValidatorNotNull.INSTANCE);
         this.ffAlbum.addValidator(new ValidatorLength(ALBUM_TITLE_MIN_LENGTH, ALBUM_TITLE_MAX_LENGTH));
 
-        this.ffArtist = new FFTextSuggestion<>(Song::setArtist, binder(i18n, "wizard.artist"),
+        this.ffArtist = new FFTextSuggestion<>(Song::setArtist, binder(i18n, "wizard.ff.artist"),
                                                cachedData.getArtistNames());
         this.ffArtist.addValidator(ValidatorNotNull.INSTANCE);
         this.ffArtist.addValidator(new ValidatorLength(ARTIST_MIN_LENGTH, ARTIST_MAX_LENGTH));
 
-        this.ffCopyright = new FFMLText<>(200.0, Song::setCopyright, binder(i18n, "wizard.copyright"));
+        this.ffCopyright = new FFMLText<>(200.0, Song::setCopyright, binder(i18n, "wizard.ff.copyright"));
         this.ffCopyright.addValidator(ValidatorNotNull.INSTANCE);
         this.ffCopyright.addValidator(new ValidatorLength(COPYRIGHT_MIN_LENGTH, COPYRIGHT_MAX_LENGTH));
 
-        this.ffLyrics = new FFMLText<>(600.0, Song::setCopyright, binder(i18n, "wizard.lyrics"));
+        this.ffLyrics = new FFMLText<>(600.0, Song::setCopyright, binder(i18n, "wizard.ff.lyrics"));
         this.ffLyrics.addValidator(ValidatorNotNull.INSTANCE);
         this.ffLyrics.addValidator(new ValidatorLength(RAW_LYRICS_MIN_LENGTH, RAW_LYRICS_MAX_LENGTH));
-    }
-
-    private static String normalizedInput(final CharSequence raw) {
-        return raw == null ? "" : raw.toString();
     }
 
     @Override
@@ -126,14 +124,17 @@ public class WizardSong
     void doInitialize() {
         final String newText = this.label.getText();
         this.addFormFieldToSplitPane(this.ffName, newText);
-        this.addFormFieldToSplitPane(this.ffComment, "");
-        this.addFormFieldToSplitPane(this.ffArtist, normalizedInput(this.album.getArtist()));
-        this.addFormFieldToSplitPane(this.ffAlbum, normalizedInput(this.album.getName()));
-        this.addFormFieldToSplitPane(this.ffSourceDir.getFFDir(), newText);
-        this.addFormFieldToSplitPane(this.ffSourceDir, null);
+        this.addFormFieldToSplitPane(this.ffComment, null);
+        this.addFormFieldToSplitPane(this.ffArtist, this.album.getArtist());
+        this.addFormFieldToSplitPane(this.ffAlbum, this.album.getName());
+        this.addFormFieldToSplitPane(this.ffSourceDir, new SourcePath(Paths.get(newText)));
 
-        this.addFormFieldToSplitPane(1, this.ffCopyright, normalizedInput(this.album.getCopyright()));
-        this.addFormFieldToSplitPane(1, this.ffLyrics, "");
+        final FFFileSelector<Song> fffs = new FFFileSelector<>(null, binder(I18NMIQ.get(), "wizard.ff.location"),
+                                                               binder(I18NMIQ.get(), "wizard.ff.select_audio_file"));
+        this.addFormFieldToSplitPane(fffs, null);
+
+        this.addFormFieldToSplitPane(1, this.ffCopyright, this.album.getCopyright());
+        this.addFormFieldToSplitPane(1, this.ffLyrics, null);
     }
 
     @Override

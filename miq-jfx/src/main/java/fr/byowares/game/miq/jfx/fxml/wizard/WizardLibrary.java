@@ -20,16 +20,18 @@ import fr.byowares.game.miq.jfx.editor.form.FFSourceDir;
 import fr.byowares.game.miq.jfx.editor.form.FFText;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorLength;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorNotNull;
-import fr.byowares.game.miq.jfx.editor.form.ValidatorSource;
 import fr.byowares.game.miq.jfx.editor.tree.ItemLibrary;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.Source;
+import fr.byowares.game.utils.serial.source.SourcePath;
 import javafx.stage.Stage;
 
-import static fr.byowares.game.miq.core.model.Constraints.ALBUM_CMT_MAX_LENGTH;
-import static fr.byowares.game.miq.core.model.Constraints.ALBUM_CMT_MIN_LENGTH;
-import static fr.byowares.game.miq.core.model.Constraints.ALBUM_TITLE_MAX_LENGTH;
-import static fr.byowares.game.miq.core.model.Constraints.ALBUM_TITLE_MIN_LENGTH;
+import java.nio.file.Paths;
+
+import static fr.byowares.game.miq.core.model.Constraints.LIB_CMT_MAX_LENGTH;
+import static fr.byowares.game.miq.core.model.Constraints.LIB_CMT_MIN_LENGTH;
+import static fr.byowares.game.miq.core.model.Constraints.LIB_NAME_MAX_LENGTH;
+import static fr.byowares.game.miq.core.model.Constraints.LIB_NAME_MIN_LENGTH;
 
 /**
  * A Library creation wizard.
@@ -51,19 +53,17 @@ public class WizardLibrary
      * @param parentDirectory The parent source.
      */
     public WizardLibrary(final Source parentDirectory) {
-        super(I18NMIQ.binder(I18NMIQ.get(), "wizard.library"), ItemLibrary.getFontIcon());
+        super(I18NMIQ.binder(I18NMIQ.get(), "wizard.new.library"), ItemLibrary.getFontIcon());
         this.ffSourceDir = new FFSourceDir<>(parentDirectory, Library::setSource, //
-                                             I18NMIQ.binder(I18NMIQ.get(), "wizard.location"),
-                                             I18NMIQ.binder(I18NMIQ.get(), "wizard.directory_name"));
-        this.ffSourceDir.addValidator(ValidatorNotNull.INSTANCE);
-        this.ffSourceDir.addValidator(ValidatorSource.INSTANCE);
+                                             I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.location"),
+                                             I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.directory_name"));
 
-        this.ffName = new FFText<>(Library::setName, I18NMIQ.binder(I18NMIQ.get(), "wizard.name"));
+        this.ffName = new FFText<>(Library::setName, I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.name"));
         this.ffName.addValidator(ValidatorNotNull.INSTANCE);
-        this.ffName.addValidator(new ValidatorLength(ALBUM_TITLE_MIN_LENGTH, ALBUM_TITLE_MAX_LENGTH));
+        this.ffName.addValidator(new ValidatorLength(LIB_NAME_MIN_LENGTH, LIB_NAME_MAX_LENGTH));
 
-        this.ffComment = new FFText<>(Library::setComment, I18NMIQ.binder(I18NMIQ.get(), "wizard.comment"));
-        this.ffComment.addValidator(new ValidatorLength(ALBUM_CMT_MIN_LENGTH, ALBUM_CMT_MAX_LENGTH));
+        this.ffComment = new FFText<>(Library::setComment, I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.comment"));
+        this.ffComment.addValidator(new ValidatorLength(LIB_CMT_MIN_LENGTH, LIB_CMT_MAX_LENGTH));
     }
 
     @Override
@@ -77,9 +77,8 @@ public class WizardLibrary
     void doInitialize() {
         final String newText = this.label.getText();
         this.addFormFieldToSplitPane(this.ffName, newText);
-        this.addFormFieldToSplitPane(this.ffComment, "");
-        this.addFormFieldToSplitPane(this.ffSourceDir.getFFDir(), newText);
-        this.addFormFieldToSplitPane(this.ffSourceDir, null);
+        this.addFormFieldToSplitPane(this.ffComment, null);
+        this.addFormFieldToSplitPane(this.ffSourceDir, new SourcePath(Paths.get(newText)));
     }
 
     @Override

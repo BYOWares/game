@@ -24,6 +24,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.PopupControl;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
@@ -44,7 +45,7 @@ import static javafx.beans.binding.Bindings.size;
  * @since XXX
  */
 public class FFTextSuggestion<N extends NamedSourcedObject>
-        extends FormField<N, CharSequence, String> {
+        extends SimpleFormField<VBox, N, CharSequence, String> {
 
     private static final int LINE_HEIGHT = 37;
     private static final int POPUP_MARGIN = 12;
@@ -62,12 +63,12 @@ public class FFTextSuggestion<N extends NamedSourcedObject>
             final Consumer<StringProperty> i18nBinder,
             final ObservableList<String> items
     ) {
-        super(setter, i18nBinder);
+        super(SimpleFormField.newVBoxContainer(), setter, i18nBinder);
         this.field = new TextField();
 
         final var binding = TextFields.bindAutoCompletion(this.field, new SuggestionProvider(items));
         binding.setVisibleRowCount(MAX_LINE);
-        binding.minWidthProperty().bind(this.getFFContainer().widthProperty());
+        binding.minWidthProperty().bind(this.getRoot().widthProperty());
         final PopupControl popup = binding.getAutoCompletionPopup();
         popup.getStyleClass().add("combo-box-popup");
         popup.getStyleClass().remove("auto-complete-popup"); // Coming from controlsfx jar
@@ -82,7 +83,7 @@ public class FFTextSuggestion<N extends NamedSourcedObject>
         });
 
         this.field.textProperty().addListener((o, ov, nv) -> this.runValidators(nv));
-        this.getFFContainer().getChildren().add(this.field);
+        this.getRoot().getChildren().add(this.field);
     }
 
     @Override
@@ -109,8 +110,8 @@ public class FFTextSuggestion<N extends NamedSourcedObject>
     }
 
     @Override
-    void doInit(final String input) {
-        this.field.setText(input);
+    public void init(final CharSequence input) {
+        this.field.setText(SimpleFormField.normalizeInput(input));
     }
 
     /** A simple suggestion provider wrapping an {@link javafx.collections.ObservableList}. */

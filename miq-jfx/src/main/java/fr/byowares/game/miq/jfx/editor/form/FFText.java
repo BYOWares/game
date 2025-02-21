@@ -20,6 +20,7 @@ import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -32,7 +33,7 @@ import java.util.function.Consumer;
  * @since XXX
  */
 public class FFText<N extends NamedSourcedObject>
-        extends FormField<N, CharSequence, String> {
+        extends SimpleFormField<VBox, N, CharSequence, String> {
 
     private final TextField field;
 
@@ -44,12 +45,12 @@ public class FFText<N extends NamedSourcedObject>
             final BiConsumer<N, CharSequence> setter,
             final Consumer<StringProperty> i18nBinder
     ) {
-        super(setter, i18nBinder);
+        super(SimpleFormField.newVBoxContainer(), setter, i18nBinder);
         this.field = new TextField(IMPROBABLE_INIT_VALUE);
         this.field.textProperty().addListener((o, ov, nv) -> {
             this.runValidators(nv);
         });
-        this.getFFContainer().getChildren().add(this.field);
+        this.getRoot().getChildren().add(this.field);
     }
 
     @Override
@@ -76,12 +77,12 @@ public class FFText<N extends NamedSourcedObject>
     }
 
     @Override
-    void doInit(final String input) {
-        this.field.setText(input);
+    public void init(final CharSequence input) {
+        this.field.setText(SimpleFormField.normalizeInput(input));
     }
 
     /**
-     * Add a {@link javafx.beans.value.ChangeListener} listening to the Text FormField.
+     * Add a {@link javafx.beans.value.ChangeListener} listening to the Text SimpleFormField.
      *
      * @param listener The listener to add.
      */

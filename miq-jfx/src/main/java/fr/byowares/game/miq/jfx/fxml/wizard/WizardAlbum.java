@@ -22,12 +22,14 @@ import fr.byowares.game.miq.jfx.editor.form.FFText;
 import fr.byowares.game.miq.jfx.editor.form.FFTextSuggestion;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorLength;
 import fr.byowares.game.miq.jfx.editor.form.ValidatorNotNull;
-import fr.byowares.game.miq.jfx.editor.form.ValidatorSource;
 import fr.byowares.game.miq.jfx.editor.tree.CachedData;
 import fr.byowares.game.miq.jfx.editor.tree.ItemAlbum;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.Source;
+import fr.byowares.game.utils.serial.source.SourcePath;
 import javafx.stage.Stage;
+
+import java.nio.file.Paths;
 
 import static fr.byowares.game.miq.core.model.Constraints.ALBUM_CMT_MAX_LENGTH;
 import static fr.byowares.game.miq.core.model.Constraints.ALBUM_CMT_MIN_LENGTH;
@@ -64,26 +66,24 @@ public class WizardAlbum
             final Source parentDirectory,
             final CachedData cachedData
     ) {
-        super(I18NMIQ.binder(I18NMIQ.get(), "wizard.album"), ItemAlbum.getFontIcon());
+        super(I18NMIQ.binder(I18NMIQ.get(), "wizard.new.album"), ItemAlbum.getFontIcon());
         this.ffSourceDir = new FFSourceDir<>(parentDirectory, Album::setSource, //
-                                             I18NMIQ.binder(I18NMIQ.get(), "wizard.location"),
-                                             I18NMIQ.binder(I18NMIQ.get(), "wizard.directory_name"));
-        this.ffSourceDir.addValidator(ValidatorNotNull.INSTANCE);
-        this.ffSourceDir.addValidator(ValidatorSource.INSTANCE);
+                                             I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.location"),
+                                             I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.directory_name"));
 
-        this.ffName = new FFText<>(Album::setName, I18NMIQ.binder(I18NMIQ.get(), "wizard.name"));
+        this.ffName = new FFText<>(Album::setName, I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.name"));
         this.ffName.addValidator(ValidatorNotNull.INSTANCE);
         this.ffName.addValidator(new ValidatorLength(ALBUM_TITLE_MIN_LENGTH, ALBUM_TITLE_MAX_LENGTH));
 
-        this.ffComment = new FFText<>(Album::setComment, I18NMIQ.binder(I18NMIQ.get(), "wizard.comment"));
+        this.ffComment = new FFText<>(Album::setComment, I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.comment"));
         this.ffComment.addValidator(new ValidatorLength(ALBUM_CMT_MIN_LENGTH, ALBUM_CMT_MAX_LENGTH));
 
-        this.ffArtist = new FFTextSuggestion<>(Album::setArtist, I18NMIQ.binder(I18NMIQ.get(), "wizard.artist"),
+        this.ffArtist = new FFTextSuggestion<>(Album::setArtist, I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.artist"),
                                                cachedData.getArtistNames());
         this.ffArtist.addValidator(new ValidatorLength(ARTIST_MIN_LENGTH, ARTIST_MAX_LENGTH));
 
         this.ffCopyright = new FFMLText<>(400.0, Album::setCopyright,
-                                          I18NMIQ.binder(I18NMIQ.get(), "wizard" + ".copyright"));
+                                          I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.copyright"));
         this.ffCopyright.addValidator(ValidatorNotNull.INSTANCE);
         this.ffCopyright.addValidator(new ValidatorLength(COPYRIGHT_MIN_LENGTH, COPYRIGHT_MAX_LENGTH));
     }
@@ -99,11 +99,10 @@ public class WizardAlbum
     void doInitialize() {
         final String newText = this.label.getText();
         this.addFormFieldToSplitPane(this.ffName, newText);
-        this.addFormFieldToSplitPane(this.ffComment, "");
-        this.addFormFieldToSplitPane(this.ffArtist, "");
-        this.addFormFieldToSplitPane(this.ffSourceDir.getFFDir(), newText);
-        this.addFormFieldToSplitPane(this.ffSourceDir, null);
-        this.addFormFieldToSplitPane(1, this.ffCopyright, "");
+        this.addFormFieldToSplitPane(this.ffComment, null);
+        this.addFormFieldToSplitPane(this.ffArtist, null);
+        this.addFormFieldToSplitPane(this.ffSourceDir, new SourcePath(Paths.get(newText)));
+        this.addFormFieldToSplitPane(1, this.ffCopyright, null);
     }
 
     @Override

@@ -28,7 +28,7 @@ public final class Constraints {
     public static final int COPYRIGHT_MAX_LENGTH = 16 * 1024;
 
     /** Raw lyrics minimal length. */
-    public static final int RAW_LYRICS_MIN_LENGTH = 0;
+    public static final int RAW_LYRICS_MIN_LENGTH = 1;
     /** Raw lyrics maximal length. */
     public static final int RAW_LYRICS_MAX_LENGTH = 256 * 1024;
 

@@ -54,11 +54,13 @@ import java.util.function.Consumer;
 public abstract class WizardItem<N extends NamedSourcedObject>
         implements Controller {
 
-    private static final Logger log = LoggerFactory.getLogger(WizardItem.class);
+    /** Spacing used in wizard VBoxes. */
+    public static final double WIZARD_SPACING = 10.0;
     private static final double VBOX_PADDING = 30.0;
+    private static final Logger log = LoggerFactory.getLogger(WizardItem.class);
 
     private final Consumer<StringProperty> i18nTitleBinder;
-    private final List<FormField<N, ?, ?>> formFields;
+    private final List<FormField<?, N, ?>> formFields;
     private final FontIcon fontIcon;
 
     /** The Label to indicate which kind of object is being created. */
@@ -166,7 +168,7 @@ public abstract class WizardItem<N extends NamedSourcedObject>
      * @param <FFT> The type of the raw data in the Form Field.
      */
     <FFT> void addFormFieldToSplitPane(
-            final FormField<N, ?, FFT> ff,
+            final FormField<?, N, FFT> ff,
             final FFT input
     ) {
         this.addFormFieldToSplitPane(0, ff, input);
@@ -183,25 +185,25 @@ public abstract class WizardItem<N extends NamedSourcedObject>
      */
     <FFT> void addFormFieldToSplitPane(
             final int paneIndex,
-            final FormField<N, ?, FFT> ff,
+            final FormField<?, N, FFT> ff,
             final FFT input
     ) {
         this.formFields.add(ff);
-        if (paneIndex < 0) throw new IllegalArgumentException("pane index must be strictly positive");
+        if (paneIndex < 0) throw new IllegalArgumentException("paneIndex must be strictly positive");
         while (paneIndex >= this.splitPane.getItems().size()) {
-            final VBox vBox = new VBox(10.0);
+            final VBox vBox = new VBox(WIZARD_SPACING);
             vBox.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
             vBox.setPadding(new Insets(VBOX_PADDING));
             this.splitPane.getItems().add(vBox);
             vBox.maxHeightProperty().bind(this.splitPane.heightProperty());
         }
 
-        ((VBox) this.splitPane.getItems().get(paneIndex)).getChildren().add(ff.getFFContainer());
-        ff.inErrorProperty().addListener((obs, ov, nv) -> this.updateButtonAdd());
+        ((VBox) this.splitPane.getItems().get(paneIndex)).getChildren().add(ff.getRoot());
+        ff.inErrorProperty().addListener((obs, ov, nv) -> this.updateButtonCreate());
         ff.init(input);
     }
 
-    private void updateButtonAdd() {
+    private void updateButtonCreate() {
         final boolean atLeastOneError = this.formFields.stream() //
                 .map(FormField::inErrorProperty) //
                 .anyMatch(ObservableBooleanValue::get)

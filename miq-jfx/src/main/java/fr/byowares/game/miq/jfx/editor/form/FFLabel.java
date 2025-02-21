@@ -18,44 +18,66 @@ package fr.byowares.game.miq.jfx.editor.form;
 import atlantafx.base.theme.Styles;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.Region;
+import javafx.css.PseudoClass;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
- * A Form used to edit a text field.
+ * A Form used to show a text. This text is expected to be bound to a
+ * {@link fr.byowares.game.miq.jfx.editor.form.FFText}. {@link javafx.scene.control.Label} have the advantage of
+ * allowing ellipsis when they are too long, which {@link javafx.scene.control.TextField} doesn't.
  *
  * @param <N> Type of object whose field must be edited.
  *
  * @since XXX
  */
-public class FFMLText<N extends NamedSourcedObject>
+public class FFLabel<N extends NamedSourcedObject>
         extends SimpleFormField<VBox, N, CharSequence, String> {
 
-    private final TextArea field;
+    private final Label field;
 
     /**
-     * @param minHeight  The minimal height for the text area.
      * @param setter     The setter method to update the object.
      * @param i18nBinder The binder for the label of the Form Field.
      */
-    public FFMLText(
-            final double minHeight,
+    public FFLabel(
             final BiConsumer<N, CharSequence> setter,
             final Consumer<StringProperty> i18nBinder
     ) {
         super(SimpleFormField.newVBoxContainer(), setter, i18nBinder);
-        this.field = new TextArea(IMPROBABLE_INIT_VALUE);
-        this.field.setMinHeight(minHeight);
-        this.field.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        this.field.maxHeightProperty().bind(this.getRoot().heightProperty());
+        this.field = newLabel(this.getRoot());
         this.field.textProperty().addListener((o, ov, nv) -> {
             this.runValidators(nv);
         });
         this.getRoot().getChildren().add(this.field);
+    }
+
+    /**
+     * Create a new {@link javafx.scene.control.Label} as follow:
+     * <ul>
+     *     <li>Must look like a TextField disabled.</li>
+     *     <li>Ellipsis must be at the start of the field if any.</li>
+     *     <li>The width must always fill as much as possible.</li>
+     * </ul>
+     *
+     * @param parent The {@link javafx.scene.layout.Pane} that will contain the {@link javafx.scene.control.Label}.
+     *
+     * @return A {@link javafx.scene.control.Label} with default configuration.
+     */
+    static Label newLabel(final Pane parent) {
+        final Label label = new Label(IMPROBABLE_INIT_VALUE);
+        // The next 2 lines mimic a TextField disabled.
+        label.getStyleClass().add("text-input");
+        label.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), true);
+        label.setStyle("-fx-text-overrun: leading-ellipsis;");
+        // Make the label fill the width
+        label.setPrefWidth(Double.MAX_VALUE);
+        label.maxWidthProperty().bind(parent.widthProperty());
+        return label;
     }
 
     @Override
@@ -74,15 +96,15 @@ public class FFMLText<N extends NamedSourcedObject>
     }
 
     @Override
+    public void init(final CharSequence input) {
+        this.field.setText(SimpleFormField.normalizeInput(input));
+    }
+
+    @Override
     void doSet(
             final BiConsumer<N, CharSequence> setter,
             final N n
     ) {
         setter.accept(n, this.getCurrentInput());
-    }
-
-    @Override
-    public void init(final CharSequence input) {
-        this.field.setText(SimpleFormField.normalizeInput(input));
     }
 }
