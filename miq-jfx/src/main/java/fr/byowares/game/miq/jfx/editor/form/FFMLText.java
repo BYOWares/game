@@ -52,9 +52,8 @@ public class FFMLText<N extends NamedSourcedObject>
         this.field.setMinHeight(minHeight);
         this.field.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         this.field.maxHeightProperty().bind(this.getRoot().heightProperty());
-        this.field.textProperty().addListener((o, ov, nv) -> {
-            this.runValidators(nv);
-        });
+        this.field.textProperty().addListener((o, ov, nv) -> this.runValidators(nv));
+        this.field.maxWidthProperty().bind(this.getRoot().widthProperty());
         this.getRoot().getChildren().add(this.field);
     }
 

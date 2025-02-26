@@ -47,8 +47,9 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
 import org.kordamp.ikonli.feather.Feather;
@@ -68,9 +69,6 @@ import java.util.Set;
  */
 public class EditView
         extends SceneUniqueActor {
-
-    private static final double TREE_HEIGHT = // Needed to make the TreeView take the left space in BorderPane.
-            Screen.getScreens().stream().map(s -> s.getBounds().getHeight()).max(Double::compareTo).orElse(1080.0);
 
     private final CachedData cache = new CachedData();
 
@@ -238,8 +236,8 @@ public class EditView
         // TODO make it in another thread
         final Libraries libraries = Libraries.from(Path.of(System.getProperty("user.home"), "Desktop", "MIQ"));
         this.tree.setRoot(this.convert(libraries));
-        this.tree.setPrefHeight(TREE_HEIGHT);
-        this.tree.getStyleClass().add(Tweaks.ALT_ICON);
+        VBox.setVgrow(this.tree, Priority.ALWAYS);
+        this.tree.getStyleClass().addAll(Tweaks.ALT_ICON, Styles.DENSE);
         final var treeSelectionModel = this.getTreeSelectionModel();
         treeSelectionModel.getSelectedItems().addListener(new TreeSelectionListener());
         treeSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);

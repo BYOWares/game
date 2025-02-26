@@ -21,9 +21,7 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 /**
  * A collection of Form Fields. Its error property is automatically bound to its children.
@@ -35,7 +33,7 @@ import java.util.stream.Collectors;
  * @since XXX
  */
 public abstract class ComposedFormField<P extends Pane, N extends NamedSourcedObject, T>
-        extends AbstractFormField<P, N, T> {
+        extends AbstractFormField<P, N, T, Void> {
 
     @SuppressWarnings("rawtypes") private static final BiConsumer NOOP_BI_CONSUMER = (v, c) -> {};
 
@@ -65,27 +63,42 @@ public abstract class ComposedFormField<P extends Pane, N extends NamedSourcedOb
     }
 
     /**
+     * @return The Pane to which the children are automatically added through {@link #addFormField(FormField)}.
+     */
+    Pane getChildrenPane() {
+        return this.getRoot();
+    }
+
+    /**
      * Add the given Form Field in the root of this Form Field, and bind its {@link #inErrorProperty()}.
      *
      * @param ff The Form Field to add.
      */
     void addFormField(final FormField<?, N, ?> ff) {
         this.formFields.add(ff);
-        ff.inErrorProperty().addListener((obs, ov, nv) -> this.updateInError());
-        this.getRoot().getChildren().add(ff.getRoot());
+        ff.inErrorProperty().addListener((obs, ov, nv) -> this.updateHasError());
+        this.getChildrenPane().getChildren().add(ff.getRoot());
     }
 
-    private void updateInError() {
+    private void updateHasError() {
         final boolean hasAtLeastOneError = this.formFields.stream() //
                 .map(FormField::inErrorProperty) //
                 .anyMatch(ObservableBooleanValue::get) //
                 ;
-        this.inError().set(hasAtLeastOneError);
+        this.setHasError(hasAtLeastOneError);
     }
 
     @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "{" + "inError=" + this.inError().get() + ", formFields=" + this.formFields.stream().map(
-                Objects::toString).collect(Collectors.joining(", ", "[", "]")) + '}';
+    public final String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName()).append("{");
+        this.addErrorData(sb);
+        sb.append(", formFields=[");
+        for (int i = 0; i < this.formFields.size(); i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(this.formFields.get(i).toString());
+        }
+        sb.append("]}");
+        return sb.toString();
     }
 }

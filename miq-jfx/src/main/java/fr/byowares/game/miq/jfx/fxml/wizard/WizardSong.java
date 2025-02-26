@@ -17,8 +17,8 @@ package fr.byowares.game.miq.jfx.fxml.wizard;
 
 import fr.byowares.game.miq.core.model.song.Album;
 import fr.byowares.game.miq.core.model.song.Song;
-import fr.byowares.game.miq.jfx.editor.form.FFFileSelector;
 import fr.byowares.game.miq.jfx.editor.form.FFMLText;
+import fr.byowares.game.miq.jfx.editor.form.FFSongSources;
 import fr.byowares.game.miq.jfx.editor.form.FFSourceDir;
 import fr.byowares.game.miq.jfx.editor.form.FFText;
 import fr.byowares.game.miq.jfx.editor.form.FFTextSuggestion;
@@ -66,6 +66,7 @@ public class WizardSong
     private final FFText<Song> ffComment;
     private final FFTextSuggestion<Song> ffAlbum;
     private final FFTextSuggestion<Song> ffArtist;
+    private final FFSongSources ffSongSources;
     private final FFMLText<Song> ffCopyright;
     private final FFMLText<Song> ffLyrics;
 
@@ -104,11 +105,13 @@ public class WizardSong
         this.ffArtist.addValidator(ValidatorNotNull.INSTANCE);
         this.ffArtist.addValidator(new ValidatorLength(ARTIST_MIN_LENGTH, ARTIST_MAX_LENGTH));
 
-        this.ffCopyright = new FFMLText<>(200.0, Song::setCopyright, binder(i18n, "wizard.ff.copyright"));
+        this.ffSongSources = new FFSongSources();
+
+        this.ffCopyright = new FFMLText<>(150.0, Song::setCopyright, binder(i18n, "wizard.ff.copyright"));
         this.ffCopyright.addValidator(ValidatorNotNull.INSTANCE);
         this.ffCopyright.addValidator(new ValidatorLength(COPYRIGHT_MIN_LENGTH, COPYRIGHT_MAX_LENGTH));
 
-        this.ffLyrics = new FFMLText<>(600.0, Song::setCopyright, binder(i18n, "wizard.ff.lyrics"));
+        this.ffLyrics = new FFMLText<>(450.0, Song::setCopyright, binder(i18n, "wizard.ff.lyrics"));
         this.ffLyrics.addValidator(ValidatorNotNull.INSTANCE);
         this.ffLyrics.addValidator(new ValidatorLength(RAW_LYRICS_MIN_LENGTH, RAW_LYRICS_MAX_LENGTH));
     }
@@ -129,9 +132,7 @@ public class WizardSong
         this.addFormFieldToSplitPane(this.ffAlbum, this.album.getName());
         this.addFormFieldToSplitPane(this.ffSourceDir, new SourcePath(Paths.get(newText)));
 
-        final FFFileSelector<Song> fffs = new FFFileSelector<>(null, binder(I18NMIQ.get(), "wizard.ff.location"),
-                                                               binder(I18NMIQ.get(), "wizard.ff.select_audio_file"));
-        this.addFormFieldToSplitPane(fffs, null);
+        this.addFormFieldToSplitPane(this.ffSongSources, null);
 
         this.addFormFieldToSplitPane(1, this.ffCopyright, this.album.getCopyright());
         this.addFormFieldToSplitPane(1, this.ffLyrics, null);

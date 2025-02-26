@@ -16,24 +16,13 @@
 package fr.byowares.game.miq.jfx.editor.form;
 
 import atlantafx.base.theme.Styles;
-import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
-import fr.byowares.game.utils.jfx.i18n.I18NResourceBundle;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
-import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -42,23 +31,21 @@ import java.util.function.Consumer;
  * describing this field. When an error is detected, a label is added at the end of the {@code VBox} children.
  * Custom field shall be added right after the label.
  *
- * @param <P>   Type of the Pane containing the SimpleFormField
- * @param <N>   Type of object whose field must be edited.
- * @param <FFT> The raw data's type managed by this SimpleFormField.
- * @param <T>   The type of the attribute managed by this SimpleFormField.
+ * @param <P> Type of the Pane containing the SimpleFormField
+ * @param <N> Type of object whose field must be edited.
+ * @param <T> Type of the attribute managed by this SimpleFormField.
+ * @param <V> Type of the input on which the validation must be performed.
  *
  * @since XXX
  */
-public abstract class SimpleFormField<P extends Pane, N extends NamedSourcedObject, T, FFT>
-        extends AbstractFormField<P, N, T> {
+public abstract class SimpleFormField<P extends Pane, N extends NamedSourcedObject, T, V>
+        extends AbstractFormField<P, N, T, V> {
 
     /** Very unlikely init value for field. This help trigger validation upon init. */
     protected static final String IMPROBABLE_INIT_VALUE = "PLEASE, INITIALIZE ME WITH A DIFFERENT VALUE";
     private static final double VBOX_CONTAINER_SPACING = 1.0;
 
     private final Label label;
-    private final Label error;
-    private final List<FormFieldValidator<FFT>> validators;
 
     /**
      * @param root       The root element containing the Form Field.
@@ -72,24 +59,8 @@ public abstract class SimpleFormField<P extends Pane, N extends NamedSourcedObje
     ) {
         super(root, setter);
         this.label = new Label();
-        this.label.getStyleClass().add(Styles.ACCENT);
         i18nBinder.accept(this.label.textProperty());
         this.getRoot().getChildren().add(this.label);
-
-        this.error = new Label(null, new FontIcon(BootstrapIcons.EXCLAMATION_TRIANGLE));
-        this.error.getStyleClass().add(Styles.DANGER);
-        this.error.maxWidthProperty().bind(this.getRoot().widthProperty());
-        final MenuItem menuItem = new MenuItem();
-        I18NMIQ.get().bind(menuItem.textProperty(), "wizard.error.copy");
-        menuItem.setOnAction(e -> {
-            final ClipboardContent content = new ClipboardContent();
-            content.putString(this.error.getText());
-            Clipboard.getSystemClipboard().setContent(content);
-        });
-        this.error.setContextMenu(new ContextMenu(menuItem));
-
-        /* Validation part */
-        this.validators = new ArrayList<>();
     }
 
     /**
@@ -121,50 +92,47 @@ public abstract class SimpleFormField<P extends Pane, N extends NamedSourcedObje
     }
 
     /**
-     * @param validator The validator to add to this Form Field.
+     * Update style classes depending on the level given (the lower the value, the more visible it shall be).
+     *
+     * @param styleClass The list of Style classes.
+     * @param oldValue   The old level value (<0 means it was not set).
+     * @param newValue   The new level value.
      */
-    public void addValidator(final FormFieldValidator<FFT> validator) {
-        this.validators.add(validator);
+    static void updateStyleClass(
+            final ObservableList<String> styleClass,
+            final int oldValue,
+            final int newValue
+    ) {
+        if (oldValue < 0) {
+            styleClass.add(Styles.TEXT_BOLD);
+            if (newValue <= 1) styleClass.addAll(Styles.ACCENT, Styles.TITLE_4);
+        } else {
+            if (oldValue <= 1 && newValue > 1) styleClass.removeAll(Styles.ACCENT, Styles.TITLE_4);
+            if (oldValue > 1 && newValue <= 1) styleClass.addAll(Styles.ACCENT, Styles.TITLE_4);
+        }
     }
 
     /**
      * @return The current value hold by the Form Field, in its raw format.
      */
-    abstract FFT getCurrentInput();
-
-    /**
-     * Run all validators on the given input. Update {@link #inError()} and show the {@link #error} if needed.
-     *
-     * @param input The input to validate.
-     */
-    final void runValidators(final FFT input) {
-        final CallableList errors = new CallableList();
-        for (final var validator : this.validators)
-            if (!validator.canContinueAnalysis(errors, input)) break;
-
-        final ObservableList<Node> children = this.getRoot().getChildren();
-        final Label error = this.error;
-        if (errors.isEmpty()) {
-            this.inErrorProperty().set(false);
-            children.remove(error);
-            this.runValidatorOnSuccess();
-
-        } else {
-            this.inErrorProperty().set(true);
-            if (!children.contains(error)) children.add(error);
-            I18NResourceBundle.bind(error.textProperty(), errors);
-            this.runValidatorsOnError();
-        }
-    }
-
-    /** Specific code to run when this Form Field is invalid. */
-    abstract void runValidatorsOnError();
-
-    /** Specific code to run when this Form Field is valid. */
-    abstract void runValidatorOnSuccess();
+    abstract V getCurrentInput();
 
     @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "{" + "label=" + this.label.getText() + ", inError=" + this.inError().get() + ", " + "error=" + this.error.getText() + '}';
+    final void onLevelUpdate(
+            final int oldValue,
+            final int newValue
+    ) {
+        final ObservableList<String> styleClass = this.label.getStyleClass();
+        updateStyleClass(styleClass, oldValue, newValue);
+    }
+
+    @Override
+    public final String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName()).append("{");
+        sb.append("label=").append(this.label.getText());
+        this.addErrorData(sb);
+        sb.append("}");
+        return sb.toString();
     }
 }

@@ -16,7 +16,7 @@
 package fr.byowares.game.miq.jfx.editor.form;
 
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
-import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.scene.layout.Pane;
 
 /**
@@ -31,10 +31,20 @@ import javafx.scene.layout.Pane;
 public interface FormField<P extends Pane, N extends NamedSourcedObject, T> {
 
     /**
-     * @return An observable boolean set to {@code true} when an error is detected in the form field, {@code false}
-     * otherwise.
+     * @return A read only observable boolean set to {@code true} when an error is detected in the form field and
+     * this form field is not ignored, {@code false} otherwise.
      */
-    BooleanProperty inErrorProperty();
+    ReadOnlyBooleanProperty inErrorProperty();
+
+    /**
+     * @param isIgnored Whether this form field must be ignored while validating inputs.
+     */
+    void setIsIgnored(boolean isIgnored);
+
+    /**
+     * @param hasError Whether this form field has error.
+     */
+    void setHasError(boolean hasError);
 
     /**
      * @return The {@link javafx.scene.layout.Pane} that contains this whole Form Field.
@@ -56,4 +66,13 @@ public interface FormField<P extends Pane, N extends NamedSourcedObject, T> {
      * @throws java.lang.IllegalStateException If the Form Field is in error while calling this method.
      */
     void set(final N n);
+
+
+    /**
+     * The level to give to the Form Field. The lower the value, the higher the precedence, and the more visible it
+     * will be to the user.
+     *
+     * @param level The level to configure (must be strictly positive).
+     */
+    void setLevel(final int level);
 }

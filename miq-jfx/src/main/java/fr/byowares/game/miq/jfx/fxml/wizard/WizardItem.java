@@ -198,9 +198,12 @@ public abstract class WizardItem<N extends NamedSourcedObject>
             vBox.maxHeightProperty().bind(this.splitPane.heightProperty());
         }
 
-        ((VBox) this.splitPane.getItems().get(paneIndex)).getChildren().add(ff.getRoot());
+        final VBox vBox = (VBox) this.splitPane.getItems().get(paneIndex);
+        vBox.getChildren().add(ff.getRoot());
         ff.inErrorProperty().addListener((obs, ov, nv) -> this.updateButtonCreate());
         ff.init(input);
+        ff.getRoot().maxWidthProperty().bind(vBox.widthProperty().subtract(VBOX_PADDING).subtract(VBOX_PADDING));
+        ff.setLevel(1);
     }
 
     private void updateButtonCreate() {

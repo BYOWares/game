@@ -20,7 +20,9 @@ import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import javafx.beans.property.StringProperty;
 import javafx.css.PseudoClass;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.util.function.BiConsumer;
@@ -50,9 +52,7 @@ public class FFLabel<N extends NamedSourcedObject>
     ) {
         super(SimpleFormField.newVBoxContainer(), setter, i18nBinder);
         this.field = newLabel(this.getRoot());
-        this.field.textProperty().addListener((o, ov, nv) -> {
-            this.runValidators(nv);
-        });
+        this.field.textProperty().addListener((o, ov, nv) -> this.runValidators(nv));
         this.getRoot().getChildren().add(this.field);
     }
 
@@ -75,7 +75,7 @@ public class FFLabel<N extends NamedSourcedObject>
         label.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), true);
         label.setStyle("-fx-text-overrun: leading-ellipsis;");
         // Make the label fill the width
-        label.setPrefWidth(Double.MAX_VALUE);
+        HBox.setHgrow(label, Priority.ALWAYS);
         label.maxWidthProperty().bind(parent.widthProperty());
         return label;
     }
@@ -83,16 +83,6 @@ public class FFLabel<N extends NamedSourcedObject>
     @Override
     String getCurrentInput() {
         return this.field.getText();
-    }
-
-    @Override
-    void runValidatorsOnError() {
-        this.field.pseudoClassStateChanged(Styles.STATE_DANGER, true);
-    }
-
-    @Override
-    void runValidatorOnSuccess() {
-        this.field.pseudoClassStateChanged(Styles.STATE_DANGER, false);
     }
 
     @Override
@@ -106,5 +96,15 @@ public class FFLabel<N extends NamedSourcedObject>
             final N n
     ) {
         setter.accept(n, this.getCurrentInput());
+    }
+
+    @Override
+    void runValidatorsOnError() {
+        this.field.pseudoClassStateChanged(Styles.STATE_DANGER, true);
+    }
+
+    @Override
+    void runValidatorOnSuccess() {
+        this.field.pseudoClassStateChanged(Styles.STATE_DANGER, false);
     }
 }

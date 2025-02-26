@@ -39,8 +39,10 @@ import java.util.function.Consumer;
 public class FFSourceDir<N extends NamedSourcedObject>
         extends ComposedFormField<VBox, N, Source> {
 
-    private static final int MIN_DIR_LENGTH = 1;
-    private static final int MAX_DIR_LENGTH = 255;
+    /** Minimum file's name length. */
+    static final int MIN_FILE_LENGTH = 1;
+    /** Maximum file's name length. */
+    static final int MAX_FILE_LENGTH = 255;
 
     private final FFLabel<N> filePath;
     private final FFText<N> dirName;
@@ -61,13 +63,13 @@ public class FFSourceDir<N extends NamedSourcedObject>
         this.filePath = new FFLabel<>(noOpBiConsumer(), i18nFilePath);
 
         this.filePath.addValidator(ValidatorNotNull.INSTANCE);
-        this.filePath.addValidator(ValidatorSource.INSTANCE);
+        this.filePath.addValidator(ValidatorNotExistingSource.INSTANCE);
 
         this.dirName = new FFText<>(noOpBiConsumer(), i18nDirName);
         this.dirName.addFieldTextChangeListener((obs, ov, nv) -> {
             this.filePath.init(root.toString() + File.separator + nv + File.separator + Libraries.MIQ_FILE_NAME);
         });
-        this.dirName.addValidator(new ValidatorLength(MIN_DIR_LENGTH, MAX_DIR_LENGTH));
+        this.dirName.addValidator(new ValidatorLength(MIN_FILE_LENGTH, MAX_FILE_LENGTH));
         this.dirName.addValidator(new ValidatorPath());
 
         this.addFormField(this.dirName);
@@ -79,6 +81,14 @@ public class FFSourceDir<N extends NamedSourcedObject>
         this.dirName.init(input.getName()); // filePath is bound to dirName, just need to init this one.
     }
 
+    @Override
+    final void onLevelUpdate(
+            final int oldValue,
+            final int newValue
+    ) {
+        this.filePath.setLevel(newValue);
+        this.dirName.setLevel(newValue);
+    }
 
     @Override
     void doSet(
@@ -86,5 +96,15 @@ public class FFSourceDir<N extends NamedSourcedObject>
             final N n
     ) {
         setter.accept(n, new SourcePath(Paths.get(this.filePath.getCurrentInput())));
+    }
+
+    @Override
+    void runValidatorsOnError() {
+        // Nothing to do
+    }
+
+    @Override
+    void runValidatorOnSuccess() {
+        // Nothing to do
     }
 }

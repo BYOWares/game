@@ -22,17 +22,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * A validator that ensure the length of a given field.
+ * A validator that ensure a source exist.
  *
  * @since XXX
  */
-public class ValidatorSource
+public class ValidatorSourceIsFile
         implements FormFieldValidator<String> {
 
     /** Singleton pattern. */
-    public static final ValidatorSource INSTANCE = new ValidatorSource();
+    public static final ValidatorSourceIsFile INSTANCE = new ValidatorSourceIsFile();
 
-    private ValidatorSource() {
+    private ValidatorSourceIsFile() {
         // Singleton pattern
     }
 
@@ -41,11 +41,13 @@ public class ValidatorSource
             final CallableList errors,
             final String input
     ) {
+        final I18NMIQ i18n = I18NMIQ.get();
         try {
             final Path path = Paths.get(input);
-            if (Files.exists(path)) errors.add(I18NMIQ.get().buildCallable("form_field.source.file_exist"));
+            if (!Files.exists(path)) errors.add(i18n.buildCallable("form_field.source.path_does_not_exist"));
+            else if (!Files.isRegularFile(path)) errors.add(i18n.buildCallable("form_field.source.path_is_not_file"));
         } catch (final Exception e) {
-            errors.add(I18NMIQ.get().buildCallable("form_field.source.error", e.getMessage()));
+            errors.add(i18n.buildCallable("form_field.source.error", e.getMessage()));
         }
         return true;
     }

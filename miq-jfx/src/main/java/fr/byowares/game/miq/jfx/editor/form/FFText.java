@@ -17,6 +17,7 @@ package fr.byowares.game.miq.jfx.editor.form;
 
 import atlantafx.base.theme.Styles;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextField;
@@ -47,15 +48,21 @@ public class FFText<N extends NamedSourcedObject>
     ) {
         super(SimpleFormField.newVBoxContainer(), setter, i18nBinder);
         this.field = new TextField(IMPROBABLE_INIT_VALUE);
-        this.field.textProperty().addListener((o, ov, nv) -> {
-            this.runValidators(nv);
-        });
+        this.field.textProperty().addListener((o, ov, nv) -> this.runValidators(nv));
         this.getRoot().getChildren().add(this.field);
     }
 
     @Override
     String getCurrentInput() {
         return this.field.getText();
+    }
+
+    @Override
+    void doSet(
+            final BiConsumer<N, CharSequence> setter,
+            final N n
+    ) {
+        setter.accept(n, this.getCurrentInput());
     }
 
     @Override
@@ -66,14 +73,6 @@ public class FFText<N extends NamedSourcedObject>
     @Override
     void runValidatorOnSuccess() {
         this.field.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-    }
-
-    @Override
-    void doSet(
-            final BiConsumer<N, CharSequence> setter,
-            final N n
-    ) {
-        setter.accept(n, this.getCurrentInput());
     }
 
     @Override
@@ -88,5 +87,12 @@ public class FFText<N extends NamedSourcedObject>
      */
     void addFieldTextChangeListener(final ChangeListener<String> listener) {
         this.field.textProperty().addListener(listener);
+    }
+
+    /**
+     * @return The HeightProperty of the text area.
+     */
+    ReadOnlyDoubleProperty getTextAreaHeightProperty() {
+        return this.field.heightProperty();
     }
 }

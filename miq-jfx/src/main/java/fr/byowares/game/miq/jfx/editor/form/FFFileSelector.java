@@ -21,6 +21,7 @@ import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import fr.byowares.game.utils.serial.source.Source;
 import fr.byowares.game.utils.serial.source.SourcePath;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -64,39 +65,41 @@ public class FFFileSelector<N extends NamedSourcedObject>
 
     private final Label field;
     private final Button bSelect;
-    private final Consumer<StringProperty> i18nBinderPopUp;
+    private final HBox hBox;
+    private final Consumer<StringProperty> i18nDialog;
 
     /**
-     * @param setter          The setter method to update the object.
-     * @param i18nBinder      The binder for the label of the Form Field.
-     * @param i18nBinderPopup The binder for open file dialog title.
+     * @param setter     The setter method to update the object.
+     * @param i18nLabel  The binder for the label of the Form Field.
+     * @param i18nDialog The binder for open file dialog title.
      */
     public FFFileSelector(
             final BiConsumer<N, Source> setter,
-            final Consumer<StringProperty> i18nBinder,
-            final Consumer<StringProperty> i18nBinderPopup
+            final Consumer<StringProperty> i18nLabel,
+            final Consumer<StringProperty> i18nDialog
     ) {
-        super(SimpleFormField.newVBoxContainer(), setter, i18nBinder);
-        this.i18nBinderPopUp = i18nBinderPopup;
+        super(SimpleFormField.newVBoxContainer(), setter, i18nLabel);
+        this.i18nDialog = i18nDialog;
 
         this.field = FFLabel.newLabel(this.getRoot());
-        this.field.getStyleClass().add(Styles.LEFT_PILL);
-        this.field.textProperty().addListener((o, ov, nv) -> {
-            this.runValidators(nv);
-        });
+        // LEFT_PILL prevent the danger from being applied.
+        // this.field.getStyleClass().add(Styles.LEFT_PILL);
+        this.field.textProperty().addListener((o, ov, nv) -> this.runValidators(nv));
 
         this.bSelect = new Button(null, new FontIcon(BootstrapIcons.THREE_DOTS_VERTICAL));
         this.bSelect.setOnAction(this::openFileChooser);
         this.bSelect.getStyleClass().addAll(Styles.RIGHT_PILL, Styles.ACCENT);
         this.bSelect.setPrefWidth(BUTTON_WIDTH);
         this.bSelect.setMinWidth(BUTTON_WIDTH);
-        final HBox hBox = new HBox(0.0, this.field, this.bSelect);
-        this.getRoot().getChildren().add(hBox);
+        this.hBox = new HBox(0.0, this.field, this.bSelect);
+        this.getRoot().getChildren().add(this.hBox);
+
+        this.addValidator(ValidatorSourceIsFile.INSTANCE);
     }
 
     private void openFileChooser(final ActionEvent event) {
         final FileChooser fileChooser = new FileChooser();
-        this.i18nBinderPopUp.accept(fileChooser.titleProperty());
+        this.i18nDialog.accept(fileChooser.titleProperty());
 
         try {
             final var audioFiles = new FileChooser.ExtensionFilter(I18N_AUDIO.call(), AUDIO);
@@ -120,11 +123,6 @@ public class FFFileSelector<N extends NamedSourcedObject>
     }
 
     @Override
-    String getCurrentInput() {
-        return this.field.getText();
-    }
-
-    @Override
     void runValidatorsOnError() {
         this.field.pseudoClassStateChanged(Styles.STATE_DANGER, true);
     }
@@ -135,7 +133,21 @@ public class FFFileSelector<N extends NamedSourcedObject>
     }
 
     @Override
+    String getCurrentInput() {
+        return this.field.getText();
+    }
+
+    @Override
     public void init(final Source input) {
         this.field.setText(SimpleFormField.normalizeInput(input));
+    }
+
+    /**
+     * Add a {@link javafx.beans.value.ChangeListener} listening to the Text SimpleFormField.
+     *
+     * @param listener The listener to add.
+     */
+    void addFieldTextChangeListener(final ChangeListener<String> listener) {
+        this.field.textProperty().addListener(listener);
     }
 }
