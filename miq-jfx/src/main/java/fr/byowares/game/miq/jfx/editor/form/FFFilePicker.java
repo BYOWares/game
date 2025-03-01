@@ -21,6 +21,7 @@ import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import fr.byowares.game.utils.serial.source.Source;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -28,6 +29,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -35,7 +37,7 @@ import java.util.function.Consumer;
 import static fr.byowares.game.utils.jfx.i18n.I18NResourceBundle.binder;
 
 /**
- * A Form Field that allow to select of file from disk.
+ * A Form Field that allow to select of file from disk, and choose its name, and whether it must be copied or moved.
  *
  * @param <N> Type of object whose field must be edited.
  *
@@ -111,6 +113,13 @@ public class FFFilePicker<N extends NamedSourcedObject>
         return lastIndexOf < 0 ? input : input.substring(lastIndexOf + 1);
     }
 
+    private static void addStringToMapCounter(
+            final String input,
+            final Map<String, Integer> map
+    ) {
+        map.compute(input, (k, v) -> k.isBlank() ? null : v == null ? 1 : v + 1);
+    }
+
     @Override
     public void init(final Source input) {
         this.fileSelector.init(input);
@@ -142,5 +151,39 @@ public class FFFilePicker<N extends NamedSourcedObject>
     @Override
     void runValidatorOnSuccess() {
         // Nothing to do
+    }
+
+    /**
+     * @param listener The listener to add to the FileName Form Field.
+     */
+    void addFileSelectorListener(final ChangeListener<String> listener) {
+        this.fileName.addFieldTextChangeListener(listener);
+    }
+
+    /**
+     * @param listener The listener to add to the FileSelector Form Field.
+     */
+    void addFileNameListener(final ChangeListener<String> listener) {
+        this.fileSelector.addFieldTextChangeListener(listener);
+    }
+
+    /**
+     * Add the FileName current input to a map, whose key is the input (unless {@link String#isBlank()} return {@code
+     * true}), and the value is a counter.
+     *
+     * @param map The map to enrich.
+     */
+    void addFileNameToMapCounter(final Map<String, Integer> map) {
+        addStringToMapCounter(this.fileName.getCurrentInput(), map);
+    }
+
+    /**
+     * Add the FileSelector current input to a map, whose key is the input (unless {@link String#isBlank()} return
+     * {@code true}), and the value is a counter.
+     *
+     * @param map The map to enrich.
+     */
+    void addFilePathToMapCounter(final Map<String, Integer> map) {
+        addStringToMapCounter(this.fileSelector.getCurrentInput(), map);
     }
 }

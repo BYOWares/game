@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.byowares.game.utils.jfx;
+
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 
 /**
+ * Collections of method used throughout all JFX project.
+ *
  * @since XXX
  */
-module fr.byowares.game.utils.jfx {
-    requires atlantafx.base;
-    requires fr.byowares.game.utils;
-    requires java.xml;
-    requires javafx.fxml;
-    requires org.agrona.core;
-    requires org.slf4j;
+public final class Utils {
 
-    exports fr.byowares.game.utils.jfx.concurrent;
-    exports fr.byowares.game.utils.jfx.fxml;
-    exports fr.byowares.game.utils.jfx.i18n;
-    exports fr.byowares.game.utils.jfx.theme;
-    exports fr.byowares.game.utils.jfx;
+    private Utils() {
+        // Utility class
+    }
 
-    opens fr.byowares.game.utils.jfx.fxml to javafx.fxml;
+    /**
+     * @param text The text to put in the clipboard.
+     */
+    public static void copyToClipboard(final String text) {
+        final ClipboardContent content = new ClipboardContent();
+        content.putString(text);
+        Clipboard.getSystemClipboard().setContent(content);
+    }
 }

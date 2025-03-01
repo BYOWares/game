@@ -17,6 +17,7 @@ package fr.byowares.game.miq.jfx.editor.form;
 
 import atlantafx.base.theme.Styles;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
+import fr.byowares.game.utils.jfx.Utils;
 import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
 import fr.byowares.game.utils.jfx.i18n.I18NResourceBundle;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
@@ -33,8 +34,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
@@ -96,14 +96,12 @@ public abstract class AbstractFormField<P extends Pane, N extends NamedSourcedOb
         this.error = new Label(null, new FontIcon(BootstrapIcons.EXCLAMATION_TRIANGLE));
         this.error.getStyleClass().add(Styles.DANGER);
         this.error.maxWidthProperty().bind(this.getRoot().widthProperty());
-        final MenuItem menuItem = new MenuItem();
-        I18NMIQ.get().bind(menuItem.textProperty(), "wizard.error.copy");
-        menuItem.setOnAction(e -> {
-            final ClipboardContent content = new ClipboardContent();
-            content.putString(this.error.getText());
-            Clipboard.getSystemClipboard().setContent(content);
-        });
-        this.error.setContextMenu(new ContextMenu(menuItem));
+        final MenuItem copyToClipboard = new MenuItem();
+        I18NMIQ.get().bind(copyToClipboard.textProperty(), "wizard.menu_item.error.copy");
+        copyToClipboard.setOnAction(e -> Utils.copyToClipboard(this.error.getText()));
+        this.error.setContextMenu(new ContextMenu(copyToClipboard));
+        this.error.setTooltip(new Tooltip());
+        this.error.getTooltip().textProperty().bind(this.error.textProperty());
 
         this.validators = new ArrayList<>();
         this.level = new SimpleIntegerProperty(-1);

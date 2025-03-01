@@ -18,8 +18,8 @@ package fr.byowares.game.miq.jfx.editor.form;
 /**
  * A simple Form Field validator. Validators are expected to be chained.
  *
- * @param <T> The type of the converted Form Field (the Form Field can be a Text field, but representing a Path: in
- *            such a case, {@code T} is expected to be of Path type).
+ * @param <T> Type managed by Form Field (the Form Field can be a Text field, but representing a Path: in such a
+ *            case, {@code T} is expected to be of String type).
  *
  * @since XXX
  */

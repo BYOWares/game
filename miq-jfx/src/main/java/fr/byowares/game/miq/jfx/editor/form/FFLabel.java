@@ -16,10 +16,14 @@
 package fr.byowares.game.miq.jfx.editor.form;
 
 import atlantafx.base.theme.Styles;
+import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
+import fr.byowares.game.utils.jfx.Utils;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import javafx.beans.property.StringProperty;
 import javafx.css.PseudoClass;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -77,6 +81,11 @@ public class FFLabel<N extends NamedSourcedObject>
         // Make the label fill the width
         HBox.setHgrow(label, Priority.ALWAYS);
         label.maxWidthProperty().bind(parent.widthProperty());
+
+        final MenuItem menuItem = new MenuItem();
+        I18NMIQ.get().bind(menuItem.textProperty(), "wizard.menu_item.label.copy");
+        menuItem.setOnAction(e -> Utils.copyToClipboard(label.getText()));
+        label.setContextMenu(new ContextMenu(menuItem));
         return label;
     }
 

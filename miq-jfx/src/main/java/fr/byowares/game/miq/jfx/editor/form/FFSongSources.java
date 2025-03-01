@@ -16,10 +16,13 @@
 package fr.byowares.game.miq.jfx.editor.form;
 
 import fr.byowares.game.miq.core.model.song.Song;
+import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.layout.VBox;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**
@@ -40,12 +43,22 @@ public class FFSongSources
 
         this.single = new FFSourceSingle();
         this.duo = new FFSourceDuo();
-        final ChangeListener<Boolean> listener = (obs, ov, nv) -> this.runValidators(null);
-        this.single.addSelectedListener(listener);
-        this.duo.addSelectedListener(listener);
 
         final List<FFSourceAudio<?>> sources = List.of(this.single, this.duo);
         this.addValidator(new ValidatorSourcesMinimumSelected(sources, 1L, "form_field.source_min.configuration"));
+        this.addValidator(new Validator(sources, FFFilePicker::addFileNameToMapCounter, "wizard.ff.filename_error"));
+        this.addValidator(new Validator(sources, FFFilePicker::addFilePathToMapCounter, "wizard.ff.filepath_error"));
+
+        final ChangeListener<String> sListener = (obs, ov, nv) -> this.runValidators(null);
+        for (final FFSourceAudio<?> source : sources) {
+            source.addSelectedListener((obs, ov, nv) -> this.runValidators(null));
+            for (int i = 0; i < source.getFilePickersCount(); i++) {
+                final FFFilePicker<?> ffFilePicker = source.getFilePicker(i);
+                ffFilePicker.addFileNameListener(sListener);
+                ffFilePicker.addFileSelectorListener(sListener);
+            }
+        }
+
         sources.forEach(this::addFormField);
     }
 
@@ -81,11 +94,71 @@ public class FFSongSources
 
     @Override
     void runValidatorsOnError() {
-
+        // Nothing to do
     }
 
     @Override
     void runValidatorOnSuccess() {
+        // Nothing to do
+    }
 
+    /**
+     * Ensure a minimum {@link fr.byowares.game.miq.jfx.editor.form.FFSourceAudio} are selected.
+     */
+    private record ValidatorSourcesMinimumSelected(
+            List<FFSourceAudio<?>> ffSources,
+            long minSelected,
+            String i18n
+    )
+            implements FormFieldValidator<Void> {
+
+        /**
+         * @param ffSources   The list of {@link FFSourceAudio} to check.
+         * @param minSelected The minimum of element in the list that must be selected.
+         * @param i18n        The i18n key for the error message (first parameter is {@code minSelected}, second is actual
+         *                    count).
+         */
+        private ValidatorSourcesMinimumSelected {
+        }
+
+        @Override
+        public boolean canContinueAnalysis(
+                final CallableList errors,
+                final Void input
+        ) {
+            final long count = this.ffSources.stream().filter(FFSourceAudio::isSelected).count();
+            if (count < this.minSelected) errors.add(I18NMIQ.get().buildCallable(this.i18n, this.minSelected, count));
+            return true;
+        }
+    }
+
+    /**
+     * Ensure the same value inside several {@link FFFilePicker} does not appear
+     * more than once.
+     */
+    private record Validator(
+            List<FFSourceAudio<?>> ffSources,
+            BiConsumer<FFFilePicker<?>, Map<String, Integer>> mapUpdater,
+            String i18n
+    )
+            implements FormFieldValidator<Void> {
+
+        @Override
+        public boolean canContinueAnalysis(
+                final CallableList errors,
+                final Void input
+        ) {
+            final Map<String, Integer> map = new HashMap<>();
+            for (final FFSourceAudio<?> ffSource : this.ffSources) {
+                if (!ffSource.isSelected()) continue;
+                for (int i = 0; i < ffSource.getFilePickersCount(); i++) {
+                    this.mapUpdater.accept(ffSource.getFilePicker(i), map);
+                }
+            }
+            map.forEach((k, v) -> {
+                if (v > 1) errors.add(I18NMIQ.get().buildCallable(this.i18n, k, v));
+            });
+            return true;
+        }
     }
 }

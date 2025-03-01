@@ -123,6 +123,13 @@ public abstract class FFSourceAudio<S extends AudioSource>
     }
 
     /**
+     * @return The number of {@link fr.byowares.game.miq.jfx.editor.form.FFFilePicker} associated to this source.
+     */
+    int getFilePickersCount() {
+        return this.filePickers.size();
+    }
+
+    /**
      * @return {@code true} if this Form Field is selected, {@code false} if it is ignored.
      */
     public boolean isSelected() {

@@ -19,6 +19,7 @@ import fr.byowares.game.app.fxml.HomePage;
 import fr.byowares.game.app.i18n.I18NApp;
 import fr.byowares.game.app.info.AppInfo;
 import fr.byowares.game.utils.jfx.Resources;
+import fr.byowares.game.utils.jfx.concurrent.GameThreadFactory;
 import fr.byowares.game.utils.jfx.i18n.I18NLocaleManager;
 import fr.byowares.game.utils.jfx.theme.ThemeManager;
 import javafx.application.Application;
@@ -93,9 +94,10 @@ public class App
         I18NLocaleManager.updateLocale(Locale.ENGLISH);
         I18NApp.get().bind(stage.titleProperty(), "title", AppInfo.VERSION);
         stage.setMaximized(true);
+        stage.setOnCloseRequest(e -> GameThreadFactory.defaultExecutorService().shutdown());
 
         final StackPane root = new StackPane();
-        root.setAlignment(Pos.TOP_LEFT);
+        root.setAlignment(Pos.BOTTOM_RIGHT);
         final Scene scene = new Scene(root);
         stage.setScene(scene);
         ThemeManager.subscribe(scene);

@@ -15,6 +15,7 @@
  */
 package fr.byowares.game.miq.jfx.fxml.wizard;
 
+import atlantafx.base.controls.ModalPane;
 import fr.byowares.game.miq.jfx.editor.form.FormField;
 import fr.byowares.game.utils.jfx.Controller;
 import fr.byowares.game.utils.jfx.FontIconSizeEnforcer;
@@ -26,6 +27,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableBooleanValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -99,8 +101,13 @@ public abstract class WizardItem<N extends NamedSourcedObject>
             final Stage stage
     ) {
         final Pair<WizardItem<T>, StackPane> pair = FXMLLoader.load(wizard, WizardItem.class, "WizardItem");
-        final Scene scene = new Scene(pair.root());
+        final ModalPane modalPane = new ModalPane();
+        modalPane.setAlignment(Pos.CENTER);
+        final StackPane root = pair.root();
+        root.getChildren().add(modalPane);
+        final Scene scene = new Scene(root);
         ThemeManager.subscribe(scene);
+
         final Stage newStage = new Stage();
         newStage.setOnCloseRequest(e -> ThemeManager.unsubscribe(scene));
         wizard.i18nTitleBinder.accept(newStage.titleProperty());

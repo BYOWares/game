@@ -43,6 +43,7 @@ public abstract class SimpleFormField<P extends Pane, N extends NamedSourcedObje
 
     /** Very unlikely init value for field. This help trigger validation upon init. */
     protected static final String IMPROBABLE_INIT_VALUE = "PLEASE, INITIALIZE ME WITH A DIFFERENT VALUE";
+    private static final String[] LEVEL1_STYLE = {Styles.ACCENT, Styles.TITLE_4};
     private static final double VBOX_CONTAINER_SPACING = 1.0;
 
     private final Label label;
@@ -105,10 +106,10 @@ public abstract class SimpleFormField<P extends Pane, N extends NamedSourcedObje
     ) {
         if (oldValue < 0) {
             styleClass.add(Styles.TEXT_BOLD);
-            if (newValue <= 1) styleClass.addAll(Styles.ACCENT, Styles.TITLE_4);
+            if (newValue <= 1) styleClass.addAll(LEVEL1_STYLE);
         } else {
-            if (oldValue <= 1 && newValue > 1) styleClass.removeAll(Styles.ACCENT, Styles.TITLE_4);
-            if (oldValue > 1 && newValue <= 1) styleClass.addAll(Styles.ACCENT, Styles.TITLE_4);
+            if (oldValue <= 1 && newValue > 1) styleClass.removeAll(LEVEL1_STYLE);
+            if (oldValue > 1 && newValue <= 1) styleClass.addAll(LEVEL1_STYLE);
         }
     }
 

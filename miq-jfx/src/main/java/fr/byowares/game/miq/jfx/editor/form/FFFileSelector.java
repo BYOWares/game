@@ -16,6 +16,7 @@
 package fr.byowares.game.miq.jfx.editor.form;
 
 import atlantafx.base.theme.Styles;
+import fr.byowares.game.miq.core.model.audio.SingleSource;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import fr.byowares.game.utils.serial.source.Source;
@@ -31,18 +32,21 @@ import javafx.stage.FileChooser;
 import org.agrona.LangUtil;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import static fr.byowares.game.utils.jfx.concurrent.BackgroundTasks.runBlocking;
+
 /**
- * A Form used to show a text. This text is expected to be bound to a
- * {@link fr.byowares.game.miq.jfx.editor.form.FFText}. {@link javafx.scene.control.Label} have the advantage of
- * allowing ellipsis when they are too long, which {@link javafx.scene.control.TextField} doesn't.
+ * A Form Field that allow to select an audio file from disk.
  *
  * @param <N> Type of object whose field must be edited.
  *
@@ -61,12 +65,12 @@ public class FFFileSelector<N extends NamedSourcedObject>
             .toArray(String[]::new) //
             ;
     private static final double BUTTON_WIDTH = 25.0;
-
+    private static final Logger log = LoggerFactory.getLogger(FFFileSelector.class);
 
     private final Label field;
     private final Button bSelect;
-    private final HBox hBox;
     private final Consumer<StringProperty> i18nDialog;
+    private final ValidatorSettable<String> validator;
 
     /**
      * @param setter     The setter method to update the object.
@@ -91,10 +95,11 @@ public class FFFileSelector<N extends NamedSourcedObject>
         this.bSelect.getStyleClass().addAll(Styles.RIGHT_PILL, Styles.ACCENT);
         this.bSelect.setPrefWidth(BUTTON_WIDTH);
         this.bSelect.setMinWidth(BUTTON_WIDTH);
-        this.hBox = new HBox(0.0, this.field, this.bSelect);
-        this.getRoot().getChildren().add(this.hBox);
+        this.getRoot().getChildren().add(new HBox(0.0, this.field, this.bSelect));
 
+        this.validator = new ValidatorSettable<>();
         this.addValidator(ValidatorSourceIsFile.INSTANCE);
+        this.addValidator(this.validator);
     }
 
     private void openFileChooser(final ActionEvent event) {
@@ -105,9 +110,34 @@ public class FFFileSelector<N extends NamedSourcedObject>
             final var audioFiles = new FileChooser.ExtensionFilter(I18N_AUDIO.call(), AUDIO);
             final var allFiles = new FileChooser.ExtensionFilter(I18N_ALL.call(), ALL);
             fileChooser.getExtensionFilters().addAll(audioFiles, allFiles);
+            // TODO make something configurable.
+            fileChooser.setInitialDirectory(Path.of(System.getProperty("user.home"), "Desktop").toFile());
             final File selectedFile = fileChooser.showOpenDialog(this.bSelect.getScene().getWindow());
             if (selectedFile == null) return;
-            this.field.setText(selectedFile.toString());
+
+            final I18NMIQ i18n = I18NMIQ.get();
+            runBlocking(this.field.getScene(), //
+                        I18NMIQ.binder(i18n, "wizard.ff.analyze_file", selectedFile.toString()), //
+                        // Actual blocking task
+                        (u, c) -> {
+                            u.accept(-1L, 1L); // Indeterminate progress
+                            this.validator.clearErrors();
+                            final var singleSource = new SingleSource(new SourcePath(selectedFile.toPath()));
+                            try (final var ignored = singleSource.load()) {
+                                // All good, the file could be loaded
+                                return null;
+
+                            } catch (final Exception e) {
+                                log.info("File selected by user could not be loaded {}", selectedFile, e);
+                                final var error = i18n.buildCallable("wizard.ff.analyze_file_error", e.getMessage());
+                                this.validator.addError(error);
+                                throw e;
+                            }
+                        }, //
+                        n -> this.field.setText(selectedFile.toString()), // On success
+                        n -> this.field.setText(selectedFile.toString()), // On failure
+                        n -> this.field.setText(null) // On cancel
+            );
 
         } catch (final Exception e) {
             LangUtil.rethrowUnchecked(e);

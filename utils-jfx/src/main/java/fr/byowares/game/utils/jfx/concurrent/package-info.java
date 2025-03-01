@@ -15,21 +15,8 @@
  */
 
 /**
+ * Collection of thread and concurrent objects.
+ *
  * @since XXX
  */
-module fr.byowares.game.utils.jfx {
-    requires atlantafx.base;
-    requires fr.byowares.game.utils;
-    requires java.xml;
-    requires javafx.fxml;
-    requires org.agrona.core;
-    requires org.slf4j;
-
-    exports fr.byowares.game.utils.jfx.concurrent;
-    exports fr.byowares.game.utils.jfx.fxml;
-    exports fr.byowares.game.utils.jfx.i18n;
-    exports fr.byowares.game.utils.jfx.theme;
-    exports fr.byowares.game.utils.jfx;
-
-    opens fr.byowares.game.utils.jfx.fxml to javafx.fxml;
-}
+package fr.byowares.game.utils.jfx.concurrent;
