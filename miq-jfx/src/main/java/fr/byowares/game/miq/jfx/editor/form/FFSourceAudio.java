@@ -118,35 +118,35 @@ public abstract class FFSourceAudio<S extends AudioSource>
      *
      * @return The {@link fr.byowares.game.miq.jfx.editor.form.FFFilePicker} at the given position.
      */
-    FFFilePicker<Song> getFilePicker(final int index) {
+    final FFFilePicker<Song> getFilePicker(final int index) {
         return this.filePickers.get(index);
     }
 
     /**
      * @return The number of {@link fr.byowares.game.miq.jfx.editor.form.FFFilePicker} associated to this source.
      */
-    int getFilePickersCount() {
+    final int getFilePickersCount() {
         return this.filePickers.size();
     }
 
     /**
      * @return {@code true} if this Form Field is selected, {@code false} if it is ignored.
      */
-    public boolean isSelected() {
+    public final boolean isSelected() {
         return this.isSelected.isSelected();
     }
 
     /**
      * @param selected Whether this Form Field must be selected ({@code true}) or ignored ({@code false}).
      */
-    void setSelected(final boolean selected) {
+    final void setSelected(final boolean selected) {
         this.isSelected.setSelected(selected);
     }
 
     /**
      * @param listener The listener to add to the {@link #isSelected()} property.
      */
-    public void addSelectedListener(final ChangeListener<? super Boolean> listener) {
+    public final void addSelectedListener(final ChangeListener<? super Boolean> listener) {
         this.isSelected.selectedProperty().addListener(listener);
     }
 

@@ -97,7 +97,7 @@ public interface MIQItem {
     }
 
     /**
-     * @return {@code true} If this element have a default child, {@code false} otherwise.
+     * @return The default child if any, {@code null} if he has none.
      */
-    boolean hasDefaultChild();
+    MIQItem getDefaultChild();
 }

@@ -78,7 +78,7 @@ public class ItemLibrary
     }
 
     @Override
-    public boolean hasDefaultChild() {
-        return true;
+    public MIQItem getDefaultChild() {
+        return new ItemAlbum(this.getNamedSourcedObject().getUndefined());
     }
 }

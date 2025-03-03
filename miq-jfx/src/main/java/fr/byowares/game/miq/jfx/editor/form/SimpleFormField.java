@@ -123,8 +123,7 @@ public abstract class SimpleFormField<P extends Pane, N extends NamedSourcedObje
             final int oldValue,
             final int newValue
     ) {
-        final ObservableList<String> styleClass = this.label.getStyleClass();
-        updateStyleClass(styleClass, oldValue, newValue);
+        updateStyleClass(this.label.getStyleClass(), oldValue, newValue);
     }
 
     @Override

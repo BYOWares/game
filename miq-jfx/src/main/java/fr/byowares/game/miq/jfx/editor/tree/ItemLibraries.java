@@ -80,8 +80,9 @@ public class ItemLibraries
         return getFontIcon();
     }
 
+
     @Override
-    public boolean hasDefaultChild() {
-        return true;
+    public MIQItem getDefaultChild() {
+        return new ItemLibrary(this.getNamedSourcedObject().getUndefined());
     }
 }

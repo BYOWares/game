@@ -17,6 +17,7 @@ package fr.byowares.game.miq.jfx.editor.form;
 
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -32,6 +33,7 @@ public class ValidatorPath
         implements FormFieldValidator<String> {
 
     private static final ThreadLocal<StringBuilder> STRING_BUILDER_TL = ThreadLocal.withInitial(StringBuilder::new);
+    private static final String DOT = ".";
     private static final char[] INVALID_CHARS = {
             '\\', '/', ':', '*', '?', '"', '<', '>', '|', '&', ';', '\'', '`', '(', ')', ',', '='
     };
@@ -46,12 +48,22 @@ public class ValidatorPath
     private final BitSet ctrl;
     private final BitSet chars;
     private final BitSet win;
+    private final List<String> custom;
 
-    /** Instantiate a path validator. */
+    /**
+     * @param custom List of additional forbidden words list.
+     */
+    public ValidatorPath(final List<String> custom) {
+        this();
+        custom.forEach(e -> this.custom.add(e.toUpperCase()));
+    }
+
+    /** Instantiate a path validator with no custom forbidden words list. */
     public ValidatorPath() {
         this.ctrl = new BitSet();
         this.chars = new BitSet();
         this.win = new BitSet();
+        this.custom = new ArrayList<>();
     }
 
     private static String bitSet2String(final BitSet bitSet) {
@@ -82,18 +94,26 @@ public class ValidatorPath
             if (Arrays.binarySearch(INVALID_CHARS, c) >= 0) this.chars.set(i);
         }
         boolean canAnalysisContinue = true;
+        final I18NMIQ i18n = I18NMIQ.get();
         if (!this.ctrl.isEmpty()) {
-            errors.add(I18NMIQ.get().buildCallable("form_field.path.ctrl", bitSet2String(this.ctrl)));
+            errors.add(i18n.buildCallable("form_field.path.ctrl", bitSet2String(this.ctrl)));
             canAnalysisContinue = false;
         }
         if (!this.chars.isEmpty()) {
-            errors.add(I18NMIQ.get().buildCallable("form_field.path.char", bitSet2String(this.chars)));
+            errors.add(i18n.buildCallable("form_field.path.char", bitSet2String(this.chars)));
             canAnalysisContinue = false;
         }
 
-        final int indexOf = WIN.indexOf(input.toUpperCase());
+        final String noExt = input.contains(DOT) ? input.substring(0, input.lastIndexOf(DOT)) : input;
+        final int indexOf = WIN.indexOf(noExt.toUpperCase());
         if (indexOf >= 0) {
-            errors.add(I18NMIQ.get().buildCallable("form_field.path.win", WIN.get(indexOf), WIN));
+            errors.add(i18n.buildCallable("form_field.path.win", WIN.get(indexOf), WIN));
+            canAnalysisContinue = false;
+        }
+
+        final int index = this.custom.indexOf(input.toUpperCase());
+        if (index >= 0) {
+            errors.add(i18n.buildCallable("form_field.path.custom", this.custom.get(index), this.custom));
             canAnalysisContinue = false;
         }
 

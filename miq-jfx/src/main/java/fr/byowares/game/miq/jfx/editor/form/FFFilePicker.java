@@ -16,6 +16,7 @@
 package fr.byowares.game.miq.jfx.editor.form;
 
 import atlantafx.base.controls.ToggleSwitch;
+import fr.byowares.game.miq.core.model.song.Libraries;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import fr.byowares.game.utils.serial.source.Source;
@@ -29,6 +30,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -69,7 +74,7 @@ public class FFFilePicker<N extends NamedSourcedObject>
         final I18NMIQ i18n = I18NMIQ.get();
         this.fileName = new FFText<>(ComposedFormField.noOpBiConsumer(), binder(i18n, "wizard.ff.file_name"));
         this.fileName.addValidator(ValidatorNotNull.INSTANCE);
-        this.fileName.addValidator(new ValidatorPath());
+        this.fileName.addValidator(new ValidatorPath(List.of(Libraries.MIQ_FILE_NAME)));
         this.fileName.addValidator(new ValidatorLength(FFSourceDir.MIN_FILE_LENGTH, FFSourceDir.MAX_FILE_LENGTH));
 
         this.fileSelector.addFieldTextChangeListener((obs, ov, nv) -> {
@@ -141,6 +146,13 @@ public class FFFilePicker<N extends NamedSourcedObject>
             final BiConsumer<N, Source> setter,
             final N n
     ) {
+        // FIXME
+        // Nothing to do because this is a design issue. Explication:
+        // Only NamedSourcedObject can be set. However, by restricting it that much, it's impossible to create
+        // intermediate object, like SingleSource, or DuoSource.
+        // In addition, object that are record cannot be set, we would need supplier here ...
+
+        // To work around this limitation, the method #currentInputAsSource was created.
     }
 
     @Override
@@ -168,22 +180,65 @@ public class FFFilePicker<N extends NamedSourcedObject>
     }
 
     /**
-     * Add the FileName current input to a map, whose key is the input (unless {@link String#isBlank()} return {@code
-     * true}), and the value is a counter.
+     * Add the FileName current input to a map (in uppercase), whose key is the input (unless
+     * {@link String#isBlank()} return {@code true}), and the value is a counter.
      *
      * @param map The map to enrich.
      */
     void addFileNameToMapCounter(final Map<String, Integer> map) {
-        addStringToMapCounter(this.fileName.getCurrentInput(), map);
+        addStringToMapCounter(this.fileName.getCurrentInput().toUpperCase(), map);
     }
 
     /**
-     * Add the FileSelector current input to a map, whose key is the input (unless {@link String#isBlank()} return
-     * {@code true}), and the value is a counter.
+     * Add the FileSelector current input to a map (in uppercase), whose key is the input (unless
+     * {@link String#isBlank()} return {@code true}), and the value is a counter.
      *
      * @param map The map to enrich.
      */
     void addFilePathToMapCounter(final Map<String, Integer> map) {
-        addStringToMapCounter(this.fileSelector.getCurrentInput(), map);
+        addStringToMapCounter(this.fileSelector.getCurrentInput().toUpperCase(), map);
+    }
+
+    /**
+     * @param parent The parent source (a directory).
+     *
+     * @return The current input as a {@link fr.byowares.game.utils.serial.source.Source}.
+     */
+    Source asSource(final Source parent) {
+        return parent.resolve(this.fileName.getCurrentInput());
+    }
+
+    FileOperationContext initiateFileOperation(final Source destSource)
+            throws IOException {
+        final Path path = Path.of(this.fileSelector.getCurrentInput());
+        final Source tempSource = destSource.createTempSource();
+        tempSource.copyFileContent(path);
+        final boolean deleteOnSuccess = !this.copyFile.isSelected();
+        return new FileOperationContext(path, deleteOnSuccess, tempSource, destSource);
+    }
+
+    /**
+     * @param originFile                 The file to copy from the disk.
+     * @param deleteOriginFileOnFinalize Whether the file must be deleted once the copy is performed.
+     * @param tempSource                 The temporary source (used to avoid any name collision).
+     * @param targetSource               The target source for the file.
+     */
+    record FileOperationContext(
+            Path originFile,
+            boolean deleteOriginFileOnFinalize,
+            Source tempSource,
+            Source targetSource
+    ) {
+
+        /**
+         * Rename the {@code tempSource} is {@code targetSource}, and delete the {@code originFile} if necessary.
+         *
+         * @throws IOException If an I/O error occurs.
+         */
+        void finalizeOperation()
+                throws IOException {
+            this.tempSource.rename(this.targetSource.getName());
+            if (this.deleteOriginFileOnFinalize) Files.delete(this.originFile);
+        }
     }
 }

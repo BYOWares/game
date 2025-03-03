@@ -17,6 +17,7 @@ package fr.byowares.game.utils.serial.source;
 
 import java.io.InputStream;
 import java.io.Writer;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -67,5 +68,20 @@ public class SourceInMemory
     @Override
     public String getName() {
         return this.toString();
+    }
+
+    @Override
+    public Source createTempSource() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Source rename(final String newName) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void copyFileContent(final Path path) {
+        throw new UnsupportedOperationException();
     }
 }

@@ -46,6 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static fr.byowares.game.utils.jfx.concurrent.BackgroundTasks.runBlocking;
+
 /**
  * Main pattern to create a new object
  *
@@ -154,16 +156,27 @@ public abstract class WizardItem<N extends NamedSourcedObject>
     /** Called when the button Create is activated. */
     @FXML
     final void onCreate() {
-        try {
-            this.returnedObject = this.newEmptyObject();
-            for (final var ff : this.formFields) {
-                ff.set(this.returnedObject);
-            }
-        } catch (final Exception e) {
-            log.warn("Failed to create the object: {}", this.returnedObject, e);
-            this.returnedObject = null;
-        }
-        this.onCancel();
+        runBlocking(this.bCancel.getScene(), this.i18nTitleBinder, //
+                    (u, c) -> {
+                        try {
+                            this.returnedObject = this.newEmptyObject();
+                            final long total = (long) this.formFields.size();
+                            long w = 0L;
+                            u.accept(w, total);
+                            for (final var ff : this.formFields) {
+                                ff.set(this.returnedObject);
+                                u.accept(++w, total);
+                            }
+                        } catch (final Exception e) {
+                            log.warn("Failed to create the object: {}", this.returnedObject, e);
+                            this.returnedObject = null;
+                        }
+                        return this.returnedObject;
+                    }, //
+                    n -> this.onCancel(), //
+                    n -> this.onCancel(), //
+                    n -> this.onCancel() //
+        );
     }
 
     /**

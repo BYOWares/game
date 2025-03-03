@@ -17,6 +17,7 @@ package fr.byowares.game.miq.jfx.editor.form;
 
 import fr.byowares.game.miq.core.model.audio.DuoSource;
 import fr.byowares.game.miq.core.model.song.Song;
+import fr.byowares.game.utils.serial.source.Source;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -49,7 +50,9 @@ public class FFSourceDuo
             final BiConsumer<Song, DuoSource> setter,
             final Song song
     ) {
-
+        if (!this.isSelected()) return;
+        final Source parent = song.getSource().getParent();
+        setter.accept(song, new DuoSource(this.voiceFile.asSource(parent), this.musicFile.asSource(parent)));
     }
 
     @Override

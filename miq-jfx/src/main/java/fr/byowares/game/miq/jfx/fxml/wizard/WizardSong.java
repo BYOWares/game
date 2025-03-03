@@ -111,7 +111,8 @@ public class WizardSong
         this.ffCopyright.addValidator(ValidatorNotNull.INSTANCE);
         this.ffCopyright.addValidator(new ValidatorLength(COPYRIGHT_MIN_LENGTH, COPYRIGHT_MAX_LENGTH));
 
-        this.ffLyrics = new FFMLText<>(450.0, Song::setCopyright, binder(i18n, "wizard.ff.lyrics"));
+        this.ffLyrics = new FFMLText<>(450.0, (s, t) -> t.toString().lines().forEach(s.getRawLyrics()::add),
+                                       binder(i18n, "wizard.ff.lyrics"));
         this.ffLyrics.addValidator(ValidatorNotNull.INSTANCE);
         this.ffLyrics.addValidator(new ValidatorLength(RAW_LYRICS_MIN_LENGTH, RAW_LYRICS_MAX_LENGTH));
     }

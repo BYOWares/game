@@ -43,7 +43,8 @@ public class FFSourceSingle
             final BiConsumer<Song, SingleSource> setter,
             final Song song
     ) {
-
+        if (!this.isSelected()) return;
+        setter.accept(song, new SingleSource(this.audioFile.asSource(song.getSource().getParent())));
     }
 
     @Override

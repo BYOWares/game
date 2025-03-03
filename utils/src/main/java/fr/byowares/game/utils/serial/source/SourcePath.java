@@ -21,12 +21,15 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * Simple {@link java.nio.file.Path} wrapper to implement the {@link fr.byowares.game.utils.serial.source.Source}
@@ -38,6 +41,8 @@ import java.util.stream.Stream;
  */
 public record SourcePath(Path path)
         implements Source {
+
+    private static final CopyOption[] COPY_OPTIONS = {REPLACE_EXISTING};
 
     /**
      * @param path The path to be considered as a source.
@@ -90,5 +95,34 @@ public record SourcePath(Path path)
     @Override
     public String getName() {
         return this.path.getFileName().toString();
+    }
+
+    @Override
+    public Source createTempSource()
+            throws IOException {
+        final Path parent = this.path.getParent();
+        if (parent == null)
+            throw new IOException("No parent found to " + this + ", could not create a temporary file.");
+        Files.createDirectories(parent);
+        if (Files.isRegularFile(this.path)) return new SourcePath(Files.createTempFile(parent, this.getName(), ".tmp"));
+        return new SourcePath(Files.createTempDirectory(parent, this.getName()));
+    }
+
+    @Override
+    public Source rename(final String newName)
+            throws IOException {
+        if (!Files.exists(this.path)) throw new IOException("");
+
+        final Path newPath = this.path.getParent().resolve(newName);
+        Files.move(this.path, newPath, COPY_OPTIONS);
+        return new SourcePath(newPath);
+    }
+
+    @Override
+    public void copyFileContent(final Path path)
+            throws IOException {
+        if (!Files.exists(path)) throw new IOException("'" + path + "' does not exist.");
+        if (!Files.isRegularFile(path)) throw new IOException("'" + path + "' is not a regular file.");
+        Files.copy(path, this.path, COPY_OPTIONS);
     }
 }

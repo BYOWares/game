@@ -19,7 +19,12 @@ import fr.byowares.game.miq.core.model.song.Song;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.layout.VBox;
+import org.agrona.LangUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +38,8 @@ import java.util.function.BiConsumer;
  */
 public class FFSongSources
         extends ComposedFormField<VBox, Song, Song> {
+
+    private static final Logger log = LoggerFactory.getLogger(FFSongSources.class);
 
     private final FFSourceSingle single;
     private final FFSourceDuo duo;
@@ -53,12 +60,11 @@ public class FFSongSources
         for (final FFSourceAudio<?> source : sources) {
             source.addSelectedListener((obs, ov, nv) -> this.runValidators(null));
             for (int i = 0; i < source.getFilePickersCount(); i++) {
-                final FFFilePicker<?> ffFilePicker = source.getFilePicker(i);
+                final FFFilePicker<Song> ffFilePicker = source.getFilePicker(i);
                 ffFilePicker.addFileNameListener(sListener);
                 ffFilePicker.addFileSelectorListener(sListener);
             }
         }
-
         sources.forEach(this::addFormField);
     }
 
@@ -90,6 +96,24 @@ public class FFSongSources
     ) {
         this.single.set(song);
         this.duo.set(song);
+
+        final List<FFFilePicker.FileOperationContext> contexts = new ArrayList<>();
+        try {
+            if (this.single.isSelected()) {
+                contexts.add(this.single.getFilePicker(0).initiateFileOperation(song.getSingleSource().audioSource()));
+            }
+            if (this.duo.isSelected()) {
+                contexts.add(this.duo.getFilePicker(0).initiateFileOperation(song.getDuoSource().voiceSource()));
+                contexts.add(this.duo.getFilePicker(1).initiateFileOperation(song.getDuoSource().musicSource()));
+            }
+
+            for (final FFFilePicker.FileOperationContext context : contexts) {
+                context.finalizeOperation();
+            }
+        } catch (final IOException e) {
+            log.warn("Failed to set audio sources for {}", song, e);
+            LangUtil.rethrowUnchecked(e);
+        }
     }
 
     @Override
@@ -112,15 +136,6 @@ public class FFSongSources
     )
             implements FormFieldValidator<Void> {
 
-        /**
-         * @param ffSources   The list of {@link FFSourceAudio} to check.
-         * @param minSelected The minimum of element in the list that must be selected.
-         * @param i18n        The i18n key for the error message (first parameter is {@code minSelected}, second is actual
-         *                    count).
-         */
-        private ValidatorSourcesMinimumSelected {
-        }
-
         @Override
         public boolean canContinueAnalysis(
                 final CallableList errors,
@@ -133,8 +148,7 @@ public class FFSongSources
     }
 
     /**
-     * Ensure the same value inside several {@link FFFilePicker} does not appear
-     * more than once.
+     * Ensure the same value inside several {@link FFFilePicker} does not appear more than once.
      */
     private record Validator(
             List<FFSourceAudio<?>> ffSources,

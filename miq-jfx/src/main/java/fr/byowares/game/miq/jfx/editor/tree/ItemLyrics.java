@@ -75,7 +75,7 @@ public class ItemLyrics
     }
 
     @Override
-    public boolean hasDefaultChild() {
-        return false;
+    public MIQItem getDefaultChild() {
+        return null;
     }
 }

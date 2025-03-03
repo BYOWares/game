@@ -22,6 +22,7 @@ module fr.byowares.game.utils {
     requires org.agrona.core;
     requires org.slf4j;
     requires org.yaml.snakeyaml;
+    requires jdk.unsupported;
 
     exports fr.byowares.game.utils.hashcodes;
     exports fr.byowares.game.utils.info;

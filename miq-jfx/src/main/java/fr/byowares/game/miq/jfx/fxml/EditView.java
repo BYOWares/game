@@ -127,7 +127,7 @@ public class EditView
         final var children = parent.getChildren();
         if (children.isEmpty()) children.add(childTreeItem);
         else {
-            int index = parent.getValue().hasDefaultChild() ? 1 : 0;
+            int index = parent.getValue().getDefaultChild() == null ? 0 : 1;
             for (; index < children.size(); index++) {
                 if (childMiqItem.getName().compareTo(children.get(index).getValue().getName()) < 0) break;
             }
@@ -284,7 +284,9 @@ public class EditView
                 getParentSource(this.tree.getRoot().getValue().getSource(), treeItem));
         final MIQItem child = miqItem.createChild(this.getStage(), this.cache, parentSource);
         if (child == null) return;
-        addItem(treeItem, child);
+        final TreeItem<MIQItem> childTreeItem = addItem(treeItem, child);
+        final MIQItem defaultChild = child.getDefaultChild();
+        if (defaultChild != null) addItem(childTreeItem, defaultChild);
     }
 
     /** Delete selected items. */

@@ -70,7 +70,7 @@ public class ItemSong
     }
 
     @Override
-    public boolean hasDefaultChild() {
-        return false;
+    public MIQItem getDefaultChild() {
+        return null;
     }
 }

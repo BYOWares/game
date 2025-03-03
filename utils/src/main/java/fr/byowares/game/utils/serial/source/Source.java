@@ -18,6 +18,7 @@ package fr.byowares.game.utils.serial.source;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -64,4 +65,21 @@ public interface Source {
      * @return The name of this source.
      */
     String getName();
+
+    /**
+     * Create a temporary file based on this current source (a temporary directory if a directory, or a temporary
+     * file of a regular file).
+     *
+     * @return The source representing the temporary file created.
+     *
+     * @throws java.io.IOException If an I/ O error occurs.
+     */
+    Source createTempSource()
+            throws IOException;
+
+    Source rename(String newName)
+            throws IOException;
+
+    void copyFileContent(final Path path)
+            throws IOException;
 }
