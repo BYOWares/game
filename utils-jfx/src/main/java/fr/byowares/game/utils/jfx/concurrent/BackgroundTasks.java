@@ -77,7 +77,26 @@ public final class BackgroundTasks {
             final Consumer<T> onCancel
     ) {
         final ModalPane modalPane = findModalPane(scene);
-        final Task<T> task = new Task<>() {
+        final Task<T> task = createTask(modalPane, work, onSuccess, onFailure, onCancel);
+
+        if (modalPane != null) {
+            final LoadingVBox loadingVBox = new LoadingVBox(i18nBinder);
+            loadingVBox.bindProgress(task.progressProperty());
+            modalPane.show(loadingVBox);
+            modalPane.setPersistent(true);
+        }
+
+        GameThreadFactory.defaultExecutorService().submit(task);
+    }
+
+    private static <T> Task<T> createTask(
+            final ModalPane modalPane,
+            final TaskCallable<T> work,
+            final Consumer<T> onSuccess,
+            final Consumer<T> onFailure,
+            final Consumer<T> onCancel
+    ) {
+        return new Task<>() {
 
             @Override
             protected T call()
@@ -116,15 +135,6 @@ public final class BackgroundTasks {
                 }
             }
         };
-
-        if (modalPane != null) {
-            final LoadingVBox loadingVBox = new LoadingVBox(i18nBinder);
-            loadingVBox.bindProgress(task.progressProperty());
-            modalPane.show(loadingVBox);
-            modalPane.setPersistent(true);
-        }
-
-        GameThreadFactory.defaultExecutorService().submit(task);
     }
 
     /** A simple box to show a loading element. */

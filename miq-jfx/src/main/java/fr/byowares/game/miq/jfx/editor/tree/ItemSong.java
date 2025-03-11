@@ -15,8 +15,10 @@
  */
 package fr.byowares.game.miq.jfx.editor.tree;
 
+import fr.byowares.game.miq.core.model.lyrics.Lyrics;
 import fr.byowares.game.miq.core.model.song.Song;
 import fr.byowares.game.miq.core.serial.song.SongSerializer;
+import fr.byowares.game.miq.jfx.fxml.wizard.WizardLyrics;
 import fr.byowares.game.utils.serial.Serializer;
 import fr.byowares.game.utils.serial.source.Source;
 import javafx.stage.Stage;
@@ -56,7 +58,11 @@ public class ItemSong
             final CachedData cachedData,
             final Source parentSource
     ) {
-        throw new UnsupportedOperationException("Not implemented yet"); // TODO
+        final Lyrics lyrics = WizardLyrics.open(new WizardLyrics(this.getNamedSourcedObject(), parentSource), stage);
+        if (lyrics == null) return null;
+
+        this.getNamedSourcedObject().getLyrics().add(lyrics);
+        return new ItemLyrics(lyrics);
     }
 
     @Override

@@ -59,7 +59,6 @@ public class ItemAlbum
             final CachedData cachedData,
             final Source parentSource
     ) {
-        final Source parentDirectory = this.getSource() == parentSource ? parentSource.getParent() : parentSource;
         final Song song = WizardItem.open(new WizardSong(this.getNamedSourcedObject(), parentSource, cachedData),
                                           stage);
         if (song == null) return null;

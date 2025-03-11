@@ -46,7 +46,7 @@ public class FFSongSources
 
     /** Default instance. */
     public FFSongSources() {
-        super(SimpleFormField.newVBoxContainer(), ComposedFormField.noOpBiConsumer());
+        super(SimpleFormField.newVBoxContainer(), noOpBiConsumer(), MIN_SIZE_LARGE, MIN_SIZE_NONE);
 
         this.single = new FFSourceSingle();
         this.duo = new FFSourceDuo();
@@ -65,7 +65,7 @@ public class FFSongSources
                 ffFilePicker.addFileSelectorListener(sListener);
             }
         }
-        sources.forEach(this::addFormField);
+        sources.forEach(this::registerFormField);
     }
 
     @Override

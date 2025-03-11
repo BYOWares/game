@@ -49,7 +49,7 @@ public record OptionsLineParser(LyricsParsingOptions options)
     static final ThreadLocal<CharSequenceIterator> CHAR_ITERATOR_TL = //
             ThreadLocal.withInitial(() -> new CharSequenceIterator(""));
 
-    private static final String CLOSING_NESTED = "Closing bracket (%s) found: %s, but last opening bracket (%s) does " + "not match: %s";
+    private static final String CLOSING_NESTED = "Closing bracket (%s) found: %s, but last opening bracket (%s) does not match: %s";
     private static final String CLOSING_NOT_OPENED = "Closing bracket (%s) does not match any opening one: %s";
     private static final String OPENING_NESTED = "Opening bracket (%s) found: %s, but previous one was not closed: %s";
     private static final String OPENING_NOT_CLOSED = "Opening bracket (%s) does not match any closing one: %s";

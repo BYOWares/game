@@ -29,7 +29,6 @@ import fr.byowares.game.miq.jfx.editor.tree.ItemAlbum;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.Source;
 import fr.byowares.game.utils.serial.source.SourcePath;
-import javafx.stage.Stage;
 
 import java.nio.file.Paths;
 
@@ -54,10 +53,6 @@ import static fr.byowares.game.utils.jfx.i18n.I18NResourceBundle.binder;
  */
 public class WizardSong
         extends WizardItem<Song> {
-
-    private static final double WINDOW_MIN_WIDTH = 700.0 * 2.0;
-    private static final double WINDOW_MIN_HEIGHT = 650.0;
-
 
     private final Album album;
 
@@ -115,12 +110,6 @@ public class WizardSong
                                        binder(i18n, "wizard.ff.lyrics"));
         this.ffLyrics.addValidator(ValidatorNotNull.INSTANCE);
         this.ffLyrics.addValidator(new ValidatorLength(RAW_LYRICS_MIN_LENGTH, RAW_LYRICS_MAX_LENGTH));
-    }
-
-    @Override
-    void configureStageSize(final Stage newStage) {
-        newStage.setMinHeight(WINDOW_MIN_HEIGHT);
-        newStage.setMinWidth(WINDOW_MIN_WIDTH);
     }
 
     /** FXML handle for initialization. */

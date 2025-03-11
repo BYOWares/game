@@ -57,9 +57,20 @@ import java.util.function.BiConsumer;
 public abstract class AbstractFormField<P extends Pane, N extends NamedSourcedObject, T, V>
         implements FormField<P, N, T> {
 
+    /** No minimal size value. */
+    static final double MIN_SIZE_NONE = -1.0;
+    /** Small minimal size. */
+    static final double MIN_SIZE_SMALL = 200.0;
+    /** Medium minimal size. */
+    static final double MIN_SIZE_MEDIUM = 400.0;
+    /** Large minimal size. */
+    static final double MIN_SIZE_LARGE = 600.0;
+    /** Huge minimal size. */
+    static final double MIN_SIZE_HUGE = 800.0;
+    @SuppressWarnings("rawtypes") private static final BiConsumer NOOP_BI_CONSUMER = (v, c) -> {};
+
     private final P root;
     private final BiConsumer<N, T> setter;
-
     private final BooleanProperty inError;
     private final BooleanProperty isIgnored;
     /** Automatically updated by {@link #validators}. */
@@ -68,18 +79,23 @@ public abstract class AbstractFormField<P extends Pane, N extends NamedSourcedOb
     private final BooleanProperty hasError;
     private final List<FormFieldValidator<V>> validators;
     private final Label error;
-
     private final IntegerProperty level;
 
     /**
-     * @param root   The root element containing the Form Field.
-     * @param setter The setter method to update the object.
+     * @param root      The root element containing the Form Field.
+     * @param setter    The setter method to update the object.
+     * @param minWidth  Minimal width for the Form Field (or {@code <0} if none).
+     * @param minHeight Minimal height for the Form Field (or {@code <0} if none).
      */
     AbstractFormField(
             final P root,
-            final BiConsumer<N, T> setter
+            final BiConsumer<N, T> setter,
+            final double minWidth,
+            final double minHeight
     ) {
         this.root = root;
+        if (minWidth > 0.0) this.root.setMinWidth(minWidth);
+        if (minHeight > 0.0) this.root.setMinHeight(minHeight);
         this.setter = setter;
 
         this.inError = new SimpleBooleanProperty(false);
@@ -93,19 +109,47 @@ public abstract class AbstractFormField<P extends Pane, N extends NamedSourcedOb
         this.hasValidationError.addListener(updateInError);
         this.hasError.addListener(updateInError);
 
-        this.error = new Label(null, new FontIcon(BootstrapIcons.EXCLAMATION_TRIANGLE));
-        this.error.getStyleClass().add(Styles.DANGER);
+        this.error = newErrorLabel();
         this.error.maxWidthProperty().bind(this.getRoot().widthProperty());
-        final MenuItem copyToClipboard = new MenuItem();
-        I18NMIQ.get().bind(copyToClipboard.textProperty(), "wizard.menu_item.error.copy");
-        copyToClipboard.setOnAction(e -> Utils.copyToClipboard(this.error.getText()));
-        this.error.setContextMenu(new ContextMenu(copyToClipboard));
-        this.error.setTooltip(new Tooltip());
-        this.error.getTooltip().textProperty().bind(this.error.textProperty());
 
         this.validators = new ArrayList<>();
         this.level = new SimpleIntegerProperty(-1);
         this.level.addListener((obs, ov, nv) -> this.onLevelUpdate(ov.intValue(), nv.intValue()));
+    }
+
+    /**
+     * @param <T> The type of the first parameter of the {@code BiConsumer}.
+     * @param <S> The type of the second parameter of the {@code BiConsumer}.
+     *
+     * @return A no operation {@link java.util.function.BiConsumer}.
+     */
+    @SuppressWarnings("unchecked")
+    protected static <T, S> BiConsumer<T, S> noOpBiConsumer() {
+        return (BiConsumer<T, S>) NOOP_BI_CONSUMER;
+    }
+
+    /**
+     * Create a new label with the following properties:
+     * <ul>
+     *     <li>Has the {@link atlantafx.base.theme.Styles#DANGER} class.</li>
+     *     <li>Has a tooltip that display the full content of it.</li>
+     *     <li>Has a menu item to copy the text to the clipboard.</li>
+     * </ul>
+     *
+     * @return The built label.
+     */
+    public static Label newErrorLabel() {
+        final Label error = new Label(null, new FontIcon(BootstrapIcons.EXCLAMATION_TRIANGLE));
+        error.getStyleClass().add(Styles.DANGER);
+
+        final MenuItem copyToClipboard = new MenuItem();
+        I18NMIQ.get().bind(copyToClipboard.textProperty(), "wizard.menu_item.error.copy");
+        copyToClipboard.setOnAction(e -> Utils.copyToClipboard(error.getText()));
+        error.setContextMenu(new ContextMenu(copyToClipboard));
+
+        error.setTooltip(new Tooltip());
+        error.getTooltip().textProperty().bind(error.textProperty());
+        return error;
     }
 
     /**

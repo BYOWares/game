@@ -51,6 +51,7 @@ public final class I18NLocaleManager {
         if (INSTANCE.supportedLocales.contains(locale)) {
             ThemeManager.fadingAnimation();
             INSTANCE.locale.set(locale);
+            Locale.setDefault(locale);
         } else {
             log.warn("Could not configure locale to {} as it is not supported (supported={})", locale,
                      INSTANCE.supportedLocales);

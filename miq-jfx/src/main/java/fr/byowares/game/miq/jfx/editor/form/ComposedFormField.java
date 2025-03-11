@@ -16,68 +16,110 @@
 package fr.byowares.game.miq.jfx.editor.form;
 
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableBooleanValue;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.IntUnaryOperator;
 
 /**
  * A collection of Form Fields. Its error property is automatically bound to its children.
  *
- * @param <P> Type of the Pane containing the SimpleFormField
+ * @param <P> Type of the Pane containing the ComposedFormField
  * @param <N> Type of object whose field must be edited.
- * @param <T> The type of the attribute managed by this SimpleFormField.
+ * @param <T> The type of the attribute managed by this ComposedFormField.
  *
  * @since XXX
  */
 public abstract class ComposedFormField<P extends Pane, N extends NamedSourcedObject, T>
         extends AbstractFormField<P, N, T, Void> {
 
-    @SuppressWarnings("rawtypes") private static final BiConsumer NOOP_BI_CONSUMER = (v, c) -> {};
-
     private final List<FormField<?, N, ?>> formFields;
+    private final ChangeListener<Boolean> inErrorListener;
 
     /**
-     * @param root   The root element containing the Form Field.
-     * @param setter The setter method to update the object.
+     * @param root      The root element containing the Form Field.
+     * @param setter    The setter method to update the object.
+     * @param minWidth  Minimal width for the Form Field (or {@code <0>} if none).
+     * @param minHeight Minimal height for the Form Field (or {@code <0>} if none).
      */
     ComposedFormField(
             final P root,
-            final BiConsumer<N, T> setter
+            final BiConsumer<N, T> setter,
+            final double minWidth,
+            final double minHeight
     ) {
-        super(root, setter);
+        super(root, setter, minWidth, minHeight);
         this.formFields = new ArrayList<>();
+        this.inErrorListener = (obs, ov, nv) -> this.updateHasError();
     }
 
     /**
-     * @param <T> The type of the first parameter of the {@code BiConsumer}.
-     * @param <S> The type of the second parameter of the {@code BiConsumer}.
-     *
-     * @return A no operation {@link java.util.function.BiConsumer}.
-     */
-    @SuppressWarnings("unchecked")
-    static <T, S> BiConsumer<T, S> noOpBiConsumer() {
-        return (BiConsumer<T, S>) NOOP_BI_CONSUMER;
-    }
-
-    /**
-     * @return The Pane to which the children are automatically added through {@link #addFormField(FormField)}.
+     * @return The Pane to which the children are automatically added through {@link #registerFormField(FormField)}.
      */
     Pane getChildrenPane() {
         return this.getRoot();
     }
 
     /**
-     * Add the given Form Field in the root of this Form Field, and bind its {@link #inErrorProperty()}.
+     * Add the given Form Field at the end of {@link #getChildrenPane()}, and bind its {@link #inErrorProperty()}.
      *
-     * @param ff The Form Field to add.
+     * @param ff The Form Field to register.
      */
-    void addFormField(final FormField<?, N, ?> ff) {
-        this.formFields.add(ff);
-        ff.inErrorProperty().addListener((obs, ov, nv) -> this.updateHasError());
-        this.getChildrenPane().getChildren().add(ff.getRoot());
+    final void registerFormField(final FormField<?, N, ?> ff) {
+        this.doRegisterFormField(ff, this.getChildrenPane().getChildren().size());
+    }
+
+    /**
+     * @param newFF The new Form Field to register.
+     * @param ffRef The reference Form Field to find where to add the new Form Field.
+     */
+    final void registerFormFieldAfter(
+            final FormField<?, N, ?> newFF,
+            final FormField<?, N, ?> ffRef
+    ) {
+        this.doRegisterFormField(newFF, ffRef, x -> x + 1);
+    }
+
+    /**
+     * @param newFF The new Form Field to register.
+     * @param ffRef The reference Form Field to find where to add the new Form Field.
+     */
+    final void registerFormFieldBefore(
+            final FormField<?, N, ?> newFF,
+            final FormField<?, N, ?> ffRef
+    ) {
+        this.doRegisterFormField(newFF, ffRef, x -> x);
+    }
+
+    private void doRegisterFormField(
+            final FormField<?, N, ?> newFF,
+            final FormField<?, N, ?> ffRef,
+            final IntUnaryOperator operator
+    ) {
+        final int index = this.getChildrenPane().getChildren().indexOf(ffRef.getRoot());
+        if (index < 0) throw new IllegalArgumentException("Could not find " + ffRef + " in " + this);
+        this.doRegisterFormField(newFF, operator.applyAsInt(index));
+    }
+
+    private void doRegisterFormField(
+            final FormField<?, N, ?> newFF,
+            final int index
+    ) {
+        this.formFields.add(newFF);
+        newFF.inErrorProperty().addListener(this.inErrorListener);
+        this.getChildrenPane().getChildren().add(index, newFF.getRoot());
+    }
+
+    /**
+     * @param ff The Form Field to remove from the list of managed Form Fields, and from the graphical elements.
+     */
+    final void unregisterFormField(final FormField<?, N, ?> ff) {
+        this.formFields.remove(ff);
+        this.getChildrenPane().getChildren().remove(ff.getRoot());
     }
 
     private void updateHasError() {
@@ -91,7 +133,7 @@ public abstract class ComposedFormField<P extends Pane, N extends NamedSourcedOb
     @Override
     public final String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName()).append("{");
+        sb.append(this.getClass().getSimpleName()).append("{root=").append(this.getRoot()).append(", ");
         this.addErrorData(sb);
         sb.append(", formFields=[");
         for (int i = 0; i < this.formFields.size(); i++) {

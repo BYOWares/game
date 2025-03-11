@@ -15,7 +15,6 @@
  */
 package fr.byowares.game.miq.jfx.editor.form;
 
-import fr.byowares.game.miq.core.model.song.Libraries;
 import fr.byowares.game.miq.jfx.fxml.wizard.WizardItem;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import fr.byowares.game.utils.serial.source.Source;
@@ -28,24 +27,23 @@ import java.nio.file.Paths;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static fr.byowares.game.miq.jfx.editor.form.FFSourceDir.MAX_FILE_LENGTH;
+import static fr.byowares.game.miq.jfx.editor.form.FFSourceDir.MIN_FILE_LENGTH;
+
 /**
- * Specific Form Field for directory source editing with a
- * {@link fr.byowares.game.miq.core.model.song.Libraries#MIQ_FILE_NAME} at its root to describe a new object.
+ * Specific Form Field for file source editing.
  *
  * @param <N> Type of object whose field must be edited.
  *
  * @since XXX
  */
-public class FFSourceDir<N extends NamedSourcedObject>
+public class FFSourceFile<N extends NamedSourcedObject>
         extends ComposedFormField<VBox, N, Source> {
 
-    /** Minimum file's name length. */
-    static final int MIN_FILE_LENGTH = 1;
-    /** Maximum file's name length. */
-    static final int MAX_FILE_LENGTH = 255;
+    private static final String YML = ".yml";
 
     private final FFLabel<N> filePath;
-    private final FFText<N> dirName;
+    private final FFText<N> fileName;
 
     /**
      * @param root         The {@link fr.byowares.game.utils.serial.source.Source}
@@ -53,7 +51,7 @@ public class FFSourceDir<N extends NamedSourcedObject>
      * @param i18nFilePath The binder for the label of the file path {@link fr.byowares.game.miq.jfx.editor.form.FormField}.
      * @param i18nDirName  The binder for the label of the Directory's name {@link fr.byowares.game.miq.jfx.editor.form.FormField}.
      */
-    public FFSourceDir(
+    public FFSourceFile(
             final Source root,
             final BiConsumer<N, Source> setter,
             final Consumer<StringProperty> i18nFilePath,
@@ -65,20 +63,20 @@ public class FFSourceDir<N extends NamedSourcedObject>
         this.filePath.addValidator(ValidatorNotNull.INSTANCE);
         this.filePath.addValidator(ValidatorNotExistingSource.INSTANCE);
 
-        this.dirName = new FFText<>(noOpBiConsumer(), i18nDirName);
-        this.dirName.addFieldTextChangeListener((obs, ov, nv) -> {
-            this.filePath.init(root.toString() + File.separator + nv + File.separator + Libraries.MIQ_FILE_NAME);
+        this.fileName = new FFText<>(noOpBiConsumer(), i18nDirName);
+        this.fileName.addFieldTextChangeListener((obs, ov, nv) -> {
+            this.filePath.init(root.toString() + File.separator + nv + YML);
         });
-        this.dirName.addValidator(new ValidatorLength(MIN_FILE_LENGTH, MAX_FILE_LENGTH));
-        this.dirName.addValidator(new ValidatorPath());
+        this.fileName.addValidator(new ValidatorLength(MIN_FILE_LENGTH, MAX_FILE_LENGTH - YML.length()));
+        this.fileName.addValidator(new ValidatorPath());
 
-        this.registerFormField(this.dirName);
+        this.registerFormField(this.fileName);
         this.registerFormField(this.filePath);
     }
 
     @Override
     public void init(final Source input) {
-        this.dirName.init(input.getName()); // filePath is bound to dirName, just need to init this one.
+        this.fileName.init(input.getName()); // filePath is bound to dirName, just need to init this one.
     }
 
     @Override
@@ -87,7 +85,7 @@ public class FFSourceDir<N extends NamedSourcedObject>
             final int newValue
     ) {
         this.filePath.setLevel(newValue);
-        this.dirName.setLevel(newValue);
+        this.fileName.setLevel(newValue);
     }
 
     @Override

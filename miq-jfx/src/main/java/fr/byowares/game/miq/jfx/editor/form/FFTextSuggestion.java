@@ -63,7 +63,7 @@ public class FFTextSuggestion<N extends NamedSourcedObject>
             final Consumer<StringProperty> i18nBinder,
             final ObservableList<String> items
     ) {
-        super(SimpleFormField.newVBoxContainer(), setter, i18nBinder);
+        super(SimpleFormField.newVBoxContainer(), setter, i18nBinder, MIN_SIZE_SMALL, MIN_SIZE_NONE);
         this.field = new TextField();
 
         final var binding = TextFields.bindAutoCompletion(this.field, new SuggestionProvider(items));
@@ -92,6 +92,14 @@ public class FFTextSuggestion<N extends NamedSourcedObject>
     }
 
     @Override
+    void doSet(
+            final BiConsumer<N, CharSequence> setter,
+            final N n
+    ) {
+        setter.accept(n, this.getCurrentInput());
+    }
+
+    @Override
     void runValidatorsOnError() {
         this.field.pseudoClassStateChanged(Styles.STATE_DANGER, true);
     }
@@ -99,14 +107,6 @@ public class FFTextSuggestion<N extends NamedSourcedObject>
     @Override
     void runValidatorOnSuccess() {
         this.field.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-    }
-
-    @Override
-    void doSet(
-            final BiConsumer<N, CharSequence> setter,
-            final N n
-    ) {
-        setter.accept(n, this.getCurrentInput());
     }
 
     @Override

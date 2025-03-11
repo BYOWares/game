@@ -34,7 +34,6 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -71,8 +70,9 @@ public class App
 
     private static void loadFonts() {
         loadFont(Resources.FONT_BARECAST);
-        loadFont(Resources.FONT_JETBRAINS_LIGHT);
-        loadFont(Resources.FONT_JETBRAINS_MEDIUM);
+        loadFont(Resources.FONT_JETBRAINS_ALL);
+        loadFont(Resources.FONT_JETBRAINS_NL_ALL);
+        loadFont(Resources.FONT_INTER_ALL);
     }
 
     private static void loadFont(final String url) {
@@ -82,7 +82,8 @@ public class App
             log.error("Failed to load {}", url);
             throw new RuntimeException("Failed to load " + url);
         }
-        log.info("{} successfully loaded", Arrays.toString(fonts));
+        for (final Font font : fonts)
+            log.info("{} successfully loaded", font);
     }
 
     @Override

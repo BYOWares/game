@@ -68,11 +68,11 @@ public class FFFilePicker<N extends NamedSourcedObject>
             final Consumer<StringProperty> i18nLabel,
             final Consumer<StringProperty> i18nDialog
     ) {
-        super(new HBox(SPACING), setter);
+        super(new HBox(SPACING), setter, MIN_SIZE_MEDIUM, MIN_SIZE_NONE);
         this.fileSelector = new FFFileSelector<>(setter, i18nLabel, i18nDialog);
 
         final I18NMIQ i18n = I18NMIQ.get();
-        this.fileName = new FFText<>(ComposedFormField.noOpBiConsumer(), binder(i18n, "wizard.ff.file_name"));
+        this.fileName = new FFText<>(noOpBiConsumer(), binder(i18n, "wizard.ff.file_name"));
         this.fileName.addValidator(ValidatorNotNull.INSTANCE);
         this.fileName.addValidator(new ValidatorPath(List.of(Libraries.MIQ_FILE_NAME)));
         this.fileName.addValidator(new ValidatorLength(FFSourceDir.MIN_FILE_LENGTH, FFSourceDir.MAX_FILE_LENGTH));
@@ -100,8 +100,8 @@ public class FFFilePicker<N extends NamedSourcedObject>
         final ReadOnlyDoubleProperty buttonHeight = this.copyFile.heightProperty();
         vBox.spacingProperty().bind(textHeight.subtract(buttonHeight).divide(2).add(textParentSpacing));
 
-        this.addFormField(this.fileSelector);
-        this.addFormField(this.fileName);
+        this.registerFormField(this.fileSelector);
+        this.registerFormField(this.fileName);
         this.getRoot().getChildren().add(vBox);
 
         final ReadOnlyDoubleProperty rootWidth = this.getRoot().widthProperty();
@@ -208,6 +208,15 @@ public class FFFilePicker<N extends NamedSourcedObject>
         return parent.resolve(this.fileName.getCurrentInput());
     }
 
+    /**
+     * Operation initialization: copy the selected file into a temporary file.
+     *
+     * @param destSource The final source for the selected file.
+     *
+     * @return The context to help finalize this operation.
+     *
+     * @throws IOException If an I/ O error occurs
+     */
     FileOperationContext initiateFileOperation(final Source destSource)
             throws IOException {
         final Path path = Path.of(this.fileSelector.getCurrentInput());

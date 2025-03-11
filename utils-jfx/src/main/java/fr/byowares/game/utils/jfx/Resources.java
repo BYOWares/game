@@ -32,18 +32,20 @@ public final class Resources {
     public static final Image FLAG_UK = getFlag("united_kingdom");
 
     /** The default font for the application. */
-    public static final String CSS_DEFAULT_FONT = get("css", "default-font.css");
+    public static final String CSS_DEFAULT_FONT = getCSS("default-font");
+    /** The CSS to make a ToggleSwitch small. */
+    public static final String CSS_SMALL_TOGGLE_SWITCH = getCSS("small-toggle-switch");
     /** BUGFIX for ComboBox danger not correctly applied when editable. */
-    public static final String CSS_BUGFIX_4ADB8FF = get("css", "bugfix-4adb8ff.css");
+    public static final String CSS_BUGFIX_4ADB8FF = getCSS("bugfix-4adb8ff");
 
     /** Barecast font. */
     public static final String FONT_BARECAST = getFont("Barecast-Regular.otf");
-    /** Jet Brains Mono - Light font. */
-    public static final String FONT_JETBRAINS_LIGHT = getFont("JetBrainsMono-Light.ttf");
-    /** Jet Brains Mono - Medium font. */
-    public static final String FONT_JETBRAINS_MEDIUM = getFont("JetBrainsMono-Medium.ttf");
-    /** Jet Brains Mono - Regular font. */
-    public static final String FONT_JETBRAINS_REGULAR = getFont("JetBrainsMono-Regular.ttf");
+    /** Jet Brains Mono Collection. */
+    public static final String FONT_JETBRAINS_ALL = getFont("JetBrainsMono.ttc");
+    /** Jet Brains Mono No Ligature Collection. */
+    public static final String FONT_JETBRAINS_NL_ALL = getFont("JetBrainsMonoNL.ttc");
+    /** Inter all fonts. */
+    public static final String FONT_INTER_ALL = getFont("Inter.ttc");
 
     private Resources() {
         // Utility class
@@ -56,6 +58,10 @@ public final class Resources {
 
     private static String getFont(final String fileName) {
         return get("font", fileName);
+    }
+
+    private static String getCSS(final String fileName) {
+        return get("css", fileName + ".css");
     }
 
     private static String get(

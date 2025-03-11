@@ -250,7 +250,7 @@ public class EditView
         setButtonIcon(this.bCollapseAll, BootstrapIcons.CHEVRON_CONTRACT, "edit_view.collapse");
         setButtonIcon(this.bExpandAll, BootstrapIcons.CHEVRON_EXPAND, "edit_view.expand");
         setButtonIcon(this.bSelectCurrent, Feather.CROSSHAIR, "edit_view.select");
-        setButtonIcon(this.bBack, BootstrapIcons.ARROW_LEFT_CIRCLE_FILL, "edit_view.back");
+        setButtonIcon(this.bBack, BootstrapIcons.ARROW_LEFT, "edit_view.back");
         final var css = FontIconSizeEnforcer.enforceIconSizeCSS(this.bBack, "force-size", 32);
         this.bBack.getGraphic().getStyleClass().add(css);
     }

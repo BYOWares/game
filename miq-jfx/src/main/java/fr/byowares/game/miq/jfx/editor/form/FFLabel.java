@@ -54,7 +54,7 @@ public class FFLabel<N extends NamedSourcedObject>
             final BiConsumer<N, CharSequence> setter,
             final Consumer<StringProperty> i18nBinder
     ) {
-        super(SimpleFormField.newVBoxContainer(), setter, i18nBinder);
+        super(SimpleFormField.newVBoxContainer(), setter, i18nBinder, MIN_SIZE_SMALL, MIN_SIZE_NONE);
         this.field = newLabel(this.getRoot());
         this.field.textProperty().addListener((o, ov, nv) -> this.runValidators(nv));
         this.getRoot().getChildren().add(this.field);

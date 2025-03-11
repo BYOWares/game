@@ -58,7 +58,7 @@ public abstract class FFSourceAudio<S extends AudioSource>
             final String i18nKey,
             final List<FFFilePicker<Song>> filePickers
     ) {
-        super(SimpleFormField.newVBoxContainer(), setter);
+        super(SimpleFormField.newVBoxContainer(), setter, MIN_SIZE_MEDIUM, MIN_SIZE_NONE);
         this.filePickers = filePickers;
 
         this.label = new Label();
@@ -81,7 +81,7 @@ public abstract class FFSourceAudio<S extends AudioSource>
         this.getRoot().getChildren().addAll(labelBox, hBox);
 
         /* This will add the FFFilePicker to this.childrenPane ... */
-        filePickers.forEach(this::addFormField);
+        filePickers.forEach(this::registerFormField);
 
         /* ... But we want this FF unselected by default (children hidden), so we make sure it ends up unselected.
         The listener must be added after setSelected(true), else we will try to add FF whereas they are already there.*/

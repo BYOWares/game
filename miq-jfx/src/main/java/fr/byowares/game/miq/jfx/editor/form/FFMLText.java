@@ -47,9 +47,8 @@ public class FFMLText<N extends NamedSourcedObject>
             final BiConsumer<N, CharSequence> setter,
             final Consumer<StringProperty> i18nBinder
     ) {
-        super(SimpleFormField.newVBoxContainer(), setter, i18nBinder);
+        super(SimpleFormField.newVBoxContainer(), setter, i18nBinder, MIN_SIZE_HUGE, minHeight);
         this.field = new TextArea(IMPROBABLE_INIT_VALUE);
-        this.field.setMinHeight(minHeight);
         this.field.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         this.field.maxHeightProperty().bind(this.getRoot().heightProperty());
         this.field.textProperty().addListener((o, ov, nv) -> this.runValidators(nv));
@@ -63,6 +62,14 @@ public class FFMLText<N extends NamedSourcedObject>
     }
 
     @Override
+    void doSet(
+            final BiConsumer<N, CharSequence> setter,
+            final N n
+    ) {
+        setter.accept(n, this.getCurrentInput());
+    }
+
+    @Override
     void runValidatorsOnError() {
         this.field.pseudoClassStateChanged(Styles.STATE_DANGER, true);
     }
@@ -70,14 +77,6 @@ public class FFMLText<N extends NamedSourcedObject>
     @Override
     void runValidatorOnSuccess() {
         this.field.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-    }
-
-    @Override
-    void doSet(
-            final BiConsumer<N, CharSequence> setter,
-            final N n
-    ) {
-        setter.accept(n, this.getCurrentInput());
     }
 
     @Override

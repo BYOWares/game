@@ -53,6 +53,12 @@ public abstract class NamedSourcedObject {
         this(name, SourceInMemory.INSTANCE);
     }
 
+    /**
+     * @param object The object to copy.
+     * @param <N>    Type of the object to copy.
+     *
+     * @return A copy (not necessarily deep one) of {@code object}.
+     */
     public static <N extends NamedSourcedObject> N copy(final N object) {
         final NamedSourcedObject copy = object.buildCopy(object.getName());
         if (Objects.equals(object.getClass(), copy.getClass())) {

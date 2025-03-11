@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -243,5 +244,12 @@ public final class Line {
                 && this.isNonLexical == line.isNonLexical //
                 && Objects.equals(this.elements, line.elements) //
                 && Objects.equals(this.singers, line.singers);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" + "singers=" + this.singers + ", isNonLexical=" + this.isNonLexical + ", isBackVocals=" + this.isBackVocals + //
+                ", elements=" + this.elements.stream().map(LineElement::getText).map(Objects::toString).collect(
+                Collectors.joining()) + '}';
     }
 }

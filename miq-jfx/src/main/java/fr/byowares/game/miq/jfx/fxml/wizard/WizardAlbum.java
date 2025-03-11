@@ -27,7 +27,6 @@ import fr.byowares.game.miq.jfx.editor.tree.ItemAlbum;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.Source;
 import fr.byowares.game.utils.serial.source.SourcePath;
-import javafx.stage.Stage;
 
 import java.nio.file.Paths;
 
@@ -47,10 +46,6 @@ import static fr.byowares.game.miq.core.model.Constraints.COPYRIGHT_MIN_LENGTH;
  */
 public class WizardAlbum
         extends WizardItem<Album> {
-
-    private static final double WINDOW_MIN_WIDTH = 700.0 * 2.0;
-    private static final double WINDOW_MIN_HEIGHT = 650.0;
-
 
     private final FFSourceDir<Album> ffSourceDir;
     private final FFText<Album> ffName;
@@ -86,12 +81,6 @@ public class WizardAlbum
                                           I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.copyright"));
         this.ffCopyright.addValidator(ValidatorNotNull.INSTANCE);
         this.ffCopyright.addValidator(new ValidatorLength(COPYRIGHT_MIN_LENGTH, COPYRIGHT_MAX_LENGTH));
-    }
-
-    @Override
-    void configureStageSize(final Stage newStage) {
-        newStage.setMinHeight(WINDOW_MIN_HEIGHT);
-        newStage.setMinWidth(WINDOW_MIN_WIDTH);
     }
 
     /** FXML handle for initialization. */

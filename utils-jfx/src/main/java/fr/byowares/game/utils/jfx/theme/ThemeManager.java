@@ -44,7 +44,7 @@ public class ThemeManager {
     private static final ThemeManager INSTANCE = new ThemeManager();
 
     private static final PseudoClass DARK = PseudoClass.getPseudoClass("dark");
-    private static final Duration DURATION = Duration.millis(750.0);
+    private static final Duration DURATION = Duration.millis(250.0);
     private static final Interpolator EASE = Interpolator.SPLINE(0.25, 0.1, 0.25, 1.0);
 
     private final Set<Scene> scenes;

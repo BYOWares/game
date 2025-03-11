@@ -118,16 +118,9 @@ public abstract class WizardItem<N extends NamedSourcedObject>
         newStage.initModality(Modality.WINDOW_MODAL);
         newStage.initOwner(stage);
         newStage.getIcons().addAll(stage.getIcons());
-        wizard.configureStageSize(newStage);
         newStage.showAndWait();
         return wizard.returnedObject;
     }
-
-    /**
-     * @param newStage The stage to configure.
-     */
-    abstract void configureStageSize(final Stage newStage);
-
 
     /** FXML handle for initialization. */
     @FXML

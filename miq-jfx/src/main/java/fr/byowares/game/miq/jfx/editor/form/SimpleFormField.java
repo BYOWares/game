@@ -51,17 +51,23 @@ public abstract class SimpleFormField<P extends Pane, N extends NamedSourcedObje
     /**
      * @param root       The root element containing the Form Field.
      * @param setter     The setter method to update the object.
-     * @param i18nBinder The binder for the label of the Form Field.
+     * @param i18nBinder The binder for the label of the Form Field ({@code null} if label is not required).
+     * @param minWidth   Minimal width for the Form Field (or {@code <0} if none).
+     * @param minHeight  Minimal height for the Form Field (or {@code <0} if none).
      */
     SimpleFormField(
             final P root,
             final BiConsumer<N, T> setter,
-            final Consumer<StringProperty> i18nBinder
+            final Consumer<StringProperty> i18nBinder,
+            final double minWidth,
+            final double minHeight
     ) {
-        super(root, setter);
+        super(root, setter, minWidth, minHeight);
         this.label = new Label();
-        i18nBinder.accept(this.label.textProperty());
-        this.getRoot().getChildren().add(this.label);
+        if (i18nBinder != null) {
+            i18nBinder.accept(this.label.textProperty());
+            this.getRoot().getChildren().add(this.label);
+        }
     }
 
     /**
@@ -129,8 +135,8 @@ public abstract class SimpleFormField<P extends Pane, N extends NamedSourcedObje
     @Override
     public final String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName()).append("{");
-        sb.append("label=").append(this.label.getText());
+        sb.append(this.getClass().getSimpleName()).append("{").append(this.getRoot()).append(", ");
+        sb.append("label=").append(this.label.getText()).append(", ");
         this.addErrorData(sb);
         sb.append("}");
         return sb.toString();

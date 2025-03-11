@@ -24,7 +24,6 @@ import fr.byowares.game.miq.jfx.editor.tree.ItemLibrary;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.Source;
 import fr.byowares.game.utils.serial.source.SourcePath;
-import javafx.stage.Stage;
 
 import java.nio.file.Paths;
 
@@ -40,10 +39,6 @@ import static fr.byowares.game.miq.core.model.Constraints.LIB_NAME_MIN_LENGTH;
  */
 public class WizardLibrary
         extends WizardItem<Library> {
-
-    private static final double WINDOW_MIN_WIDTH = 700.0;
-    private static final double WINDOW_MIN_HEIGHT = 450.0;
-
 
     private final FFSourceDir<Library> ffSourceDir;
     private final FFText<Library> ffName;
@@ -64,12 +59,6 @@ public class WizardLibrary
 
         this.ffComment = new FFText<>(Library::setComment, I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.comment"));
         this.ffComment.addValidator(new ValidatorLength(LIB_CMT_MIN_LENGTH, LIB_CMT_MAX_LENGTH));
-    }
-
-    @Override
-    void configureStageSize(final Stage newStage) {
-        newStage.setMinHeight(WINDOW_MIN_HEIGHT);
-        newStage.setMinWidth(WINDOW_MIN_WIDTH);
     }
 
     /** FXML handle for initialization. */

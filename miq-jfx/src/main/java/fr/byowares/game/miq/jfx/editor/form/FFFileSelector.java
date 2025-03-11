@@ -82,7 +82,7 @@ public class FFFileSelector<N extends NamedSourcedObject>
             final Consumer<StringProperty> i18nLabel,
             final Consumer<StringProperty> i18nDialog
     ) {
-        super(SimpleFormField.newVBoxContainer(), setter, i18nLabel);
+        super(SimpleFormField.newVBoxContainer(), setter, i18nLabel, MIN_SIZE_SMALL, MIN_SIZE_NONE);
         this.i18nDialog = i18nDialog;
 
         this.field = FFLabel.newLabel(this.getRoot());
