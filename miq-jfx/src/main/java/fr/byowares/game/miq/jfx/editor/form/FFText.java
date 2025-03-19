@@ -80,6 +80,11 @@ public class FFText<N extends NamedSourcedObject>
         this.field.setText(SimpleFormField.normalizeInput(input));
     }
 
+    @Override
+    public void dispose() {
+        // Nothing to do
+    }
+
     /**
      * Add a {@link javafx.beans.value.ChangeListener} listening to the Text SimpleFormField.
      *

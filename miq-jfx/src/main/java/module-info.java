@@ -23,14 +23,15 @@ module fr.byowares.game.miq.jfx {
     requires fr.byowares.game.utils.jfx;
     requires fr.byowares.game.utils;
     requires javafx.fxml;
+    requires javafx.media;
+    requires org.agrona.core;
     requires org.controlsfx.controls;
     requires org.kordamp.ikonli.bootstrapicons;
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.feather;
     requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.materialdesign2;
     requires org.slf4j;
-    requires java.desktop;
-    requires org.agrona.core;
 
     exports fr.byowares.game.miq.jfx;
     exports fr.byowares.game.miq.jfx.fxml;

@@ -100,6 +100,11 @@ public class FFLabel<N extends NamedSourcedObject>
     }
 
     @Override
+    public void dispose() {
+        // Nothing to do
+    }
+
+    @Override
     void doSet(
             final BiConsumer<N, CharSequence> setter,
             final N n

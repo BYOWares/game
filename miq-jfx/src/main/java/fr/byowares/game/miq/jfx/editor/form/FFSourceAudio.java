@@ -16,9 +16,9 @@
 package fr.byowares.game.miq.jfx.editor.form;
 
 import atlantafx.base.controls.ToggleSwitch;
-import fr.byowares.game.miq.core.model.audio.AudioSource;
 import fr.byowares.game.miq.core.model.song.Song;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
+import fr.byowares.game.utils.serial.source.Source;
 import javafx.animation.Transition;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -34,11 +34,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
- * @param <S> Type of the {@link fr.byowares.game.miq.core.model.audio.AudioSource} managed by this Form Field.
+ * @param <S> Type managed by this Form Field.
  *
  * @since XXX
  */
-public abstract class FFSourceAudio<S extends AudioSource>
+public abstract class FFSourceAudio<S>
         extends ComposedFormField<VBox, Song, S> {
 
     private static final double H_SPACING = 5.0;
@@ -95,13 +95,18 @@ public abstract class FFSourceAudio<S extends AudioSource>
     }
 
     /**
-     * @param i18n The i18n key for the label of the File Picker.
+     * @param setter The setter (the source to set will be built by taking the name of the file name's field, and
+     *               will consider it to be a file in the same directory as the Song).
+     * @param i18n   The i18n key for the label of the File Picker.
      *
      * @return A {@link fr.byowares.game.miq.jfx.editor.form.FFFilePicker} whose label is managed by {@code i18n}.
      */
-    static FFFilePicker<Song> newPicker(final String i18n) {
+    static FFFilePicker<Song> newPicker(
+            final BiConsumer<Song, Source> setter,
+            final String i18n
+    ) {
         final Consumer<StringProperty> binder = I18NMIQ.binder(I18NMIQ.get(), i18n);
-        return new FFFilePicker<>(noOpBiConsumer(), binder, binder);
+        return new FFFilePicker<>(setter, binder, binder);
     }
 
     private Transition addTransition(final FFFilePicker<Song> ff) {

@@ -27,7 +27,6 @@ dependencies {
     implementation(project(":miq-jfx"))
 
     implementation(libs.bundles.yamlImpl)
-    runtimeOnly(libs.bundles.mp3)
 }
 
 application {

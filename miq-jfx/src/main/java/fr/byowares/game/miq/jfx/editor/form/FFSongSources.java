@@ -19,6 +19,7 @@ import fr.byowares.game.miq.core.model.song.Song;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 import org.agrona.LangUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +32,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**
- * A Form Field that allows to configure a {@link fr.byowares.game.miq.core.model.audio.SingleSource} and a
- * {@link fr.byowares.game.miq.core.model.audio.DuoSource}, and at least one must be configured.
+ * A Form Field that allows to configure the sources for audio files.
  *
  * @since XXX
  */
@@ -74,8 +74,8 @@ public class FFSongSources
             this.single.init(null);
             this.duo.init(null);
         } else {
-            this.single.init(input.getSingleSource());
-            this.duo.init(input.getDuoSource());
+            this.single.init(input.getAudioSource());
+            this.duo.init(new Pair<>(input.getVoiceSource(), input.getMusicSource()));
         }
         this.runValidators(null);
     }
@@ -100,13 +100,12 @@ public class FFSongSources
         final List<FFFilePicker.FileOperationContext> contexts = new ArrayList<>();
         try {
             if (this.single.isSelected()) {
-                contexts.add(this.single.getFilePicker(0).initiateFileOperation(song.getSingleSource().audioSource()));
+                contexts.add(this.single.getFilePicker(0).initiateFileOperation(song.getAudioSource()));
             }
             if (this.duo.isSelected()) {
-                contexts.add(this.duo.getFilePicker(0).initiateFileOperation(song.getDuoSource().voiceSource()));
-                contexts.add(this.duo.getFilePicker(1).initiateFileOperation(song.getDuoSource().musicSource()));
+                contexts.add(this.duo.getFilePicker(0).initiateFileOperation(song.getVoiceSource()));
+                contexts.add(this.duo.getFilePicker(1).initiateFileOperation(song.getMusicSource()));
             }
-
             for (final FFFilePicker.FileOperationContext context : contexts) {
                 context.finalizeOperation();
             }

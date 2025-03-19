@@ -140,6 +140,12 @@ public class WizardSong
 
     @Override
     public void onHide() {
-        // Nothing to do
+        this.ffName.dispose();
+        this.ffComment.dispose();
+        this.ffArtist.dispose();
+        this.ffAlbum.dispose();
+        this.ffSongSources.dispose();
+        this.ffCopyright.dispose();
+        this.ffLyrics.dispose();
     }
 }

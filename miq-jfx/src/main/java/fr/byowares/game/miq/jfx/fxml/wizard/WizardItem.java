@@ -111,7 +111,7 @@ public abstract class WizardItem<N extends NamedSourcedObject>
         ThemeManager.subscribe(scene);
 
         final Stage newStage = new Stage();
-        newStage.setOnCloseRequest(e -> ThemeManager.unsubscribe(scene));
+        newStage.setOnCloseRequest(e -> wizard.onCancel());
         wizard.i18nTitleBinder.accept(newStage.titleProperty());
         newStage.setScene(scene);
         newStage.setResizable(true);
@@ -149,7 +149,7 @@ public abstract class WizardItem<N extends NamedSourcedObject>
     /** Called when the button Create is activated. */
     @FXML
     final void onCreate() {
-        runBlocking(this.bCancel.getScene(), this.i18nTitleBinder, //
+        runBlocking(this.bCancel.sceneProperty(), this.i18nTitleBinder, //
                     (u, c) -> {
                         try {
                             this.returnedObject = this.newEmptyObject();

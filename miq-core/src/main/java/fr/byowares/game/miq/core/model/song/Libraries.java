@@ -130,11 +130,9 @@ public class Libraries
     ) {
         final List<Source> children = source.getChildSources();
         children.remove(miqsource);
-        if (song.getSingleSource() != null) children.remove(song.getSingleSource().audioSource());
-        if (song.getDuoSource() != null) {
-            children.remove(song.getDuoSource().voiceSource());
-            children.remove(song.getDuoSource().musicSource());
-        }
+        if (song.getAudioSource() != null) children.remove(song.getAudioSource());
+        if (song.getVoiceSource() != null) children.remove(song.getVoiceSource());
+        if (song.getMusicSource() != null) children.remove(song.getMusicSource());
         for (final Source childSource : children) {
             try {
                 final Lyrics lyrics = LyricsDeserializers.INSTANCE.deserialize(childSource.load());

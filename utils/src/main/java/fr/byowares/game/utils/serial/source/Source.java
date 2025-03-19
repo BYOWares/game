@@ -18,6 +18,7 @@ package fr.byowares.game.utils.serial.source;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -77,9 +78,26 @@ public interface Source {
     Source createTempSource()
             throws IOException;
 
-    Source rename(String newName)
+    /**
+     * @param newName The new file name to which the content must be moved.
+     *
+     * @throws IOException If an I/O error occurs.
+     */
+    void move(String newName)
             throws IOException;
 
+    /**
+     * Copy the content of the file {@code path} in the current source.
+     *
+     * @param path The path to the file whose content must be copied.
+     *
+     * @throws IOException If an I/O error occurs.
+     */
     void copyFileContent(final Path path)
             throws IOException;
+
+    /**
+     * @return The {@link java.net.URI} to this source.
+     */
+    URI toURI();
 }

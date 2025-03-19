@@ -119,7 +119,9 @@ public abstract class ComposedFormField<P extends Pane, N extends NamedSourcedOb
      */
     final void unregisterFormField(final FormField<?, N, ?> ff) {
         this.formFields.remove(ff);
+        ff.inErrorProperty().removeListener(this.inErrorListener);
         this.getChildrenPane().getChildren().remove(ff.getRoot());
+        this.updateHasError();
     }
 
     private void updateHasError() {
@@ -142,5 +144,10 @@ public abstract class ComposedFormField<P extends Pane, N extends NamedSourcedOb
         }
         sb.append("]}");
         return sb.toString();
+    }
+
+    @Override
+    public void dispose() {
+        this.formFields.forEach(FormField::dispose);
     }
 }

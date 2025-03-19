@@ -15,8 +15,6 @@
  */
 package fr.byowares.game.miq.core.serial.song;
 
-import fr.byowares.game.miq.core.model.audio.DuoSource;
-import fr.byowares.game.miq.core.model.audio.SingleSource;
 import fr.byowares.game.miq.core.model.song.Song;
 import fr.byowares.game.miq.core.serial.Constants;
 import fr.byowares.game.utils.serial.SourcedVersionedDeserializer;
@@ -46,11 +44,14 @@ public class SongDeserializerV1
 
         final String voice = removeAsString(map, Constants.VOICE);
         final String music = removeAsString(map, Constants.MUSIC);
-        if (voice != null && music != null) song.setDuoSource(new DuoSource(src.resolve(voice), src.resolve(music)));
         if ((voice == null && music != null) || (voice != null && music == null)) throw new IllegalArgumentException(
                 "[source=" + src + "] Voice and Music shall be both null or both non null (voice: " + voice + ", " + "music: " + music + ")");
+        if (voice != null /* && music != null */) {
+            song.setVoiceSource(src.resolve(voice));
+            song.setMusicSource(src.resolve(music));
+        }
         final String both = removeAsString(map, Constants.BOTH);
-        if (both != null) song.setSingleSource(new SingleSource(src.resolve(both)));
+        if (both != null) song.setAudioSource(src.resolve(both));
 
         for (final Object l : (List<?>) Objects.requireNonNull(remove(map, Constants.LYRICS, List.class, null)))
             song.getRawLyrics().add(Objects.toString(l));

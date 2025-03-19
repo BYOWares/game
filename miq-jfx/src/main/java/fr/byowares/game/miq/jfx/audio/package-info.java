@@ -15,8 +15,8 @@
  */
 
 /**
- * Offers the ability to control audio (play, stop, change volume).
+ * Collection of object handling the audio output.
  *
  * @since XXX
  */
-package fr.byowares.game.miq.core.model.audio;
+package fr.byowares.game.miq.jfx.audio;

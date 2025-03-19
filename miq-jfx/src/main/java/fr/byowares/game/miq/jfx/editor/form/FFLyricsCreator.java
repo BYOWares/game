@@ -19,6 +19,7 @@ import fr.byowares.game.miq.core.model.Range;
 import fr.byowares.game.miq.core.model.lyrics.Lyrics;
 import fr.byowares.game.miq.core.model.lyrics.OptionsLineParser;
 import fr.byowares.game.miq.core.model.lyrics.TimeCodedVerse;
+import fr.byowares.game.miq.core.model.song.Song;
 import fr.byowares.game.miq.core.option.LyricsParsingOptions;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -34,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import static fr.byowares.game.utils.jfx.concurrent.BackgroundTasks.runBlocking;
+
 /**
  * A Form Field that helps the creation of {@link fr.byowares.game.miq.core.model.lyrics.TimeCodedVerse}.
  *
@@ -46,20 +49,27 @@ public class FFLyricsCreator
             (lyrics, list) -> list.forEach(tcv -> lyrics.getVerses().add(tcv));
     private static final Range NO_RANGE = new Range(Long.MAX_VALUE, Long.MAX_VALUE);
 
-
+    private final VBox optionsBox;
     private final Label mainLabel;
     private final FFParsingOptions ffOptions;
+    private final FXAudioPlayer audioPlayer;
     private final Label versesLabel;
     private final List<FFFullVerse> verses;
     private final SimpleIntegerProperty rawTextLengthProperty;
     private final ChangeListener<String> rawTextChangeListener;
     private final SimpleObjectProperty<OptionsLineParser> parserProp;
     private final VBox childrenPane;
-    private boolean addToRoot;
+    private boolean addOptions;
 
-    /** Default constructor. */
-    public FFLyricsCreator() {
+    /**
+     * Default constructor.
+     *
+     * @param song The Song used to instantiate this Form Field.
+     */
+    public FFLyricsCreator(final Song song) {
         super(SimpleFormField.newVBoxContainer(), SETTER, MIN_SIZE_HUGE, MIN_SIZE_LARGE);
+        this.optionsBox = SimpleFormField.newVBoxContainer();
+
         this.mainLabel = new Label();
         I18NMIQ.get().bind(this.mainLabel.textProperty(), "form_field.lyrics.configuration");
         this.getRoot().getChildren().add(this.mainLabel);
@@ -70,16 +80,21 @@ public class FFLyricsCreator
         this.parserProp = new SimpleObjectProperty<>(new OptionsLineParser(defaultOptions));
         this.ffOptions.setApplyHandler(opt -> this.parserProp.setValue(new OptionsLineParser(opt)));
 
+        this.audioPlayer = new FXAudioPlayer(song);
+
         this.versesLabel = new Label();
         I18NMIQ.get().bind(this.versesLabel.textProperty(), "edit_view.cell.lyrics");
         this.verses = new ArrayList<>();
         this.rawTextLengthProperty = new SimpleIntegerProperty(0);
         this.rawTextChangeListener = (obs, ov, nv) -> this.updateVersesLengthProp();
 
-        this.addToRoot = true;
+        this.addOptions = true;
+        final HBox header = new HBox(10.0, this.optionsBox, this.audioPlayer.getRoot());
+        HBox.setHgrow(header, Priority.ALWAYS);
+        this.getRoot().getChildren().add(header);
         this.registerFormField(this.ffOptions);
 
-        this.addToRoot = false;
+        this.addOptions = false;
         this.childrenPane = SimpleFormField.newVBoxContainer();
         HBox.setHgrow(this.childrenPane, Priority.ALWAYS);
         final ScrollPane scrollPane = new ScrollPane(this.childrenPane);
@@ -90,7 +105,13 @@ public class FFLyricsCreator
 
     @Override
     VBox getChildrenPane() {
-        return this.addToRoot ? super.getRoot() : this.childrenPane;
+        return this.addOptions ? this.optionsBox : this.childrenPane;
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        this.audioPlayer.dispose();
     }
 
     @Override
@@ -129,17 +150,25 @@ public class FFLyricsCreator
     }
 
     /**
-     * @param rawVerses The list of lyrics used ot initialize this Form Field.
+     * @param song The song to init the Form Field with.
      */
-    public void specialInit(final List<CharSequence> rawVerses) {
-        for (final CharSequence raw : rawVerses) {
-            final FFFullVerse verse = this.newVerse();
-            verse.init(SimpleFormField.normalizeInput(raw));
-            verse.addRawTextChangeListener(this.rawTextChangeListener);
-            this.registerFormField(verse);
-            this.verses.add(verse);
-        }
-        this.updateVersesLengthProp();
+    public void specialInit(final Song song) {
+        runBlocking(this.getRoot().sceneProperty(), (u, c) -> {
+                        final List<FFFullVerse> verses = new ArrayList<>();
+                        for (final CharSequence raw : song.getRawLyrics()) {
+                            final FFFullVerse verse = this.newVerse();
+                            verse.init(SimpleFormField.normalizeInput(raw));
+                            verse.addRawTextChangeListener(this.rawTextChangeListener);
+                            verses.add(verse);
+                            this.verses.add(verse);
+                        }
+                        this.updateVersesLengthProp();
+                        return verses;
+                    }, //
+                    l -> l.forEach(this::registerFormField), //
+                    l -> {}, //
+                    l -> {} //
+        );
     }
 
     private FFFullVerse newVerse() {

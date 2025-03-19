@@ -21,6 +21,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.net.URI;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -109,13 +110,12 @@ public record SourcePath(Path path)
     }
 
     @Override
-    public Source rename(final String newName)
+    public void move(final String newName)
             throws IOException {
-        if (!Files.exists(this.path)) throw new IOException("");
+        if (!Files.exists(this.path)) throw new IOException("Origin file does not exist: " + this);
 
         final Path newPath = this.path.getParent().resolve(newName);
         Files.move(this.path, newPath, COPY_OPTIONS);
-        return new SourcePath(newPath);
     }
 
     @Override
@@ -124,5 +124,10 @@ public record SourcePath(Path path)
         if (!Files.exists(path)) throw new IOException("'" + path + "' does not exist.");
         if (!Files.isRegularFile(path)) throw new IOException("'" + path + "' is not a regular file.");
         Files.copy(path, this.path, COPY_OPTIONS);
+    }
+
+    @Override
+    public URI toURI() {
+        return this.path.toUri();
     }
 }

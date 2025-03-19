@@ -82,6 +82,8 @@ public class WizardLibrary
 
     @Override
     public void onHide() {
-        // Nothing to do
+        this.ffName.dispose();
+        this.ffComment.dispose();
+        this.ffSourceDir.dispose();
     }
 }

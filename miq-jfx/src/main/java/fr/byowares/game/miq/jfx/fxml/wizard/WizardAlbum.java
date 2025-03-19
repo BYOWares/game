@@ -106,6 +106,10 @@ public class WizardAlbum
 
     @Override
     public void onHide() {
-        // Nothing to do
+        this.ffName.dispose();
+        this.ffComment.dispose();
+        this.ffArtist.dispose();
+        this.ffSourceDir.dispose();
+        this.ffCopyright.dispose();
     }
 }

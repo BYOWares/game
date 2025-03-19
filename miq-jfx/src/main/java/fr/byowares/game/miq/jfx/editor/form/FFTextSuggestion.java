@@ -114,6 +114,11 @@ public class FFTextSuggestion<N extends NamedSourcedObject>
         this.field.setText(SimpleFormField.normalizeInput(input));
     }
 
+    @Override
+    public void dispose() {
+        // Nothing to do
+    }
+
     /** A simple suggestion provider wrapping an {@link javafx.collections.ObservableList}. */
     private static class SuggestionProvider
             implements Callback<AutoCompletionBinding.ISuggestionRequest, Collection<String>> {

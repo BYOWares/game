@@ -15,36 +15,37 @@
  */
 package fr.byowares.game.miq.jfx.editor.form;
 
-import fr.byowares.game.miq.core.model.audio.SingleSource;
 import fr.byowares.game.miq.core.model.song.Song;
+import fr.byowares.game.utils.serial.source.Source;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 
 
 /**
- * A Form Field that allows to configure a {@link fr.byowares.game.miq.core.model.audio.SingleSource}.
+ * A Form Field that allows to configure a single audio source.
  *
  * @since XXX
  */
 public class FFSourceSingle
-        extends FFSourceAudio<SingleSource> {
+        extends FFSourceAudio<Source> {
 
     private final FFFilePicker<Song> audioFile;
 
     /** Default instance. */
     public FFSourceSingle() {
-        super(Song::setSingleSource, "wizard.ff.config_audio", List.of(newPicker("wizard.ff.select_audio_file")));
+        super(noOpBiConsumer(), "wizard.ff.config_audio",
+              List.of(newPicker(Song::setAudioSource, "wizard.ff.select_audio_file")));
         this.audioFile = this.getFilePicker(0);
     }
 
     @Override
     void doSet(
-            final BiConsumer<Song, SingleSource> setter,
+            final BiConsumer<Song, Source> setter,
             final Song song
     ) {
         if (!this.isSelected()) return;
-        setter.accept(song, new SingleSource(this.audioFile.asSource(song.getSource().getParent())));
+        this.audioFile.set(song);
     }
 
     @Override
@@ -58,13 +59,13 @@ public class FFSourceSingle
     }
 
     @Override
-    public void init(final SingleSource input) {
+    public void init(final Source input) {
         if (input == null) {
             this.setSelected(false);
             this.audioFile.init(null);
         } else {
             this.setSelected(true);
-            this.audioFile.init(input.audioSource());
+            this.audioFile.init(input);
         }
     }
 }

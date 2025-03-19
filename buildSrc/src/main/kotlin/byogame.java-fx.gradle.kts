@@ -24,7 +24,7 @@ plugins {
 javafx {
     val javaPluginExtension = project.extensions.findByName("java")!!.uncheckedCast<JavaPluginExtension>()
     version = javaPluginExtension.toolchain.languageVersion.get().toString()
-    modules = listOf("javafx.base", "javafx.graphics", "javafx.controls", "javafx.fxml")
+    modules = listOf("base", "graphics", "controls", "fxml", "media").stream().map { x -> "javafx." + x; }.toList()
 }
 
 dependencies {
@@ -37,5 +37,5 @@ dependencies {
     implementation("org.kordamp.ikonli:ikonli-core:$ikonli")
     implementation("org.kordamp.ikonli:ikonli-feather-pack:$ikonli")
     implementation("org.kordamp.ikonli:ikonli-javafx:$ikonli")
-    implementation("org.kordamp.ikonli:ikonli-material2-pack:$ikonli")
+    implementation("org.kordamp.ikonli:ikonli-materialdesign2-pack:$ikonli")
 }

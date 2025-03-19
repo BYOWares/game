@@ -16,7 +16,6 @@
 package fr.byowares.game.miq.jfx.editor.form;
 
 import atlantafx.base.theme.Styles;
-import fr.byowares.game.miq.core.model.audio.SingleSource;
 import fr.byowares.game.miq.jfx.i18n.I18NMIQ;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
 import fr.byowares.game.utils.serial.source.Source;
@@ -28,6 +27,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
 import javafx.stage.FileChooser;
 import org.agrona.LangUtil;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
@@ -116,14 +116,15 @@ public class FFFileSelector<N extends NamedSourcedObject>
             if (selectedFile == null) return;
 
             final I18NMIQ i18n = I18NMIQ.get();
-            runBlocking(this.field.getScene(), //
+            runBlocking(this.field.sceneProperty(), //
                         I18NMIQ.binder(i18n, "wizard.ff.analyze_file", selectedFile.toString()), //
                         // Actual blocking task
                         (u, c) -> {
                             u.accept(-1L, 1L); // Indeterminate progress
                             this.validator.clearErrors();
-                            final var singleSource = new SingleSource(new SourcePath(selectedFile.toPath()));
-                            try (final var ignored = singleSource.load()) {
+                            final SourcePath source = new SourcePath(selectedFile.toPath());
+                            try {
+                                new Media(source.toURI().toString()); // TODO make it cleaner.
                                 // All good, the file could be loaded
                                 return null;
 
@@ -170,6 +171,11 @@ public class FFFileSelector<N extends NamedSourcedObject>
     @Override
     public void init(final Source input) {
         this.field.setText(SimpleFormField.normalizeInput(input));
+    }
+
+    @Override
+    public void dispose() {
+        // Nothing to do
     }
 
     /**

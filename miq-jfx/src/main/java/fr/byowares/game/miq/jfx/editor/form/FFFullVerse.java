@@ -153,6 +153,11 @@ public class FFFullVerse
         this.rawText.setText(input);
     }
 
+    @Override
+    public void dispose() {
+        // Nothing to do
+    }
+
     /**
      * @param rawTextChangeListener The listener to the rawText input change.
      */

@@ -15,11 +15,10 @@
  */
 package fr.byowares.game.miq.core.model.song;
 
-import fr.byowares.game.miq.core.model.audio.DuoSource;
-import fr.byowares.game.miq.core.model.audio.SingleSource;
 import fr.byowares.game.miq.core.model.lyrics.Lyrics;
 import fr.byowares.game.utils.hashcodes.HashCodes;
 import fr.byowares.game.utils.serial.source.NamedSourcedObject;
+import fr.byowares.game.utils.serial.source.Source;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +39,9 @@ public class Song
     private CharSequence artist;
     private CharSequence albumName;
 
-    private DuoSource duoSource;
-    private SingleSource singleSource;
+    private Source voiceSource;
+    private Source musicSource;
+    private Source audioSource;
 
     /**
      * @param title The title of the song.
@@ -107,44 +107,71 @@ public class Song
     }
 
     /**
-     * @return The {@link fr.byowares.game.miq.core.model.audio.DuoSource} used for this song.
+     * @return The Source containing both voice and music data.
      */
-    public DuoSource getDuoSource() {
-        return this.duoSource;
+    public Source getAudioSource() {
+        return this.audioSource;
     }
 
     /**
-     * @param duoSource The {@link fr.byowares.game.miq.core.model.audio.DuoSource} to use for this song.
+     * @param audioSource The Source containing the audio (voice and music) data.
      */
-    public void setDuoSource(final DuoSource duoSource) {
-        this.duoSource = duoSource;
+    public void setAudioSource(final Source audioSource) {
+        this.audioSource = audioSource;
     }
 
     /**
-     * @return The {@link fr.byowares.game.miq.core.model.audio.SingleSource} used for this song.
+     * {@code voiceSource} and {@code musicSource} shall both either be equal to {@code null} or an actual source as
+     * they work as a pair.
+     *
+     * @return The Source containing music data.
      */
-    public SingleSource getSingleSource() {
-        return this.singleSource;
+    public Source getMusicSource() {
+        return this.musicSource;
     }
 
     /**
-     * @param singleSource The {@link fr.byowares.game.miq.core.model.audio.SingleSource} to use for this song.
+     * {@code voiceSource} and {@code musicSource} shall both either be equal to {@code null} or an actual source as
+     * they work as a pair.
+     *
+     * @param musicSource The Source containing music data only.
      */
-    public void setSingleSource(final SingleSource singleSource) {
-        this.singleSource = singleSource;
+    public void setMusicSource(final Source musicSource) {
+        this.musicSource = musicSource;
+    }
+
+    /**
+     * {@code voiceSource} and {@code musicSource} shall both either be equal to {@code null} or an actual source as
+     * they work as a pair.
+     *
+     * @return The Source containing voice data.
+     */
+    public Source getVoiceSource() {
+        return this.voiceSource;
+    }
+
+    /**
+     * {@code voiceSource} and {@code musicSource} shall both either be equal to {@code null} or an actual source as
+     * they work as a pair.
+     *
+     * @param voiceSource The Source containing voice data only.
+     */
+    public void setVoiceSource(final Source voiceSource) {
+        this.voiceSource = voiceSource;
     }
 
     @Override
     public int hashCode() {
-        return HashCodes.hash(this.rawLyrics, //
-                              this.lyrics, //
+        return HashCodes.hash(this.artist, //
+                              this.albumName, //
                               this.copyright, //
                               this.getName(), //
-                              this.artist, //
-                              this.albumName, //
                               this.getComment(), //
-                              this.duoSource, //
-                              this.singleSource //
+                              this.rawLyrics, //
+                              this.lyrics, //
+                              this.audioSource, //
+                              this.voiceSource, //
+                              this.musicSource //
         );
     }
 
@@ -158,8 +185,9 @@ public class Song
                 && Objects.equals(this.artist, song.artist) //
                 && Objects.equals(this.albumName, song.albumName) //
                 && Objects.equals(this.getComment(), song.getComment()) //
-                && Objects.equals(this.duoSource, song.duoSource) //
-                && Objects.equals(this.singleSource, song.singleSource) //
+                && Objects.equals(this.audioSource, song.audioSource) //
+                && Objects.equals(this.voiceSource, song.voiceSource) //
+                && Objects.equals(this.musicSource, song.musicSource) //
                 ;
     }
 
@@ -177,8 +205,9 @@ public class Song
         song.setAlbumName(this.getAlbumName());
         song.setArtist(this.getArtist());
         song.setCopyright(this.getCopyright());
-        song.setDuoSource(this.duoSource);
-        song.setSingleSource(this.singleSource);
+        song.setAudioSource(this.getAudioSource());
+        song.setVoiceSource(this.getVoiceSource());
+        song.setMusicSource(this.getMusicSource());
         return song;
     }
 }

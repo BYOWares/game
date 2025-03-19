@@ -177,6 +177,11 @@ public class FFParsingOptions
         this.nonLexical.setValue(BracketI18N.fromBracket(input.nonLexicalBracket()));
     }
 
+    @Override
+    public void dispose() {
+        // Nothing to do
+    }
+
     /** Bracket enum extended with some I18N content. */
     enum BracketI18N {
         /** No bracket. */

@@ -48,11 +48,9 @@ public class SongSerializer
         map.put(Constants.COPYRIGHT, song.getCopyright());
         map.put(Constants.ARTIST, song.getArtist());
         map.put(Constants.ALBUM, song.getAlbumName());
-        if (song.getDuoSource() != null) {
-            map.put(Constants.VOICE, song.getDuoSource().voiceSource().getName());
-            map.put(Constants.MUSIC, song.getDuoSource().musicSource().getName());
-        }
-        if (song.getSingleSource() != null) map.put(Constants.BOTH, song.getSingleSource().audioSource().getName());
+        if (song.getAudioSource() != null) map.put(Constants.BOTH, song.getAudioSource().getName());
+        if (song.getVoiceSource() != null) map.put(Constants.VOICE, song.getVoiceSource().getName());
+        if (song.getMusicSource() != null) map.put(Constants.MUSIC, song.getMusicSource().getName());
         map.put(Constants.LYRICS, song.getRawLyrics());
     }
 

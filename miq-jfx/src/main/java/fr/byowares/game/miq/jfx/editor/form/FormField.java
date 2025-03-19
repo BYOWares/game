@@ -75,4 +75,9 @@ public interface FormField<P extends Pane, N extends NamedSourcedObject, T> {
      * @param level The level to configure (must be strictly positive).
      */
     void setLevel(final int level);
+
+    /**
+     * Method to call when the FormField is not used anymore.
+     */
+    void dispose();
 }

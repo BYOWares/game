@@ -20,10 +20,8 @@
 module fr.byowares.game.miq.core {
     exports fr.byowares.game.miq.core.info;
     exports fr.byowares.game.miq.core.model;
-    exports fr.byowares.game.miq.core.model.audio;
     exports fr.byowares.game.miq.core.model.lyrics;
     exports fr.byowares.game.miq.core.model.song;
-    exports fr.byowares.game.miq.core.model.volume;
     exports fr.byowares.game.miq.core.option;
     exports fr.byowares.game.miq.core.serial.album;
     exports fr.byowares.game.miq.core.serial.library;
@@ -31,7 +29,6 @@ module fr.byowares.game.miq.core {
     exports fr.byowares.game.miq.core.serial.song;
 
     requires fr.byowares.game.utils;
-    requires java.desktop;
     requires java.xml;
     requires org.agrona.core;
     requires org.slf4j;

@@ -83,4 +83,9 @@ public class FFMLText<N extends NamedSourcedObject>
     public void init(final CharSequence input) {
         this.field.setText(SimpleFormField.normalizeInput(input));
     }
+
+    @Override
+    public void dispose() {
+        // Nothing to do
+    }
 }

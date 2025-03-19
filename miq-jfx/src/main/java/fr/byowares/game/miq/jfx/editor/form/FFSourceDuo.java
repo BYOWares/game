@@ -15,44 +15,44 @@
  */
 package fr.byowares.game.miq.jfx.editor.form;
 
-import fr.byowares.game.miq.core.model.audio.DuoSource;
 import fr.byowares.game.miq.core.model.song.Song;
 import fr.byowares.game.utils.serial.source.Source;
+import javafx.util.Pair;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 
 
 /**
- * A Form Field that allows to configure a {@link fr.byowares.game.miq.core.model.audio.DuoSource}.
+ * A Form Field that allows to configure two Sources.
  *
  * @since XXX
  */
 public class FFSourceDuo
-        extends FFSourceAudio<DuoSource> {
+        extends FFSourceAudio<Pair<Source, Source>> {
 
     private final FFFilePicker<Song> voiceFile;
     private final FFFilePicker<Song> musicFile;
 
     /**
-     * A new Form Field to configure a {@link fr.byowares.game.miq.core.model.audio.DuoSource} for a
-     * {@link fr.byowares.game.miq.core.model.song.Song}.
+     * A new Form Field to configure two Sources.
      */
     public FFSourceDuo() {
-        super(Song::setDuoSource, "wizard.ff.config_voice_music",
-              List.of(newPicker("wizard.ff.select_voice_file"), newPicker("wizard.ff.select_music_file")));
+        super(noOpBiConsumer(), "wizard.ff.config_voice_music",
+              List.of(newPicker(Song::setVoiceSource, "wizard.ff.select_voice_file"),
+                      newPicker(Song::setMusicSource, "wizard.ff.select_music_file")));
         this.voiceFile = this.getFilePicker(0);
         this.musicFile = this.getFilePicker(1);
     }
 
     @Override
     void doSet(
-            final BiConsumer<Song, DuoSource> setter,
+            final BiConsumer<Song, Pair<Source, Source>> setter,
             final Song song
     ) {
         if (!this.isSelected()) return;
-        final Source parent = song.getSource().getParent();
-        setter.accept(song, new DuoSource(this.voiceFile.asSource(parent), this.musicFile.asSource(parent)));
+        this.voiceFile.set(song);
+        this.musicFile.set(song);
     }
 
     @Override
@@ -66,15 +66,15 @@ public class FFSourceDuo
     }
 
     @Override
-    public void init(final DuoSource input) {
+    public void init(final Pair<Source, Source> input) {
         if (input == null) {
             this.setSelected(false);
             this.voiceFile.init(null);
             this.musicFile.init(null);
         } else {
             this.setSelected(true);
-            this.voiceFile.init(input.voiceSource());
-            this.musicFile.init(input.musicSource());
+            this.voiceFile.init(input.getKey());
+            this.musicFile.init(input.getValue());
         }
     }
 }

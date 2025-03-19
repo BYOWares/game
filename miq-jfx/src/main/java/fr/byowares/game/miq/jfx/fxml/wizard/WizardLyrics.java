@@ -72,7 +72,7 @@ public class WizardLyrics
         this.ffComment = new FFText<>(Lyrics::setComment, I18NMIQ.binder(I18NMIQ.get(), "wizard.ff.comment"));
         this.ffComment.addValidator(new ValidatorLength(LYRICS_CMT_MIN_LENGTH, LYRICS_CMT_MAX_LENGTH));
 
-        this.ffLyricsCreator = new FFLyricsCreator();
+        this.ffLyricsCreator = new FFLyricsCreator(song);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class WizardLyrics
         this.addFormFieldToSplitPane(this.ffComment, null);
         this.addFormFieldToSplitPane(this.ffSource, new SourcePath(Paths.get(newText)));
         this.addFormFieldToSplitPane(1, this.ffLyricsCreator, null);
-        this.ffLyricsCreator.specialInit(this.song.getRawLyrics());
+        this.ffLyricsCreator.specialInit(this.song);
     }
 
     @Override
@@ -97,6 +97,9 @@ public class WizardLyrics
 
     @Override
     public void onHide() {
-        // Nothing to do
+        this.ffName.dispose();
+        this.ffComment.dispose();
+        this.ffSource.dispose();
+        this.ffLyricsCreator.dispose();
     }
 }

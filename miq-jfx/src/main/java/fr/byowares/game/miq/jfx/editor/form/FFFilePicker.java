@@ -146,13 +146,7 @@ public class FFFilePicker<N extends NamedSourcedObject>
             final BiConsumer<N, Source> setter,
             final N n
     ) {
-        // FIXME
-        // Nothing to do because this is a design issue. Explication:
-        // Only NamedSourcedObject can be set. However, by restricting it that much, it's impossible to create
-        // intermediate object, like SingleSource, or DuoSource.
-        // In addition, object that are record cannot be set, we would need supplier here ...
-
-        // To work around this limitation, the method #currentInputAsSource was created.
+        setter.accept(n, n.getSource().getParent().resolve(this.fileName.getCurrentInput()));
     }
 
     @Override
@@ -200,15 +194,6 @@ public class FFFilePicker<N extends NamedSourcedObject>
     }
 
     /**
-     * @param parent The parent source (a directory).
-     *
-     * @return The current input as a {@link fr.byowares.game.utils.serial.source.Source}.
-     */
-    Source asSource(final Source parent) {
-        return parent.resolve(this.fileName.getCurrentInput());
-    }
-
-    /**
      * Operation initialization: copy the selected file into a temporary file.
      *
      * @param destSource The final source for the selected file.
@@ -246,7 +231,7 @@ public class FFFilePicker<N extends NamedSourcedObject>
          */
         void finalizeOperation()
                 throws IOException {
-            this.tempSource.rename(this.targetSource.getName());
+            this.tempSource.move(this.targetSource.getName());
             if (this.deleteOriginFileOnFinalize) Files.delete(this.originFile);
         }
     }
