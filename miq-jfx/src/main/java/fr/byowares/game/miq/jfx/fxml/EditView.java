@@ -38,6 +38,8 @@ import fr.byowares.game.utils.serial.source.Source;
 import fr.byowares.game.utils.serial.source.SourceInMemory;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -233,9 +235,7 @@ public class EditView
     /** FXML handle for initialization. */
     @FXML
     public void initialize() {
-        // TODO make it in another thread
-        final Libraries libraries = Libraries.from(Path.of(System.getProperty("user.home"), "Desktop", "MIQ"));
-        this.tree.setRoot(this.convert(libraries));
+        this.tree.setShowRoot(false);
         VBox.setVgrow(this.tree, Priority.ALWAYS);
         this.tree.getStyleClass().addAll(Tweaks.ALT_ICON, Styles.DENSE);
         final var treeSelectionModel = this.getTreeSelectionModel();
@@ -253,6 +253,8 @@ public class EditView
         setButtonIcon(this.bBack, BootstrapIcons.ARROW_LEFT, "edit_view.back");
         final var css = FontIconSizeEnforcer.enforceIconSizeCSS(this.bBack, "force-size", 32);
         this.bBack.getGraphic().getStyleClass().add(css);
+
+        new LoadingLibraries().start();
     }
 
     /** Back to previous menu. */
@@ -335,6 +337,50 @@ public class EditView
     @Override
     public void onHide() {
         // Nothing to do
+    }
+
+    /** Loading libraries as a service, to avoid blocking UI. */
+    private class LoadingLibraries
+            extends Service<Libraries> {
+
+        @Override
+        protected Task<Libraries> createTask() {
+            return new Task<>() {
+
+                @Override
+                protected Libraries call() {
+                    // TODO make it customizable
+                    return Libraries.from(Path.of(System.getProperty("user.home"), "Desktop", "MIQ"));
+                }
+
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    this.updateMessage("succeeded");
+                    this.setRoot(EditView.this.convert(this.getValue()));
+                }
+
+                @Override
+                protected void cancelled() {
+                    super.cancelled();
+                    this.updateMessage("cancelled");
+                    this.setRoot(null);
+                }
+
+                @Override
+                protected void failed() {
+                    super.failed();
+                    this.updateMessage("failed");
+                    this.setRoot(null);
+                }
+
+                private void setRoot(final TreeItem<MIQItem> libraries) {
+                    EditView.this.tree.setRoot(libraries);
+                    EditView.this.tree.setShowRoot(true);
+                    EditView.this.tree.getSelectionModel().select(EditView.this.tree.getRoot());
+                }
+            };
+        }
     }
 
     /**
